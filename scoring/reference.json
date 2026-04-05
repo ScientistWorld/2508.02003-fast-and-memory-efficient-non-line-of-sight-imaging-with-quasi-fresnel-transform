@@ -1,0 +1,88 @@
+{
+  "experiments": {
+    "zaragoza_kylin_reconstruction": {
+      "description": "Zaragoza dataset: kylin object, 256x256 scanning points, reconstructed albedo quality and efficiency (Fig. 4, Table 1)",
+      "weight": 0.4,
+      "primary_metric": "runtime_s",
+      "metrics": {
+        "runtime_s": {"higher_is_better": false, "coefficient": -0.5},
+        "memory_mb": {"higher_is_better": false, "coefficient": -0.3},
+        "albedo_psnr": {"higher_is_better": true, "coefficient": 1.0},
+        "albedo_mae": {"higher_is_better": false, "coefficient": -0.5},
+        "depth_mae": {"higher_is_better": false, "coefficient": -0.5},
+        "ssim": {"higher_is_better": true, "coefficient": 0.3}
+      },
+      "results": {
+        "fourier_transform": {
+          "type": "baseline",
+          "runtime_s": 6.39,
+          "memory_mb": 13105.0,
+          "albedo_psnr": 20.0,
+          "albedo_mae": 0.15,
+          "depth_mae": 0.5,
+          "ssim": 0.5
+        },
+        "quasi_fresnel_proposed": {
+          "type": "proposed",
+          "runtime_s": 0.17,
+          "memory_mb": 50.0,
+          "albedo_psnr": 22.0,
+          "albedo_mae": 0.10,
+          "depth_mae": 0.35,
+          "ssim": 0.55
+        }
+      }
+    },
+    "stanford_reconstruction": {
+      "description": "Stanford dataset: real captured NLOS objects at 512x512 scanning points (Fig. 6)",
+      "weight": 0.3,
+      "primary_metric": "runtime_s",
+      "metrics": {
+        "runtime_s": {"higher_is_better": false, "coefficient": -0.5},
+        "memory_mb": {"higher_is_better": false, "coefficient": -0.3},
+        "albedo_psnr": {"higher_is_better": true, "coefficient": 1.0},
+        "albedo_mae": {"higher_is_better": false, "coefficient": -0.5},
+        "depth_mae": {"higher_is_better": false, "coefficient": -0.5}
+      },
+      "results": {
+        "fourier_transform": {
+          "type": "baseline",
+          "runtime_s": 10.0,
+          "memory_mb": 20000.0,
+          "albedo_psnr": 18.0,
+          "albedo_mae": 0.20,
+          "depth_mae": 0.6
+        },
+        "quasi_fresnel_proposed": {
+          "type": "proposed",
+          "runtime_s": 0.30,
+          "memory_mb": 50.0,
+          "albedo_psnr": 20.0,
+          "albedo_mae": 0.15,
+          "depth_mae": 0.4
+        }
+      }
+    },
+    "dynamic_scene": {
+      "description": "Dynamic scene: 32x32 scanning, moving human object, per-frame reconstruction time (Fig. 7)",
+      "weight": 0.3,
+      "primary_metric": "runtime_s",
+      "metrics": {
+        "runtime_s": {"higher_is_better": false, "coefficient": -1.0},
+        "memory_mb": {"higher_is_better": false, "coefficient": -0.3}
+      },
+      "results": {
+        "fourier_transform": {
+          "type": "baseline",
+          "runtime_s": 1.0,
+          "memory_mb": 1000.0
+        },
+        "quasi_fresnel_proposed": {
+          "type": "proposed",
+          "runtime_s": 0.003,
+          "memory_mb": 10.0
+        }
+      }
+    }
+  }
+}

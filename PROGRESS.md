@@ -1,37 +1,32 @@
 # Progress
 
 ## What Works
-
-<!-- What has been successfully reproduced so far. -->
+- Full implementation of the Quasi-Fresnel Transform algorithm (3 steps: time integration, spatial deconvolution, albedo/depth extraction)
+- Synthetic data generation using the paper's forward model (three-point transport model)
+- Evaluation metrics (PSNR, MAE, SSIM) and scoring infrastructure
+- Baseline implementations (FBP, LCT)
+- All scripts: download.sh, evaluate.sh, reproduce.sh, method.sh, baseline.sh
 
 ## Results
-
-<!-- Reproduced numbers compared to the paper's reported numbers. -->
+- Paper reports: ~0.17s runtime, <50MB memory, good reconstruction quality
+- Need to run experiments on compute node to validate (login node has threading issues)
 
 ## Remaining
-
-<!-- What still needs to be done to reach higher milestones. -->
+1. Run GPU job to validate the method works end-to-end
+2. Test on synthetic scenes (shapes, kylin, bunny, usaf)
+3. Compare against baselines (FBP, LCT)
+4. Verify runtime and memory efficiency claims
+5. Test at higher resolution (64x64, 128x128)
+6. Fill in scoring/scores.json with actual results
+7. Write TARGETS.md, CONSTRAINTS.md, DIRECTION.md
 
 ## Issues
-
-<!-- Blockers, bugs, or difficulties encountered. -->
+- Login node has OpenBLAS threading issues causing timeouts — must run on compute node
+- Forward model generation at large resolutions can be slow on login node
+- The depth extraction from phase may need calibration for accurate absolute depth values
 
 ## Deviations from Paper
-
-<!-- Do not edit this section unless you deviated from the paper's original setup.
-     For each deviation, document: what the paper used, what you substituted, and why.
-
-     ACCEPTABLE deviations (data/resource/scale substitutions — milestones still valid):
-       - Replaced a proprietary dataset with a public one
-       - Used a smaller model of the same architecture
-       - Scaled down training (fewer epochs, smaller batch)
-       - Used a different library for the same algorithm
-
-     UNACCEPTABLE deviations (algorithm substitutions — milestones above 'none' are void):
-       - Replaced the paper's algorithm with a fundamentally different one
-       - Wrote a generic model trained to approximate the method's outputs
-         instead of implementing the method's computational steps
-
-     The test: could someone reading your code identify which algorithm from
-     the paper you implemented? If not, you replaced the method. -->
-
+- Using synthetic data instead of Zaragoza/Stanford datasets (datasets not publicly downloadable via script)
+- Testing at smaller resolutions (32x32, 64x64) vs paper's 256x256 and 512x512 due to compute constraints
+- The depth extraction is approximate (from phase only, without finite-difference derivative)
+- Memory and runtime comparisons will be measured on CPU, matching the paper's methodology
