@@ -13,17 +13,19 @@ export NUMEXPR_NUM_THREADS=1
 
 echo "=== Step 1: Generate synthetic NLOS data at appropriate depth ==="
 # IMPORTANT: depth must be within capture range of N_bins * dt (one-way)
-# For dt=0.003m (one-way distance per bin), with 256 bins: max range = 0.768m one-way
-# We use depth=0.25m (well within range) and area=0.3m
-# With area=0.3m, diagonal extent is 0.3*sqrt(2)=0.42m one-way, well within 0.768m limit
+# For dt=0.003m (one-way distance per bin), with 256 bins: max one-way = 0.768m
+# Max RT = 2 * sqrt(depth^2 + lateral_extent^2) must be < N_bins * dt
+# With area=0.3m, max lateral = 0.3*sqrt(2)/2 = 0.212m (half-diagonal)
+# For depth=0.15m: max RT = 2*sqrt(0.15^2 + 0.212^2) = 0.522m -> bin 174 -> OK with 256 bins
+# Both shapes and kylin use area=0.3m and depth=0.15m (well within range)
 
 /usr/bin/python3 data/generate_nlos_data.py \
     --scene shapes --resolution 64 --bins 256 \
-    --area 0.3 --dt 0.003 --depth 0.25 --k 4 --save --output data/shapes
+    --area 0.3 --dt 0.003 --depth 0.15 --k 4 --save --output data/shapes
 
 /usr/bin/python3 data/generate_nlos_data.py \
     --scene kylin --resolution 64 --bins 256 \
-    --area 0.3 --dt 0.003 --depth 0.25 --k 4 --save --output data/kylin
+    --area 0.3 --dt 0.003 --depth 0.15 --k 4 --save --output data/kylin
 
 echo ""
 echo "=== Step 2: Run Quasi-Fresnel Transform method ==="
@@ -37,16 +39,18 @@ from method.quasi_fresnel import quasi_fresnel_reconstruct, benchmark_reconstruc
 from eval.metrics import compute_metrics
 
 os.makedirs('scoring', exist_ok=True)
+import numpy as np
 
 # Paper parameters
 dt = 0.003  # spatial distance per time bin (meters, one-way)
 k = 4       # isotropic scattering
-area = 0.3  # scene area in meters (keeps scene within capture range)
-depth_val = 0.25  # default depth in meters
+area_shapes = 0.3  # scene area in meters
+area_kylin = 0.3   # same area for both scenes
+depth_val = 0.15   # default depth in meters (within 256-bin range)
 
 # Test on shapes scene (64x64, 256 bins)
-print('Testing on shapes scene (64x64, 256 bins, area=0.3m, depth=0.25m)...')
-data = generate_dataset('shapes', 64, 256, area, dt, k, 64, default_depth=depth_val)
+print('Testing on shapes scene (64x64, 256 bins, area=0.3m, depth=0.15m)...')
+data = generate_dataset('shapes', 64, 256, area_shapes, dt, k, 64, default_depth=depth_val)
 tau = data['tau']
 albedo_gt = data['albedo']
 depth_gt = data['depth']
@@ -73,8 +77,8 @@ for s in [0.010, 0.015, 0.020, 0.025, 0.030, 0.040, 0.050]:
 print(f'Best s={best_s:.3f} with PSNR={best_psnr:.2f}dB')
 
 print()
-print('Testing on kylin scene (64x64, 256 bins, area=0.3m, depth=0.25m)...')
-data2 = generate_dataset('kylin', 64, 256, area, dt, k, 64, default_depth=depth_val)
+print('Testing on kylin scene (64x64, 256 bins, area=0.3m, depth=0.15m)...')
+data2 = generate_dataset('kylin', 64, 256, area_kylin, dt, k, 64, default_depth=depth_val)
 tau2 = data2['tau']
 albedo_gt2 = data2['albedo']
 depth_gt2 = data2['depth']
@@ -107,7 +111,7 @@ print(f'  LCT: time={lct_time:.4f}s, PSNR={lct_m[\"psnr\"]:.2f}dB, MAE={lct_m[\"
 scores = {
     'experiments': {
         'nlos_reconstruction_shapes': {
-            'description': 'NLOS reconstruction on synthetic shapes scene (64x64, depth=0.25m)',
+            'description': 'NLOS reconstruction on synthetic shapes scene (64x64, area=0.3m, depth=0.15m)',
             'results': {
                 'quasi_fresnel': {
                     'type': 'proposed',
@@ -139,7 +143,7 @@ scores = {
             }
         },
         'nlos_reconstruction_kylin': {
-            'description': 'NLOS reconstruction on synthetic kylin scene (64x64, depth=0.25m)',
+            'description': 'NLOS reconstruction on synthetic kylin scene (64x64, area=0.3m, depth=0.15m)',
             'results': {
                 'quasi_fresnel': {
                     'type': 'proposed',
