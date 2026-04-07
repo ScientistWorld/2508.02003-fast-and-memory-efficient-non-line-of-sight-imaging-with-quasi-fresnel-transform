@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: method_runs
-notes: "Validate QFT method end-to-end: generate data, run QFT/FBP/LCT, measure runtime/quality metrics"
+notes: "Full validation: generate data at depth=0.25m, run QFT/FBP/LCT on 64x64 scenes, save scores.json"
