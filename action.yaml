@@ -1,8 +1,7 @@
 # End-of-turn action file.
-# Edit this file before your turn ends to signal what the system should do next.
 
 action: submit
 gpus: 0
 test: false
 milestone: method_runs
-notes: "Full validation: generate data at depth=0.25m, run QFT/FBP/LCT on 64x64 scenes, save scores.json"
+notes: "Full validation: generate NLOS data at depth=0.15m (within 256-bin range), run QFT/FBP/LCT on 64x64 scenes, save scores.json"
