@@ -30,18 +30,16 @@ fi
 # Create synthetic data directory
 mkdir -p /home/user/data
 
-# Generate synthetic datasets
+# Generate synthetic datasets at realistic depths
+# Depth must be within capture range: N_bins * dt (round-trip)
+# For dt=0.003m: with 128 bins -> 0.384m one-way max; with 256 bins -> 0.768m one-way max
 echo "Generating synthetic NLOS datasets..."
 cd /home/user
 
-python data/generate_nlos_data.py --scene kylin --resolution 64 --bins 128 --save
-python data/generate_nlos_data.py --scene bunny --resolution 64 --bins 128 --save
-python data/generate_nlos_data.py --scene usaf --resolution 64 --bins 128 --save
-python data/generate_nlos_data.py --scene dynamic --resolution 32 --bins 64 --save
-
-# Generate higher resolution data for evaluation
-python data/generate_nlos_data.py --scene kylin --resolution 128 --bins 256 --save
-python data/generate_nlos_data.py --scene bunny --resolution 128 --bins 256 --save
+python data/generate_nlos_data.py --scene shapes --resolution 64 --bins 256 --depth 0.3 --save
+python data/generate_nlos_data.py --scene kylin --resolution 64 --bins 256 --depth 0.3 --save
+python data/generate_nlos_data.py --scene bunny --resolution 64 --bins 256 --depth 0.3 --save
+python data/generate_nlos_data.py --scene dynamic --resolution 32 --bins 128 --depth 0.3 --save
 
 echo "Data generation complete."
 echo "Generated scenes: kylin, bunny, usaf, dynamic at 64x64 and 128x128 resolution"
