@@ -64,7 +64,7 @@ best_s = 0.025
 best_result = None
 best_metrics = None
 
-for s in [0.010, 0.015, 0.020, 0.025, 0.030, 0.040, 0.050]:
+for s in [0.005, 0.008, 0.010, 0.015, 0.020, 0.025, 0.030, 0.040, 0.050, 0.075, 0.100]:
     result = benchmark_reconstruction(tau, s, dt, k, area=area_shapes)
     metrics = compute_metrics(result['albedo'], result['depth'], albedo_gt, depth_gt)
     print(f'  s={s:.3f}: time={result[\"timing\"][\"total\"]:.4f}s, mem={result[\"memory_mb\"]:.2f}MB, PSNR={metrics[\"psnr\"]:.2f}dB, MAE={metrics[\"albedo_mae\"]:.4f}')
