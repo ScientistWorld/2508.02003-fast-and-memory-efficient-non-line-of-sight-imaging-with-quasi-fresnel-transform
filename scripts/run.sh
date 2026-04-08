@@ -19,17 +19,17 @@ echo "=== Step 1: Generate synthetic NLOS data at appropriate depth ==="
 # For depth=0.15m: max RT = 2*sqrt(0.15^2 + 0.212^2) = 0.522m -> bin 174 -> OK with 256 bins
 # Both shapes and kylin use area=0.3m and depth=0.15m (well within range)
 
-/usr/bin/python3 data/generate_nlos_data.py \
+python3 data/generate_nlos_data.py \
     --scene shapes --resolution 64 --bins 256 \
     --area 0.3 --dt 0.003 --depth 0.15 --k 4 --save --output data/shapes
 
-/usr/bin/python3 data/generate_nlos_data.py \
+python3 data/generate_nlos_data.py \
     --scene kylin --resolution 64 --bins 256 \
     --area 0.3 --dt 0.003 --depth 0.15 --k 4 --save --output data/kylin
 
 echo ""
 echo "=== Step 2: Run Quasi-Fresnel Transform method ==="
-/usr/bin/python3 -c "
+python3 -c "
 import sys, json, time, tracemalloc, os
 sys.path.insert(0, '/home/user')
 sys.path.insert(0, '/home/user/data')

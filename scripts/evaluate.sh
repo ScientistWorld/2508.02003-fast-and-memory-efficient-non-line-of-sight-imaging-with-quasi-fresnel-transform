@@ -20,7 +20,7 @@ S_PARAM=${3:-0.025}
 
 mkdir -p scoring
 
-python -c "
+python3 -c "
 import sys
 import os
 import json
