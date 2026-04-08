@@ -1,0 +1,50 @@
+{
+  "experiments": {
+    "nlos_reconstruction_shapes": {
+      "description": "NLOS reconstruction on synthetic shapes scene (64x64, area=0.3m, depth=0.15m)",
+      "results": {
+        "quasi_fresnel": {
+          "type": "proposed",
+          "runtime_s": 0.025277,
+          "memory_mb": 16.26,
+          "albedo_psnr": 13.17,
+          "albedo_mae": 0.1731,
+          "depth_mae": 0.6616,
+          "ssim": 0.6961
+        },
+        "fbp_baseline": {
+          "type": "baseline",
+          "runtime_s": 5.878735,
+          "memory_mb": 0.0,
+          "albedo_psnr": 8.2,
+          "albedo_mae": 0.1737,
+          "depth_mae": 1.8469,
+          "ssim": 0.0
+        },
+        "lct_baseline": {
+          "type": "baseline",
+          "runtime_s": 0.796411,
+          "memory_mb": 0.0,
+          "albedo_psnr": 11.72,
+          "albedo_mae": 0.2162,
+          "depth_mae": 1.1994,
+          "ssim": 0.5583
+        }
+      }
+    },
+    "nlos_reconstruction_kylin": {
+      "description": "NLOS reconstruction on synthetic kylin scene (64x64, area=0.3m, depth=0.15m)",
+      "results": {
+        "quasi_fresnel": {
+          "type": "proposed",
+          "runtime_s": 0.012351,
+          "memory_mb": 16.26,
+          "albedo_psnr": 12.6,
+          "albedo_mae": 0.1633,
+          "depth_mae": 0.6898,
+          "ssim": 0.6389
+        }
+      }
+    }
+  }
+}

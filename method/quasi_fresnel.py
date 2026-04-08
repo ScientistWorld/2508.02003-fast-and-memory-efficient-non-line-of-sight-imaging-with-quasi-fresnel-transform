@@ -72,7 +72,7 @@ def quasi_fresnel_time_integral(tau, s, dt, k=4, use_fdh=False):
     return phi.astype(np.complex128)
 
 
-def quasi_fresnel_spatial_deconv(phi, s):
+def quasi_fresnel_spatial_deconv(phi, s, area=None):
     """
     Step 2: Recover psi(x; s) from phi(x; s) via 2D convolution.
     Implements Eq. (5) from the paper:
@@ -81,59 +81,79 @@ def quasi_fresnel_spatial_deconv(phi, s):
     This is a 2D convolution with a quadratic phase kernel.
     Efficiently implemented via FFT with proper centering.
 
-    For numerical stability:
-    - Kernel exp(i*r^2/4/s^2) has unit magnitude, so FFT coefficients stay bounded.
-    - The analytical normalization 1/(16*pi^2*s^4) prevents DC amplification issues.
-    - Output is ifftshifted to center the result (matching the centered kernel).
+    IMPORTANT: The kernel phase must use physical coordinates, not pixel indices.
+    In pixel coordinates x_pix in [-N/2, N/2], the physical distance is
+    r_phys = x_pix * dx where dx = area/N. So the kernel phase is:
+      exp(i * r_phys^2 / 4 / s^2) = exp(i * x_pix^2 * dx^2 / 4 / s^2)
+    Using pixel coordinates directly (exp(i*x_pix^2/4/s^2)) gives a phase
+    that's N^2/(4*dx^2) times too large.
 
     Parameters:
       phi: complex array of shape (N, N)
       s: float — Quasi-Fresnel parameter (meters)
+      area: float — physical area of the relay wall in meters (optional,
+        defaults to N to give dx=1, which only works when area=N)
 
     Returns:
       psi: complex array of shape (N, N)
     """
     N = phi.shape[0]
 
-    # Generate centered 2D quadratic phase kernel: exp(i * r^2 / 4 / s^2)
-    # where r^2 = (x - N/2)^2 + (y - N/2)^2 (distance from center)
+    if area is None:
+        area = float(N)
+
+    # Pixel spacing
+    dx = area / N
+
+    # Generate centered 2D quadratic phase kernel in physical coordinates:
+    # kernel(x_pix) = exp(i * r_phys^2 / 4 / s^2)
+    #               = exp(i * (x_pix*dx)^2 / 4 / s^2)
+    #               = exp(i * x_pix^2 * dx^2 / 4 / s^2)
     x = np.arange(N, dtype=np.float64) - N // 2
     X, Y = np.meshgrid(x, x, indexing='ij')
-    r_sq = X.astype(np.float64)**2 + Y.astype(np.float64)**2
+    r_sq_pix = X.astype(np.float64)**2 + Y.astype(np.float64)**2
 
-    # Kernel has unit magnitude — numerically stable for any s > 0
-    kernel = np.exp(1j * r_sq / (4.0 * s**2))
+    # Kernel phase uses physical distance (dx^2 factor)
+    kernel = np.exp(1j * r_sq_pix * dx**2 / (4.0 * s**2))
 
-    # Normalization factor from the paper
-    norm = 1.0 / (16.0 * np.pi**2 * s**4)
+    # No explicit normalization needed — the FFT already accounts for
+    # the coordinate scaling via the dx^2 factor in the phase.
+    # The analytical normalization 1/(16*pi^2*s^4) is for continuous
+    # spatial coordinates; the FFT handles the discrete approximation.
 
     # FFT-based convolution: fft(phi) * fft(kernel) = fft(convolution)
-    # Both arrays in double precision for numerical stability
     phi_ft = fft2(phi.astype(np.complex128))
     kernel_ft = fft2(kernel.astype(np.complex128))
-    psi = ifft2(phi_ft * kernel_ft) * norm
+    psi = ifft2(phi_ft * kernel_ft)
 
-    # Shift output to center (matching the centered kernel convention)
+    # Shift output to center
     psi = fftshift(psi)
 
     return psi
 
 
-def quasi_fresnel_spatial_deconv_separable(phi, s):
+def quasi_fresnel_spatial_deconv_separable(phi, s, area=None):
     """
     Separable 1D implementation for better numerical stability.
     Uses two 1D Gaussian-like kernels instead of one 2D kernel.
-    Each 1D kernel: exp(i * x^2 / 4 / s^2) / (2 * sqrt(pi) * s)
+    Each 1D kernel: exp(i * x_phys^2 / 4 / s^2) / (2 * sqrt(pi) * s)
+    where x_phys = x_pix * dx and dx = area/N.
     The product of two 1D convolutions approximates the 2D kernel.
     """
     N = phi.shape[0]
 
-    # 1D separable kernel
+    if area is None:
+        area = float(N)
+
+    dx = area / N
+
+    # 1D separable kernel in physical coordinates
     x = np.arange(N, dtype=np.float64) - N // 2
-    kernel_1d = np.exp(1j * x**2 / (4.0 * s**2)) / (2.0 * np.sqrt(np.pi) * s)
+    x_phys = x * dx
+    kernel_1d = np.exp(1j * x_phys**2 / (4.0 * s**2)) / (2.0 * np.sqrt(np.pi) * s)
 
     # Convolve along each dimension using FFT for speed
-    from numpy.fft import fft, ifft, fftfreq
+    from numpy.fft import fft, ifft
 
     # 1D FFT of phi along rows
     phi_ft = fft(phi.astype(np.complex128), axis=0)
@@ -200,7 +220,7 @@ def extract_albedo_depth(psi, s, ds=None):
     return albedo, depth
 
 
-def quasi_fresnel_reconstruct(tau, s, dt, k=4, use_fdh=False, deconv_mode='fft'):
+def quasi_fresnel_reconstruct(tau, s, dt, k=4, use_fdh=False, deconv_mode='fft', area=None):
     """
     Full Quasi-Fresnel Transform reconstruction pipeline.
 
@@ -211,6 +231,7 @@ def quasi_fresnel_reconstruct(tau, s, dt, k=4, use_fdh=False, deconv_mode='fft')
       k: int — scattering parameter
       use_fdh: bool — use FDH mode
       deconv_mode: str — 'fft' or 'separable'
+      area: float — physical area of relay wall in meters (optional)
 
     Returns:
       albedo: real array of shape (N, N)
@@ -221,9 +242,9 @@ def quasi_fresnel_reconstruct(tau, s, dt, k=4, use_fdh=False, deconv_mode='fft')
 
     # Step 2: Spatial deconvolution
     if deconv_mode == 'separable':
-        psi = quasi_fresnel_spatial_deconv_separable(phi, s)
+        psi = quasi_fresnel_spatial_deconv_separable(phi, s, area)
     else:
-        psi = quasi_fresnel_spatial_deconv(phi, s)
+        psi = quasi_fresnel_spatial_deconv(phi, s, area)
 
     # Step 3: Extract albedo and depth
     albedo, depth = extract_albedo_depth(psi, s)
@@ -231,7 +252,7 @@ def quasi_fresnel_reconstruct(tau, s, dt, k=4, use_fdh=False, deconv_mode='fft')
     return albedo, depth
 
 
-def benchmark_reconstruction(tau, s, dt, k=4, use_fdh=False):
+def benchmark_reconstruction(tau, s, dt, k=4, use_fdh=False, area=None):
     """
     Benchmark the reconstruction: measure runtime and memory.
     """
@@ -245,7 +266,7 @@ def benchmark_reconstruction(tau, s, dt, k=4, use_fdh=False):
     t1 = time.perf_counter()
 
     t2 = time.perf_counter()
-    psi = quasi_fresnel_spatial_deconv(phi, s)
+    psi = quasi_fresnel_spatial_deconv(phi, s, area)
     t3 = time.perf_counter()
 
     t4 = time.perf_counter()

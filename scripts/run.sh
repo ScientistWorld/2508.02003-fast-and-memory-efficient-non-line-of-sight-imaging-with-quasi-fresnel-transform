@@ -65,7 +65,7 @@ best_result = None
 best_metrics = None
 
 for s in [0.010, 0.015, 0.020, 0.025, 0.030, 0.040, 0.050]:
-    result = benchmark_reconstruction(tau, s, dt, k)
+    result = benchmark_reconstruction(tau, s, dt, k, area=area_shapes)
     metrics = compute_metrics(result['albedo'], result['depth'], albedo_gt, depth_gt)
     print(f'  s={s:.3f}: time={result[\"timing\"][\"total\"]:.4f}s, mem={result[\"memory_mb\"]:.2f}MB, PSNR={metrics[\"psnr\"]:.2f}dB, MAE={metrics[\"albedo_mae\"]:.4f}')
     if metrics['psnr'] > best_psnr:
@@ -84,7 +84,7 @@ albedo_gt2 = data2['albedo']
 depth_gt2 = data2['depth']
 print(f'  tau: {tau2.shape}, non-zero: {np.count_nonzero(tau2)}/{tau2.size}')
 
-result2 = benchmark_reconstruction(tau2, best_s, dt, k)
+result2 = benchmark_reconstruction(tau2, best_s, dt, k, area=area_kylin)
 metrics2 = compute_metrics(result2['albedo'], result2['depth'], albedo_gt2, depth_gt2)
 print(f'  s={best_s:.3f}: time={result2[\"timing\"][\"total\"]:.4f}s, mem={result2[\"memory_mb\"]:.2f}MB, PSNR={metrics2[\"psnr\"]:.2f}dB')
 
