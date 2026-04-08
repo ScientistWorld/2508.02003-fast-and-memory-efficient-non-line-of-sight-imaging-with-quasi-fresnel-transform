@@ -22,3 +22,12 @@
 - Created evaluation infrastructure (`eval/metrics.py`, `scoring/validate.py`)
 - Wrote scoring/reference.json with paper-reported benchmarks
 - The method executes end-to-end without errors. Submitting GPU job for full validation.
+
+### [2026-04-08] - method_runs (continued)
+- Fixed critical data generation bug: scenes used depth=2.0m which was outside capture range
+  - With 64 bins × 0.003m = 0.192m one-way max, objects at 2m depth were invisible
+  - Fixed: depth=0.15m, area=0.3m, N_bins=256 (max range 0.768m), scaled kylin coordinates
+- Fixed python path: `/usr/bin/python3` doesn't exist in python:3.11-slim (it's `/usr/bin/python3.11`)
+  - Changed all scripts to use `python3` instead of absolute paths
+- Fixed download.sh to use correct depth/area parameters
+- Resubmitting job with corrected code (commit 8127f3a)
