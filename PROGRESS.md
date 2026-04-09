@@ -14,9 +14,10 @@
 - Real bundled Zaragoza-style sample result from the successful run: `runtime = 0.001707 s ± 0.001910 s`, `memory = 45.23 MB`, proxy quality `PSNR = 3.00 dB`, `SSIM = 0.0299`, `albedo MAE = 0.6843`, `depth MAE = 0.4606`.
 - Synthetic sanity result from the successful run: `runtime = 0.005769 s`, `memory = 125.12 MB`, `PSNR = 12.81 dB`, `SSIM = 0.1794`.
 - The current revision extends evaluation with a new Table 1 scaling experiment that fits empirical runtime and working-memory orders for the traditional and sequential-loading variants on cubic `N x N x N` measurement tensors.
+- Failed job `338f63ee-ca8` still produced useful partial outputs before crashing on a diagnostics-file write bug: the bundled real sample showed exact agreement between traditional and sequential-loading reconstructions, and the initial scaling experiment already separated loading memory growth (`~N^1.98`) from traditional memory growth (`~N^2.64`).
 
 ## What Remains
-- Run the updated evaluation job and inspect the fitted scaling exponents plus the traditional-versus-loading consistency metrics.
+- Run the corrected evaluation job and inspect the direct time-integration scaling exponents plus the traditional-versus-loading consistency metrics.
 - Implement the paper's FDH-style path.
 - Add a faithful published baseline implementation.
 - Expand to larger public Zaragoza and Stanford datasets if download and budget permit.
@@ -26,6 +27,7 @@
 - The prior LCT baseline was explicitly simplified and cannot support the paper's comparison claims.
 - The paper's strongest quantitative evidence is efficiency, while direct quality tables are mostly qualitative in the manuscript.
 - The corrected CPU run failed after the real benchmark because `generate_dataset()` received `N_relay` twice; this was fixed in the evaluator.
+- The first complexity-scaling job failed after writing `scores.json` because `diag_path` was not redefined after the evaluator refactor; this has now been fixed.
 
 ## Deviations from Paper
 - Current packaging uses one bundled Zaragoza-style sample rather than the full public Zaragoza and Stanford benchmark suites.

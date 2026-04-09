@@ -2,4 +2,4 @@ action: submit
 gpus: 0
 test: true
 milestone: method_runs
-notes: "Run the updated CPU evaluation to benchmark traditional versus sequential-loading Quasi-Fresnel execution, fit empirical complexity exponents for the new Table 1 scaling experiment, and validate the refreshed scoring files."
+notes: "Rerun CPU evaluation after fixing diagnostics output and switching the Table 1 scaling experiment to benchmark the time-integration stage directly for traditional versus sequential-loading Quasi-Fresnel."

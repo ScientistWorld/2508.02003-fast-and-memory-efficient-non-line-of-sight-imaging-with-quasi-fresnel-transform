@@ -22,4 +22,8 @@
 - Job `63301e4c-2d6` completed successfully and validated the corrected traditional evaluation path end to end
 - Extended the evaluator with a new complexity-scaling experiment so the next job can benchmark the paper's traditional and sequential-loading variants against Table 1's `O(N^3)` versus `O(N^2)` memory claim
 
+### [2026-04-09 00:00] - method_runs
+- Job `338f63ee-ca8` produced partial traditional-versus-loading results before failing on a diagnostics write bug
+- The partial results already showed exact loading/traditional reconstruction agreement on the bundled real sample and a clear reduction in empirical memory-order growth for the loading path
+
 ## Stop Justification

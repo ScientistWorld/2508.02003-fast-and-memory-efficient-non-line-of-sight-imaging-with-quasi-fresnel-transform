@@ -31,7 +31,11 @@ os.environ.setdefault("OMP_NUM_THREADS", "1")
 os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
 
 from data.generate_nlos_data import generate_dataset
-from method.quasi_fresnel import quasi_fresnel_reconstruct
+from method.quasi_fresnel import (
+    quasi_fresnel_reconstruct,
+    quasi_fresnel_time_integral,
+    quasi_fresnel_time_integral_loading,
+)
 from eval.metrics import compute_metrics
 
 
@@ -218,12 +222,12 @@ def _fit_scaling_order(sizes: list[int], values: list[float]) -> float:
 
 
 def benchmark_complexity_scaling(
-    sizes: tuple[int, ...] = (32, 48, 64, 96),
+    sizes: tuple[int, ...] = (32, 64, 96, 128),
     s: float = 0.02,
     dt: float = 0.003,
     k: int = 4,
-    area: float = 0.3,
 ) -> dict[str, dict[str, object]]:
+    ds = s * 0.01
     rng = np.random.default_rng(250802003)
     per_mode: dict[str, dict[str, list[float]]] = {
         "traditional": {"runtime_s": [], "memory_mb": []},
@@ -233,17 +237,22 @@ def benchmark_complexity_scaling(
     for n in sizes:
         tau = rng.random((n, n, n), dtype=np.float64)
         for mode in ("traditional", "loading"):
-            result = benchmark_qft(
-                tau,
-                s=s,
-                dt=dt,
-                k=k,
-                area=area,
-                integration_mode=mode,
-                repeats=2,
-            )
-            per_mode[mode]["runtime_s"].append(result["runtime_mean_s"])
-            per_mode[mode]["memory_mb"].append(result["algorithm_peak_mb"])
+            runtimes: list[float] = []
+            peaks_mb: list[float] = []
+            for _ in range(3):
+                tracemalloc.start()
+                t0 = time.perf_counter()
+                if mode == "traditional":
+                    quasi_fresnel_time_integral(tau, s, dt, k)
+                    quasi_fresnel_time_integral(tau, s + ds, dt, k)
+                else:
+                    quasi_fresnel_time_integral_loading(tau, (s, s + ds), dt, k)
+                runtimes.append(time.perf_counter() - t0)
+                _, peak = tracemalloc.get_traced_memory()
+                tracemalloc.stop()
+                peaks_mb.append(peak / (1024.0 * 1024.0))
+            per_mode[mode]["runtime_s"].append(float(np.mean(runtimes)))
+            per_mode[mode]["memory_mb"].append(float(np.max(peaks_mb)))
 
     summary: dict[str, dict[str, object]] = {}
     for mode, metrics in per_mode.items():
@@ -328,6 +337,7 @@ def main() -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(scores, indent=2) + "\n")
     print(f"\nWrote {out_path}")
+    diag_path = ROOT / "scoring" / "diagnostics.json"
 
     print("\n=== Synthetic Sanity Check ===")
     synthetic = generate_dataset(
