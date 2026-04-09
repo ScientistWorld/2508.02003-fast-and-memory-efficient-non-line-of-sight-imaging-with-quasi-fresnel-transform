@@ -4,7 +4,7 @@
 - Title: `Fast and Memory-efficient Non-line-of-sight Imaging with Quasi-Fresnel Transform`
 - Area: computational imaging / NLOS reconstruction
 
-This workspace contains a recognizable implementation of the paper's Quasi-Fresnel algorithm and packages it as a runnable benchmark. The current milestone is `method_runs`: the three-step reconstruction pipeline runs end to end, the Zaragoza HDF5 metadata path has been corrected, and the evaluation now covers both the bundled bunny sample and an additional public Zaragoza scene. The next job re-runs the benchmark after these integrity fixes before any higher milestone can be claimed.
+This workspace contains a recognizable implementation of the paper's Quasi-Fresnel algorithm and packages it as a runnable benchmark. The current milestone is `method_runs`: the three-step reconstruction pipeline runs end to end, the Zaragoza HDF5 loader has been reworked around the public confocal files, and the scored benchmark has been retargeted to the public bunny quality-plus-efficiency claim. The next job executes that corrected benchmark before any higher milestone can be claimed.
 
 ---
 
@@ -32,7 +32,7 @@ The paper models the hidden scene as a 2D albedo map and a 2D depth map rather t
 This workspace already implements that three-step Quasi-Fresnel pipeline directly from the paper equations.
 
 What is not yet fully reproduced:
-- the paper's lower-memory sequential-loading or FDH acquisition path
+- the FDH acquisition path
 - a faithful published volumetric baseline for direct comparison
 - the full public Zaragoza and Stanford benchmark suite at paper scale
 
@@ -45,16 +45,11 @@ The paper evaluates on public NLOS datasets, especially Zaragoza simulated confo
 - under `0.3 s` runtime and under `50 MB` memory on the Stanford evaluation
 - about `0.003 s` per frame on the dynamic Stanford sequence
 
-The current workspace can evaluate:
-- a bundled public Zaragoza bunny confocal sample in `data/zaragoza/`
-- an additional lightweight public Zaragoza confocal sample in `data/zaragoza/public/`
-- a synthetic sanity-check scene generated from the same three-point transport model
+The packaged minimum benchmark in this workspace is built around the public Zaragoza Stanford bunny confocal scene. It measures both:
+- depth quality via `depth_mae_cm`, matching the numeric bunny comparison in Fig. 5
+- efficiency via `runtime_s` and `memory_mb`, matching the public Zaragoza efficiency claim in the Results section
 
-Current scoring is therefore limited to the paper's explicitly reported efficiency metrics on the bundled real sample:
-- `runtime_s`
-- `memory_mb`
-
-Proxy quality metrics are only used when trustworthy ground truth is available in the workspace. Public HDF5 files without ground truth are treated as efficiency-only benchmarks.
+Additional public Zaragoza scenes are treated as diagnostics unless they also expose trustworthy ground truth through the HDF5 metadata.
 
 ---
 
@@ -237,6 +232,58 @@ Proxy quality metrics are only used when trustworthy ground truth is available i
 
 </details>
 
+### Iteration 5: gpt-5.4 (verifier)
+- **Milestone**: `core_claim` | **Status**: error
+- **Working time**: 42m | **GPU**: 0.0h
+- **Jobs**: 17 total (6 completed, 6 failed)
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-04-09 00:00] - none
+- Started from an existing partial workspace
+- Read the paper and audited the existing implementation against the paper
+
+### [2026-04-09 00:00] - method_runs
+- Verified that the workspace contains the paper's three-step Quasi-Fresnel pipeline rather than a surrogate model
+- Removed overstated `core_claim` reporting that had been based on synthetic sanity checks and an unfaithful baseline
+- Reworked evaluation to target the bundled real Zaragoza-style sample with fixed paper-style `s` selection and repeated timing
+
+### [2026-04-09 00:00] - method_runs
+- Job `ad6c4c7b-f06` executed the real-sample benchmark inside the container and produced a primary result before failing in the optional synthetic sanity-check branch
+- Recorded real-sample efficiency output of `0.002303 s ± 0.002884 s` runtime and `47.78 MB` max RSS on the bundled confocal sample
+- Fixed the `generate_dataset()` call mismatch and changed the evaluator to persist `scores.json` immediately after the primary real benchmark
+
+### [2026-04-09 00:00] - method_runs
+- Job `63301e4c-2d6` completed successfully and validated the corrected traditional evaluation path end to end
+- Extended the evaluator with a new complexity-scaling experiment so the next job can benchmark the paper's traditional and sequential-loading variants against Table 1's `O(N^3)` versus `O(N^2)` memory claim
+
+### [2026-04-09 00:00] - method_runs
+- Job `338f63ee-ca8` produced partial traditional-versus-loading results before failing on a diagnostics write bug
+- The partial results already showed exact loading/traditional reconstruction agreement on the bundled real sample and a clear reduction in empirical memory-order growth for the loading path
+
+### [2026-04-09 14:10] - method_runs
+- Audited the existing `core_claim` report and downgraded it after finding that the packaged benchmark relied on a single tiny sample, stale Zaragoza metadata, and overstated scoring.
+- Fixed Zaragoza HDF5 metadata loading to read `deltaT` and relay-wall size from the source files instead of relying on the stale bundled NPZ metadata.
+- Added an additional public Zaragoza confocal scene (`T_conf64.hdf5`) to the packaged download/evaluation path so the next job can benchmark more than one public scene.
+
+### [2026-04-09 14:10] - method_runs
+- Completed final gym verification.
+- Separated the reusable evaluator from the paper implementation by making `scripts/evaluate.sh` score a method-produced report artifact through `eval/score_nlos.py`.
+- Rewrote scoring guidance files to remove method-step leakage from the scientist-facing constraints and experiment descriptions.
+
+### [2026-04-09 14:40] - method_runs
+- Found that the bundled scored bunny artifact was invalid for quality benchmarking because it paired a `32x32x64` transient tensor with unrelated `1024x1024` maps.
+- Reworked the Zaragoza HDF5 loader to interpret the public confocal file structure directly, including nested metadata and voxel-volume ground truth when present.
+- Retargeted the scored benchmark to the paper's numeric public bunny depth-MAE and Zaragoza efficiency claims, and prepared a new job to test the corrected loader plus discretization.
+
+### [2026-04-09 15:05] - method_runs
+- Final verification confirmed that the reusable scorer, folder layout, and scientist-facing problem definition are broadly in the right shape for a gym.
+- Tightened the scientist-facing scoring documents to avoid method-name leakage and adjusted experiment weighting so quality remains the dominant scored target.
+- Found one remaining blocking issue: the current packaged `scores.json` is empty, so the corrected public bunny benchmark must be rerun before `core_claim` can be defended or the workspace can be marked done.
+
+</details>
+
 
 ---
 
@@ -278,5 +325,15 @@ Proxy quality metrics are only used when trustworthy ground truth is available i
 - Separated the reusable evaluator from the paper implementation by making `scripts/evaluate.sh` score a method-produced report artifact through `eval/score_nlos.py`.
 - Rewrote scoring guidance files to remove method-step leakage from the scientist-facing constraints and experiment descriptions.
 
+### [2026-04-09 14:40] - method_runs
+- Found that the bundled scored bunny artifact was invalid for quality benchmarking because it paired a `32x32x64` transient tensor with unrelated `1024x1024` maps.
+- Reworked the Zaragoza HDF5 loader to interpret the public confocal file structure directly, including nested metadata and voxel-volume ground truth when present.
+- Retargeted the scored benchmark to the paper's numeric public bunny depth-MAE and Zaragoza efficiency claims, and prepared a new job to test the corrected loader plus discretization.
+
+### [2026-04-09 15:05] - method_runs
+- Final verification confirmed that the reusable scorer, folder layout, and scientist-facing problem definition are broadly in the right shape for a gym.
+- Tightened the scientist-facing scoring documents to avoid method-name leakage and adjusted experiment weighting so quality remains the dominant scored target.
+- Found one remaining blocking issue: the current packaged `scores.json` is empty, so the corrected public bunny benchmark must be rerun before `core_claim` can be defended or the workspace can be marked done.
+
 ## Stop Justification
-Stopped at `method_runs` rather than `core_claim` because the workspace is now structurally sound but the scored evidence is still too limited to support the paper's central public claim. The implementation is real, the method/evaluation separation is now clean enough for gym use, and validation passes, but the current scored footprint remains a narrow public benchmark rather than a broader paper-scale reproduction. Additional runs and broader public-scene evidence would be required before claiming `core_claim`.
+Current status remains `method_runs` because the corrected public bunny benchmark has not been rerun yet. The implementation is real and the benchmark contract is now materially stronger, but claiming `core_claim` still depends on the next job producing credible quality-plus-efficiency results on the public scene and repopulating `scores.json`.
