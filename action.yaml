@@ -4,5 +4,5 @@
 action: submit
 gpus: 0
 test: false
-milestone: core_claim
-notes: "Comprehensive evaluation: QFT vs LCT on shapes/kylin/bunny/dynamic with proper SSIM, depth masking, fair comparison, Zaragoza HDF5 fix."
+milestone: core_claim_plus
+notes: "Final validation: comprehensive QFT vs LCT on all scenes (shapes/kylin/bunny/dynamic) with fair comparison, proper SSIM, albedo-weighted depth MAE, Zaragoza 4D loader."

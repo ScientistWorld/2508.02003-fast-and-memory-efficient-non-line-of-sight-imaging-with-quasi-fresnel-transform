@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: core_claim**
+**Current: core_claim_plus**
 
 ## Progress Log
 
@@ -18,4 +18,10 @@
 - Proper dynamic scene generation (32x32)
 - Fair baseline comparison (same scene for QFT vs LCT)
 - Filled EXPERIMENTS.md with proper descriptions
-- Results: QFT 19x faster than LCT on kylin with higher PSNR (13.22 vs 11.85 dB)
+
+### [2026-04-09 10:00] - core_claim_plus
+- QFT on 3 synthetic scenes (shapes, kylin, bunny) + dynamic
+- QFT 17-19x faster than LCT with higher or comparable PSNR
+- Results: kylin 13.22 vs 11.85 dB, dynamic 1.7ms vs 20ms
+- Zaragoza HDF5 4D confocal data loader
+- All deliverables complete (briefing, scoring, scripts, env)
