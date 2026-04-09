@@ -2,4 +2,4 @@ action: submit
 gpus: 0
 test: true
 milestone: method_runs
-notes: "Audit confirms the QFT implementation is real but scores are still pending. Run corrected CPU evaluation, write scores.json plus diagnostics.json, and validate the benchmark packaging."
+notes: "Rerun corrected CPU evaluation after fixing the synthetic sanity-check argument bug; write scores.json and diagnostics.json from the real bundled Zaragoza-style sample and validate the workspace."
