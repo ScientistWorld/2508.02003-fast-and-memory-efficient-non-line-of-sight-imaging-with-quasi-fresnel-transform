@@ -2,7 +2,7 @@
   "experiments": {
     "zaragoza_bunny_depth_error": {
       "description": "Depth MAE on the Zaragoza Stanford bunny scene from Fig. 5. The paper reports that Quasi-Fresnel achieves the lowest bunny depth error among the compared direct methods.",
-      "weight": 0.55,
+      "weight": 0.6,
       "primary_metric": "depth_mae_cm",
       "metrics": {
         "depth_mae_cm": {
@@ -35,7 +35,7 @@
     },
     "zaragoza_efficiency_public_bunny": {
       "description": "Public Zaragoza efficiency claim from the Results section. The paper reports about 0.17 s runtime and less than 50 MB memory for the proposed method, versus more than 6.39 s runtime and more than 13.105 GB memory for prior volumetric methods.",
-      "weight": 0.45,
+      "weight": 0.4,
       "primary_metric": "runtime_s",
       "metrics": {
         "runtime_s": {
@@ -44,7 +44,7 @@
         },
         "memory_mb": {
           "higher_is_better": false,
-          "coefficient": -0.6
+          "coefficient": -0.3
         }
       },
       "results": {

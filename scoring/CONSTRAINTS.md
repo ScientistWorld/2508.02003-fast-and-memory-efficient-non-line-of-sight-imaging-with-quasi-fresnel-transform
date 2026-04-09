@@ -3,7 +3,7 @@
 ## Data
 - Keep the scored public-scene benchmark fixed to the packaged Zaragoza Stanford bunny confocal HDF5 when it is available:
   - [`data/zaragoza_public/bunny_simple_256_conf.hdf5`](/home/user/data/zaragoza_public/bunny_simple_256_conf.hdf5)
-- If that file is unavailable, use the packaged fallback bunny HDF5 selected by [`scripts/evaluate_nlos.py`](/home/user/scripts/evaluate_nlos.py), but do not replace the scored scene with easier synthetic data.
+- If that file is unavailable, use the packaged fallback bunny HDF5 already included in this workspace, but do not replace the scored scene with easier synthetic data.
 - Additional public Zaragoza scenes may be used for diagnostics, but they do not replace the scored bunny target.
 
 ## Compute / comparison setup
@@ -14,7 +14,7 @@
   - `depth_mae_cm`
   - `runtime_s`
   - `memory_mb`
-- Keep the scoring entrypoint fixed to [`scripts/evaluate.sh`](/home/user/scripts/evaluate.sh), which expects a method-produced report matching [`scoring/raw_results.json`](/home/user/scoring/raw_results.json).
+- Keep the scoring entrypoint fixed to [`scripts/evaluate.sh`](/home/user/scripts/evaluate.sh), which expects a method-produced report matching the structure of [`scoring/raw_results.json`](/home/user/scoring/raw_results.json).
 
 ## Fairness rules
 - Do not oracle-tune `s` or other scene-specific parameters against test ground truth.

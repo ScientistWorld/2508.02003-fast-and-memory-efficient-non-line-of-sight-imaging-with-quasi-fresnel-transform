@@ -1,25 +1,24 @@
 # Verification Report
 
 ## Initial Assessment
-The workspace was functional and already contained a recognizable implementation of the paper's Quasi-Fresnel reconstruction pipeline, but the claimed `core_claim` milestone was not justified. The packaged evaluation had been coupled directly to the method code, the scientist-facing scoring docs leaked method details, and the prior scoring story had already been downgraded to `method_runs` because it relied on stale metadata and overstated evidence.
+The workspace already had a real implementation of the paper's three-step Quasi-Fresnel pipeline and a cleaner method/evaluation split than earlier revisions. The remaining question was whether it was actually ready to serve as a gym: structurally it was close, but the packaged scoring state did not yet support the claimed `core_claim`.
 
 ## Issues Found
-- Critical: `scripts/evaluate.sh` directly executed the paper implementation, so the evaluation entrypoint was not reusable for future methods.
-- Minor: `scoring/CONSTRAINTS.md`, `scoring/DIRECTION.md`, and `scoring/EXPERIMENTS.md` exposed method-specific details that should not be visible to from-scratch scientist agents.
-- Minor: the workspace lacked a report artifact contract separating method execution from scoring.
+- Critical: [`scoring/scores.json`](/home/user/scoring/scores.json) is empty, so `python validate.py --compare` fails and the gym currently has no baseline scores for scientist agents to beat.
+- Minor: some scientist-facing scoring documents still used transitional wording or named the paper's method too directly.
+- Minor: the previous verification report no longer matched the current workspace state.
 
 ## Fixes Applied
-- Added [`eval/score_nlos.py`](/home/user/eval/score_nlos.py) as a method-agnostic scorer that converts a method-produced benchmark report into [`scores.json`](/home/user/scoring/scores.json).
-- Updated [`scripts/evaluate.sh`](/home/user/scripts/evaluate.sh) to score a report artifact instead of importing or running method code.
-- Updated [`scripts/method.sh`](/home/user/scripts/method.sh) and [`scripts/reproduce.sh`](/home/user/scripts/reproduce.sh) so the paper implementation emits [`raw_results.json`](/home/user/scoring/raw_results.json) first and then calls the reusable evaluator.
-- Adjusted [`scripts/evaluate_nlos.py`](/home/user/scripts/evaluate_nlos.py) to write the method report to [`raw_results.json`](/home/user/scoring/raw_results.json).
-- Rewrote scientist-facing scoring docs to remove method-step leakage while preserving the problem, constraints, and optimization direction.
-- Re-ran [`scripts/evaluate.sh`](/home/user/scripts/evaluate.sh) on the existing report artifact and confirmed `python validate.py --compare` passes.
+- Updated [`briefing/evaluation.md`](/home/user/briefing/evaluation.md) to describe the packaged public-bunny benchmark as the current benchmark rather than an in-progress retargeting.
+- Tightened [`scoring/TARGETS.md`](/home/user/scoring/TARGETS.md), [`scoring/CONSTRAINTS.md`](/home/user/scoring/CONSTRAINTS.md), and [`scoring/DIRECTION.md`](/home/user/scoring/DIRECTION.md) to keep them method-safe for from-scratch scientist agents.
+- Adjusted [`scoring/reference.json`](/home/user/scoring/reference.json) so the bunny quality experiment has the dominant weight (`0.6` vs `0.4`) and memory remains a secondary constraint inside the efficiency experiment.
+- Updated [`PROGRESS.md`](/home/user/PROGRESS.md) and [`MILESTONES.md`](/home/user/MILESTONES.md) to record that the remaining blocker is the missing regenerated score artifact.
+- Rewrote this verification report to reflect the current state accurately.
 
 ## Final Judgment
-This workspace is now structurally usable as a gym in both improve and from-scratch modes, but only at the `method_runs` milestone. The method implementation is real, the problem/eval split is now clean enough for reuse, and the scoring contract is serviceable. The remaining limitation is evidential rather than structural: the packaged quantitative claim is still too narrow and too lightly validated to defend `core_claim`.
+This workspace is not ready to be marked done yet. The folder structure, evaluation entrypoint, and scientist-facing problem definition are now largely appropriate for gym use, but the missing packaged scores are a hard blocker because future scientists cannot be ranked until the corrected public-bunny benchmark is rerun and writes a non-empty [`scores.json`](/home/user/scoring/scores.json). A short CPU validation job is the right next step.
 
 - Milestone: method_runs
 - Ready for gym use: partial
-- Confidence: medium
-- Key limitation: the scored evidence still rests on a very small public evaluation footprint rather than a broader paper-scale reproduction
+- Confidence: high
+- Key limitation: the corrected public Zaragoza bunny benchmark has not yet regenerated `scores.json`

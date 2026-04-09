@@ -17,6 +17,7 @@
 
 ## What Remains
 - Run the corrected public bunny benchmark in the container and inspect whether the new loader plus separable inversion produce a credible bunny depth MAE and Zaragoza-style efficiency result.
+- Repopulate `scoring/raw_results.json` and `scoring/scores.json`; both were intentionally cleared when the benchmark contract changed and have not yet been regenerated.
 - Determine whether those corrected public-scene results are strong enough to justify `core_claim`; current status remains `method_runs`.
 - Implement the paper's FDH-style path.
 - Add a faithful published baseline implementation.
@@ -28,6 +29,7 @@
 - The paper's strongest quantitative evidence is efficiency, while direct quality tables are mostly qualitative in the manuscript.
 - The bundled Zaragoza NPZ paired a `32x32x64` transient tensor with unrelated `1024x1024` maps, so it could not support an honest scored quality target.
 - Public Zaragoza HDF5 files do not consistently expose 2D ground-truth maps at the root, so the loader has to search nested datasets and fall back to voxel-volume-derived proxies when available.
+- Final verification confirmed that the reusable scoring path is in place, but the workspace still cannot be signed off because `scores.json` is empty until the corrected public-scene benchmark is rerun.
 
 ## Deviations from Paper
 - Current packaging still uses a minimum public Zaragoza benchmark rather than the full public Zaragoza and Stanford benchmark suites.

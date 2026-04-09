@@ -5,7 +5,7 @@ The paper evaluates on public NLOS datasets, especially Zaragoza simulated confo
 - under `0.3 s` runtime and under `50 MB` memory on the Stanford evaluation
 - about `0.003 s` per frame on the dynamic Stanford sequence
 
-The current workspace is being retargeted to a stronger minimum experiment built around the public Zaragoza Stanford bunny confocal scene. That benchmark measures both:
+The packaged minimum benchmark in this workspace is built around the public Zaragoza Stanford bunny confocal scene. It measures both:
 - depth quality via `depth_mae_cm`, matching the numeric bunny comparison in Fig. 5
 - efficiency via `runtime_s` and `memory_mb`, matching the public Zaragoza efficiency claim in the Results section
 

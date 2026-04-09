@@ -14,7 +14,7 @@ bash scripts/method.sh
 ```
 
 ## `zaragoza_bunny_depth_error`
-Type: Constraint / quality target
+Type: Quality target
 
 What it tests:
 Depth accuracy on the public Zaragoza Stanford bunny confocal scene, matching the paper's Fig. 5 comparison.
@@ -23,7 +23,7 @@ Primary metric:
 - `depth_mae_cm` — lower is better
 
 Interpretation:
-This is the quality side of the paper's claim. A faster method that loses bunny depth fidelity should score worse here.
+This is the quality-preservation side of the paper's claim. A faster method that loses bunny depth fidelity should score worse here.
 
 ## `zaragoza_efficiency_public_bunny`
 Type: Benefit target
@@ -38,7 +38,7 @@ Constraint metric:
 - `memory_mb` — lower is better
 
 Interpretation:
-Scientists should improve runtime without inflating working memory. The score rewards speed only when memory remains controlled.
+Scientists should improve runtime without inflating working memory. The score rewards speed, but only when the memory footprint remains controlled on the same public scene.
 
 ## Unscored diagnostics
 [`scoring/diagnostics.json`](/home/user/scoring/diagnostics.json) may include additional public-scene results, loading-path consistency, and extra quality metrics, but those diagnostics do not affect the score.

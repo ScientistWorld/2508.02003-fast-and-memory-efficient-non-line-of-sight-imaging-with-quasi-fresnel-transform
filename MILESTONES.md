@@ -41,5 +41,10 @@
 - Reworked the Zaragoza HDF5 loader to interpret the public confocal file structure directly, including nested metadata and voxel-volume ground truth when present.
 - Retargeted the scored benchmark to the paper's numeric public bunny depth-MAE and Zaragoza efficiency claims, and prepared a new job to test the corrected loader plus discretization.
 
+### [2026-04-09 15:05] - method_runs
+- Final verification confirmed that the reusable scorer, folder layout, and scientist-facing problem definition are broadly in the right shape for a gym.
+- Tightened the scientist-facing scoring documents to avoid method-name leakage and adjusted experiment weighting so quality remains the dominant scored target.
+- Found one remaining blocking issue: the current packaged `scores.json` is empty, so the corrected public bunny benchmark must be rerun before `core_claim` can be defended or the workspace can be marked done.
+
 ## Stop Justification
-Current status remains `method_runs` because the corrected public bunny benchmark has not been rerun yet. The implementation is real and the benchmark contract is now materially stronger, but claiming `core_claim` still depends on the next job producing credible quality-plus-efficiency results on the public scene.
+Current status remains `method_runs` because the corrected public bunny benchmark has not been rerun yet. The implementation is real and the benchmark contract is now materially stronger, but claiming `core_claim` still depends on the next job producing credible quality-plus-efficiency results on the public scene and repopulating `scores.json`.
