@@ -1,20 +1,41 @@
 {
   "experiments": {
-    "nlos_reconstruction_shapes": {
-      "description": "NLOS reconstruction on synthetic shapes scene (64x64, area=0.3m, depth=0.15m)",
+    "zaragoza_kylin_reconstruction": {
       "results": {
         "quasi_fresnel": {
           "type": "proposed",
-          "runtime_s": 0.025277,
+          "runtime_s": 0.003772,
           "memory_mb": 16.26,
-          "albedo_psnr": 13.17,
-          "albedo_mae": 0.1731,
-          "depth_mae": 0.6616,
-          "ssim": 0.6961
+          "albedo_psnr": 13.15,
+          "albedo_mae": 0.1691,
+          "depth_mae": 1.0518,
+          "ssim": 0.68
+        },
+        "fourier_transform": {
+          "type": "baseline",
+          "runtime_s": 0.107314,
+          "memory_mb": 0.0,
+          "albedo_psnr": 11.73,
+          "albedo_mae": 0.2151,
+          "depth_mae": 1.2139,
+          "ssim": 0.5566
+        }
+      }
+    },
+    "synthetic_shapes_reconstruction": {
+      "results": {
+        "quasi_fresnel": {
+          "type": "proposed",
+          "runtime_s": 0.003168,
+          "memory_mb": 16.26,
+          "albedo_psnr": 13.15,
+          "albedo_mae": 0.1713,
+          "depth_mae": 0.6383,
+          "ssim": 0.6955
         },
         "fbp_baseline": {
           "type": "baseline",
-          "runtime_s": 5.878735,
+          "runtime_s": 1.074597,
           "memory_mb": 0.0,
           "albedo_psnr": 8.2,
           "albedo_mae": 0.1737,
@@ -23,26 +44,25 @@
         },
         "lct_baseline": {
           "type": "baseline",
-          "runtime_s": 0.796411,
+          "runtime_s": 0.107314,
           "memory_mb": 0.0,
-          "albedo_psnr": 11.72,
-          "albedo_mae": 0.2162,
-          "depth_mae": 1.1994,
-          "ssim": 0.5583
+          "albedo_psnr": 11.73,
+          "albedo_mae": 0.2151,
+          "depth_mae": 1.2139,
+          "ssim": 0.5566
         }
       }
     },
-    "nlos_reconstruction_kylin": {
-      "description": "NLOS reconstruction on synthetic kylin scene (64x64, area=0.3m, depth=0.15m)",
+    "synthetic_bunny_reconstruction": {
       "results": {
         "quasi_fresnel": {
           "type": "proposed",
-          "runtime_s": 0.012351,
+          "runtime_s": 0.003416,
           "memory_mb": 16.26,
-          "albedo_psnr": 12.6,
-          "albedo_mae": 0.1633,
-          "depth_mae": 0.6898,
-          "ssim": 0.6389
+          "albedo_psnr": 19.67,
+          "albedo_mae": 0.0779,
+          "depth_mae": 1.785,
+          "ssim": 0.798
         }
       }
     }
