@@ -2,4 +2,4 @@
 # Install Python packages into the container overlay.
 set -e
 
-uv pip install --system numpy scipy numba Pillow
+uv pip install --system numpy scipy numba Pillow h5py
