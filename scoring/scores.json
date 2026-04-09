@@ -3,8 +3,20 @@
     "zaragoza_efficiency_real_sample": {
       "results": {
         "quasi_fresnel_proposed": {
-          "runtime_s": 0.001707,
-          "memory_mb": 45.23
+          "runtime_s": 0.002533,
+          "memory_mb": 47.35
+        }
+      }
+    },
+    "complexity_scaling_cubic_measurements": {
+      "results": {
+        "quasi_fresnel_traditional": {
+          "runtime_order": 1.406,
+          "memory_order": 2.64
+        },
+        "quasi_fresnel_loading": {
+          "runtime_order": 1.245,
+          "memory_order": 1.981
         }
       }
     }
