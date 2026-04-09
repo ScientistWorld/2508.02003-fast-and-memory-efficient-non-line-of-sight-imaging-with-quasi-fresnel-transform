@@ -13,4 +13,9 @@
 - Removed overstated `core_claim` reporting that had been based on synthetic sanity checks and an unfaithful baseline
 - Reworked evaluation to target the bundled real Zaragoza-style sample with fixed paper-style `s` selection and repeated timing
 
+### [2026-04-09 00:00] - method_runs
+- Job `ad6c4c7b-f06` executed the real-sample benchmark inside the container and produced a primary result before failing in the optional synthetic sanity-check branch
+- Recorded real-sample efficiency output of `0.002303 s ± 0.002884 s` runtime and `47.78 MB` max RSS on the bundled confocal sample
+- Fixed the `generate_dataset()` call mismatch and changed the evaluator to persist `scores.json` immediately after the primary real benchmark
+
 ## Stop Justification

@@ -184,9 +184,34 @@ def main() -> None:
         f"depth_MAE={real_metrics['depth_mae']:.4f}"
     )
 
+    scores = build_scores(real_result)
+    out_path = ROOT / "scoring" / "scores.json"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(scores, indent=2) + "\n")
+    print(f"\nWrote {out_path}")
+
+    diagnostics = {
+        "real_sample": {
+            "runtime_mean_s": round(real_result["runtime_mean_s"], 6),
+            "runtime_std_s": round(real_result["runtime_std_s"], 6),
+            "runtime_min_s": round(real_result["runtime_min_s"], 6),
+            "runtime_max_s": round(real_result["runtime_max_s"], 6),
+            "memory_mb": round(real_result["maxrss_mb"], 2),
+            "proxy_quality": {
+                "psnr": round(real_metrics["psnr"], 4),
+                "ssim": round(real_metrics["ssim"], 4),
+                "albedo_mae": round(real_metrics["albedo_mae"], 6),
+                "depth_mae": round(real_metrics["depth_mae"], 6),
+            },
+        }
+    }
+    diag_path = ROOT / "scoring" / "diagnostics.json"
+    diag_path.write_text(json.dumps(diagnostics, indent=2) + "\n")
+    print(f"Wrote {diag_path}")
+
     print("\n=== Synthetic Sanity Check ===")
     synthetic = generate_dataset(
-        "kylin", 64, 256, area=0.3, dt=0.003, k=4, N_relay=64, default_depth=0.15
+        "kylin", 64, 256, area=0.3, dt=0.003, k=4, N_scene=64, default_depth=0.15
     )
     syn_s = 0.025
     syn_result = benchmark_qft(
@@ -211,14 +236,7 @@ def main() -> None:
         f"SSIM={syn_metrics['ssim']:.4f}"
     )
 
-    scores = build_scores(real_result)
-    out_path = ROOT / "scoring" / "scores.json"
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(scores, indent=2) + "\n")
-    print(f"\nWrote {out_path}")
-
     diagnostics = build_diagnostics(real_result, real_metrics, syn_result, syn_metrics)
-    diag_path = ROOT / "scoring" / "diagnostics.json"
     diag_path.write_text(json.dumps(diagnostics, indent=2) + "\n")
     print(f"Wrote {diag_path}")
 
