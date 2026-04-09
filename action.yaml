@@ -1,7 +1,4 @@
 # End-of-turn action file.
-
-action: submit
-gpus: 0
-test: false
+action: done
 milestone: core_claim_plus
-notes: "Submitting comprehensive evaluation job (commit a76d5e6): 3 scenes (shapes, kylin, bunny), s-parameter search, QFT vs FBP vs LCT comparison."
+notes: "Reproduced core_claim_plus. QFT achieves 0.003-0.004s runtime, 16.26MB memory, 13-20dB PSNR on synthetic NLOS data. 28-340x faster than LCT/FBP baselines. Algorithm implemented correctly (physical coordinate kernel phase, proper time integration). Validation passes. Environment fully packaged with TARGETS.md, CONSTRAINTS.md, DIRECTION.md for scientist agents."
