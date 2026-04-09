@@ -1,26 +1,90 @@
 {
   "real_sample": {
-    "runtime_mean_s": 0.001707,
-    "runtime_std_s": 0.00191,
-    "runtime_min_s": 0.000681,
-    "runtime_max_s": 0.005527,
-    "memory_mb": 45.23,
-    "proxy_quality": {
-      "psnr": 2.9965,
-      "ssim": 0.0299,
-      "albedo_mae": 0.684281,
-      "depth_mae": 0.460573
+    "traditional": {
+      "runtime_mean_s": 0.002604,
+      "runtime_std_s": 0.001937,
+      "runtime_min_s": 0.001499,
+      "runtime_max_s": 0.006471,
+      "memory_mb": 50.0,
+      "algorithm_peak_mb": 1.27,
+      "proxy_quality": {
+        "psnr": 2.9965,
+        "ssim": 0.0299,
+        "albedo_mae": 0.684281,
+        "depth_mae": 0.460573
+      }
+    },
+    "loading": {
+      "runtime_mean_s": 0.00424,
+      "runtime_std_s": 0.000226,
+      "runtime_min_s": 0.004024,
+      "runtime_max_s": 0.004675,
+      "memory_mb": 72.5,
+      "algorithm_peak_mb": 0.17,
+      "consistency_vs_traditional": {
+        "psnr": 100.0,
+        "ssim": 1.0,
+        "albedo_mae": 0.0,
+        "depth_mae": 0.0
+      }
+    }
+  },
+  "complexity_scaling": {
+    "traditional": {
+      "sizes": [
+        32,
+        64,
+        96,
+        128
+      ],
+      "runtime_s": [
+        0.000263,
+        0.001582,
+        0.005541,
+        0.018453
+      ],
+      "memory_mb": [
+        0.7529,
+        4.254,
+        13.7542,
+        32.2564
+      ],
+      "runtime_order": 3.0086513350180395,
+      "memory_order": 2.7039239495455574
+    },
+    "loading": {
+      "sizes": [
+        32,
+        64,
+        96,
+        128
+      ],
+      "runtime_s": [
+        0.001435,
+        0.003935,
+        0.008944,
+        0.016868
+      ],
+      "memory_mb": [
+        0.0653,
+        0.2533,
+        0.5506,
+        0.8792
+      ],
+      "runtime_order": 1.7637665750473641,
+      "memory_order": 1.890781027931151
     }
   },
   "synthetic_sanity": {
-    "runtime_mean_s": 0.005769,
-    "runtime_std_s": 0.000474,
-    "memory_mb": 125.12,
+    "runtime_mean_s": 0.008692,
+    "runtime_std_s": 0.00107,
+    "memory_mb": 134.06,
+    "algorithm_peak_mb": 16.32,
     "quality": {
-      "psnr": 12.8107,
-      "ssim": 0.1794,
-      "albedo_mae": 0.180766,
-      "depth_mae": 0.089789
+      "psnr": 12.8462,
+      "ssim": 0.1758,
+      "albedo_mae": 0.177679,
+      "depth_mae": 0.085058
     }
   }
 }
