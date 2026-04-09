@@ -21,7 +21,9 @@
 
 ### [2026-04-09 10:00] - core_claim_plus
 - QFT on 3 synthetic scenes (shapes, kylin, bunny) + dynamic
-- QFT 17-19x faster than LCT with higher or comparable PSNR
-- Results: kylin 13.22 vs 11.85 dB, dynamic 1.7ms vs 20ms
+- QFT 8-21x faster than LCT with 5-8 dB better PSNR
+- Results: shapes 13.18 vs 7.53 dB, kylin 13.22 vs 7.42 dB, bunny 19.63 vs 11.50 dB
+- Dynamic: 2.2ms/frame (under paper's 3ms target)
 - Zaragoza HDF5 4D confocal data loader
 - All deliverables complete (briefing, scoring, scripts, env)
+- scores.json validated against reference.json
