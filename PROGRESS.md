@@ -13,10 +13,11 @@
 - The method has previously run successfully inside the packaged container, so `method_runs` remains secure.
 - Earlier reported `core_claim`-style results are now considered stale because they were computed before the `deltaT` metadata fix and before broadening the public-scene evaluation beyond the single bundled bunny sample.
 - The current packaged scores are regenerated from a method report artifact through the new method-agnostic evaluation entrypoint, and `python validate.py --compare` passes.
+- Final wrap-up confirms the workspace is usable as a partial gym: improve-mode agents can iterate on the packaged method, and from-scratch agents can use the separated problem/eval contract without importing `method/`.
 
 ## What Remains
-- Re-run the packaged evaluation after the metadata fix and scene-expansion changes.
-- Determine whether the corrected multi-scene efficiency results are strong enough to justify `core_claim`; current status remains `method_runs`.
+- Run broader public-scene experiments after the metadata fix and scene-expansion changes.
+- Determine whether corrected multi-scene efficiency results are strong enough to justify `core_claim`; current status remains `method_runs`.
 - Implement the paper's FDH-style path.
 - Add a faithful published baseline implementation.
 - Expand to larger public Zaragoza and Stanford datasets if download and budget permit.

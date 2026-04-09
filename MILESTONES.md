@@ -37,3 +37,4 @@
 - Rewrote scoring guidance files to remove method-step leakage from the scientist-facing constraints and experiment descriptions.
 
 ## Stop Justification
+Stopped at `method_runs` rather than `core_claim` because the workspace is now structurally sound but the scored evidence is still too limited to support the paper's central public claim. The implementation is real, the method/evaluation separation is now clean enough for gym use, and validation passes, but the current scored footprint remains a narrow public benchmark rather than a broader paper-scale reproduction. Additional runs and broader public-scene evidence would be required before claiming `core_claim`.
