@@ -3,5 +3,5 @@
 action: submit
 gpus: 0
 test: false
-milestone: core_claim
-notes: "Final validation: fixed 2 critical bugs (scene coords xn=X/area, kernel phase uses physical dx^2). QFT=13.17dB PSNR vs LCT=11.72dB vs FBP=8.20dB. Algorithm works correctly on 64x64 synthetic NLOS data. commit 97b6144"
+milestone: core_claim_plus
+notes: "Comprehensive eval: 3 scenes (shapes, kylin, bunny) at 64x64 with s-parameter search. Compare QFT vs FBP vs LCT. Test on 128x128 if budget allows."
