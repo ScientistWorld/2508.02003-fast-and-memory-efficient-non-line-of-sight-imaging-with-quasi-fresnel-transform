@@ -71,6 +71,7 @@ def benchmark_qft(
     dt: float,
     k: int,
     area: float,
+    integration_mode: str = "traditional",
     repeats: int = 5,
 ) -> dict[str, object]:
     runtimes: list[float] = []
@@ -80,13 +81,21 @@ def benchmark_qft(
     rss_before = _linux_maxrss_mb()
     for _ in range(repeats):
         t0 = time.perf_counter()
-        albedo, depth = quasi_fresnel_reconstruct(tau, s=s, dt=dt, k=k, area=area)
+        albedo, depth = quasi_fresnel_reconstruct(
+            tau,
+            s=s,
+            dt=dt,
+            k=k,
+            area=area,
+            integration_mode=integration_mode,
+        )
         runtimes.append(time.perf_counter() - t0)
     rss_after = _linux_maxrss_mb()
 
     return {
         "albedo": albedo,
         "depth": depth,
+        "integration_mode": integration_mode,
         "runtime_mean_s": float(np.mean(runtimes)),
         "runtime_std_s": float(np.std(runtimes)),
         "runtime_min_s": float(np.min(runtimes)),
@@ -127,21 +136,38 @@ def build_scores(real_result: dict[str, object]) -> dict[str, object]:
 def build_diagnostics(
     real_result: dict[str, object],
     real_metrics: dict[str, float],
+    loading_result: dict[str, object],
+    loading_consistency: dict[str, float],
     syn_result: dict[str, object],
     syn_metrics: dict[str, float],
 ) -> dict[str, object]:
     return {
         "real_sample": {
-            "runtime_mean_s": round(real_result["runtime_mean_s"], 6),
-            "runtime_std_s": round(real_result["runtime_std_s"], 6),
-            "runtime_min_s": round(real_result["runtime_min_s"], 6),
-            "runtime_max_s": round(real_result["runtime_max_s"], 6),
-            "memory_mb": round(real_result["maxrss_mb"], 2),
-            "proxy_quality": {
-                "psnr": round(real_metrics["psnr"], 4),
-                "ssim": round(real_metrics["ssim"], 4),
-                "albedo_mae": round(real_metrics["albedo_mae"], 6),
-                "depth_mae": round(real_metrics["depth_mae"], 6),
+            "traditional": {
+                "runtime_mean_s": round(real_result["runtime_mean_s"], 6),
+                "runtime_std_s": round(real_result["runtime_std_s"], 6),
+                "runtime_min_s": round(real_result["runtime_min_s"], 6),
+                "runtime_max_s": round(real_result["runtime_max_s"], 6),
+                "memory_mb": round(real_result["maxrss_mb"], 2),
+                "proxy_quality": {
+                    "psnr": round(real_metrics["psnr"], 4),
+                    "ssim": round(real_metrics["ssim"], 4),
+                    "albedo_mae": round(real_metrics["albedo_mae"], 6),
+                    "depth_mae": round(real_metrics["depth_mae"], 6),
+                },
+            },
+            "loading": {
+                "runtime_mean_s": round(loading_result["runtime_mean_s"], 6),
+                "runtime_std_s": round(loading_result["runtime_std_s"], 6),
+                "runtime_min_s": round(loading_result["runtime_min_s"], 6),
+                "runtime_max_s": round(loading_result["runtime_max_s"], 6),
+                "memory_mb": round(loading_result["maxrss_mb"], 2),
+                "consistency_vs_traditional": {
+                    "psnr": round(loading_consistency["psnr"], 4),
+                    "ssim": round(loading_consistency["ssim"], 6),
+                    "albedo_mae": round(loading_consistency["albedo_mae"], 8),
+                    "depth_mae": round(loading_consistency["depth_mae"], 8),
+                },
             },
         },
         "synthetic_sanity": {
@@ -184,6 +210,36 @@ def main() -> None:
         f"depth_MAE={real_metrics['depth_mae']:.4f}"
     )
 
+    print("\n=== Real Sample: Sequential Loading Variant ===")
+    loading_result = benchmark_qft(
+        real["tau"],
+        s=real_s,
+        dt=real["dt"],
+        k=real["k"],
+        area=real["area"],
+        integration_mode="loading",
+        repeats=5,
+    )
+    loading_consistency = compute_metrics(
+        loading_result["albedo"],
+        loading_result["depth"],
+        real_result["albedo"],
+        real_result["depth"],
+    )
+    print(
+        f"scene={real['scene_name']} s={real_s:.3f} "
+        f"mode=loading runtime={loading_result['runtime_mean_s']:.6f}s "
+        f"+/- {loading_result['runtime_std_s']:.6f}s "
+        f"maxrss={loading_result['maxrss_mb']:.2f}MB"
+    )
+    print(
+        "consistency_vs_traditional "
+        f"PSNR={loading_consistency['psnr']:.2f}dB "
+        f"SSIM={loading_consistency['ssim']:.6f} "
+        f"albedo_MAE={loading_consistency['albedo_mae']:.8f} "
+        f"depth_MAE={loading_consistency['depth_mae']:.8f}"
+    )
+
     scores = build_scores(real_result)
     out_path = ROOT / "scoring" / "scores.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -192,16 +248,31 @@ def main() -> None:
 
     diagnostics = {
         "real_sample": {
-            "runtime_mean_s": round(real_result["runtime_mean_s"], 6),
-            "runtime_std_s": round(real_result["runtime_std_s"], 6),
-            "runtime_min_s": round(real_result["runtime_min_s"], 6),
-            "runtime_max_s": round(real_result["runtime_max_s"], 6),
-            "memory_mb": round(real_result["maxrss_mb"], 2),
-            "proxy_quality": {
-                "psnr": round(real_metrics["psnr"], 4),
-                "ssim": round(real_metrics["ssim"], 4),
-                "albedo_mae": round(real_metrics["albedo_mae"], 6),
-                "depth_mae": round(real_metrics["depth_mae"], 6),
+            "traditional": {
+                "runtime_mean_s": round(real_result["runtime_mean_s"], 6),
+                "runtime_std_s": round(real_result["runtime_std_s"], 6),
+                "runtime_min_s": round(real_result["runtime_min_s"], 6),
+                "runtime_max_s": round(real_result["runtime_max_s"], 6),
+                "memory_mb": round(real_result["maxrss_mb"], 2),
+                "proxy_quality": {
+                    "psnr": round(real_metrics["psnr"], 4),
+                    "ssim": round(real_metrics["ssim"], 4),
+                    "albedo_mae": round(real_metrics["albedo_mae"], 6),
+                    "depth_mae": round(real_metrics["depth_mae"], 6),
+                },
+            },
+            "loading": {
+                "runtime_mean_s": round(loading_result["runtime_mean_s"], 6),
+                "runtime_std_s": round(loading_result["runtime_std_s"], 6),
+                "runtime_min_s": round(loading_result["runtime_min_s"], 6),
+                "runtime_max_s": round(loading_result["runtime_max_s"], 6),
+                "memory_mb": round(loading_result["maxrss_mb"], 2),
+                "consistency_vs_traditional": {
+                    "psnr": round(loading_consistency["psnr"], 4),
+                    "ssim": round(loading_consistency["ssim"], 6),
+                    "albedo_mae": round(loading_consistency["albedo_mae"], 8),
+                    "depth_mae": round(loading_consistency["depth_mae"], 8),
+                },
             },
         }
     }
@@ -236,7 +307,14 @@ def main() -> None:
         f"SSIM={syn_metrics['ssim']:.4f}"
     )
 
-    diagnostics = build_diagnostics(real_result, real_metrics, syn_result, syn_metrics)
+    diagnostics = build_diagnostics(
+        real_result,
+        real_metrics,
+        loading_result,
+        loading_consistency,
+        syn_result,
+        syn_metrics,
+    )
     diag_path.write_text(json.dumps(diagnostics, indent=2) + "\n")
     print(f"Wrote {diag_path}")
 

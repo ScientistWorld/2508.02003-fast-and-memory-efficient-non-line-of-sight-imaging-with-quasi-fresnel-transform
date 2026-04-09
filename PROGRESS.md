@@ -5,16 +5,19 @@
 - The method is packaged behind `scripts/evaluate.sh` and `scripts/reproduce.sh`.
 - A bundled real Zaragoza-style confocal sample exists in `data/zaragoza/`.
 - The evaluation path now avoids oracle tuning on the test target and removes misleading baseline claims.
+- The method code now includes both the paper's direct full-histogram integration path and its sequential-loading aggregation path.
 
 ## Results Achieved
 - Prior reported results in this repo were based on synthetic sanity checks and should not be treated as paper reproduction.
 - Failed job `ad6c4c7b-f06` still completed the primary real-sample benchmark before crashing in the optional synthetic sanity branch.
-- Real bundled Zaragoza-style sample result from that run: `runtime = 0.002303 s ± 0.002884 s`, `memory = 47.78 MB`, proxy quality `PSNR = 3.00 dB`, `SSIM = 0.0299`, `albedo MAE = 0.6843`, `depth MAE = 0.4606`.
-- The crash was caused by a bad `generate_dataset(...)` call signature in `scripts/evaluate_nlos.py`; this has now been fixed, and the script now writes `scores.json` plus a partial `diagnostics.json` immediately after the real benchmark.
+- Successful job `63301e4c-2d6` validated the corrected evaluation pipeline end to end and produced `scoring/scores.json`.
+- Real bundled Zaragoza-style sample result from the successful run: `runtime = 0.001707 s ± 0.001910 s`, `memory = 45.23 MB`, proxy quality `PSNR = 3.00 dB`, `SSIM = 0.0299`, `albedo MAE = 0.6843`, `depth MAE = 0.4606`.
+- Synthetic sanity result from the successful run: `runtime = 0.005769 s`, `memory = 125.12 MB`, `PSNR = 12.81 dB`, `SSIM = 0.1794`.
+- The next revision adds the paper's sequential-loading integration path so the evaluation can compare it directly against the traditional full-histogram path.
 
 ## What Remains
-- Run the corrected evaluation job and inspect the resulting runtime/memory numbers.
-- Implement the paper's lower-memory sequential-loading or FDH-style path.
+- Run the updated evaluation job and inspect the traditional-versus-loading results.
+- Implement the paper's FDH-style path.
 - Add a faithful published baseline implementation.
 - Expand to larger public Zaragoza and Stanford datasets if download and budget permit.
 

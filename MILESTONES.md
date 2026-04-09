@@ -18,4 +18,8 @@
 - Recorded real-sample efficiency output of `0.002303 s ± 0.002884 s` runtime and `47.78 MB` max RSS on the bundled confocal sample
 - Fixed the `generate_dataset()` call mismatch and changed the evaluator to persist `scores.json` immediately after the primary real benchmark
 
+### [2026-04-09 00:00] - method_runs
+- Job `63301e4c-2d6` completed successfully and validated the corrected traditional evaluation path end to end
+- Added the paper's sequential-loading aggregation mode to the Quasi-Fresnel implementation so the next job can benchmark traditional versus loading execution on the same bundled real sample
+
 ## Stop Justification

@@ -8,8 +8,8 @@
 
 ## Scoring
 - [x] `scoring/reference.json` — paper's reported numbers
-- [ ] Workspace validated via `python validate.py`
-- [ ] `scoring/scores.json` — reproduced numbers (must match reference.json experiment/metric structure)
+- [x] Workspace validated via `python validate.py`
+- [x] `scoring/scores.json` — reproduced numbers (must match reference.json experiment/metric structure)
 - [x] `scoring/TARGETS.md` — primary, constraint, and ablation targets
 - [x] `scoring/CONSTRAINTS.md` — what a scientist must hold fixed
 - [x] `scoring/DIRECTION.md` — research direction scope for scientist

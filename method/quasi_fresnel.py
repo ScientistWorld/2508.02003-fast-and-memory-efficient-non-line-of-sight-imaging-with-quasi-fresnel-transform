@@ -52,6 +52,47 @@ def quasi_fresnel_time_integral(tau, s, dt, k=4):
     return phi.astype(np.complex128)
 
 
+def quasi_fresnel_time_integral_loading(tau, s_values, dt, k=4):
+    """
+    Step 1 with the paper's sequential-loading strategy.
+
+    This computes the same aggregated measurement phi(x; s) as
+    ``quasi_fresnel_time_integral`` but accumulates it bin by bin instead of
+    materializing a full ``weights * tau`` tensor. When multiple nearby
+    ``s`` values are required for depth extraction, all corresponding phi
+    arrays are accumulated in the same pass over the histogram.
+
+    Parameters:
+      tau: array of shape (N, N, N_bins) — time-resolved measurement
+      s_values: float or sequence of floats — Quasi-Fresnel parameter(s)
+      dt: float — spatial distance per time bin (meters/bin)
+      k: int — scattering parameter (4=isotropic, 2=retroreflective)
+
+    Returns:
+      complex array if one s is provided, otherwise tuple of complex arrays.
+    """
+    s_arr = np.atleast_1d(np.asarray(s_values, dtype=np.float64))
+    if s_arr.ndim != 1 or s_arr.size == 0:
+        raise ValueError("s_values must be a scalar or a non-empty 1D sequence")
+
+    N_bins = tau.shape[2]
+    r_centers = (np.arange(N_bins, dtype=np.float64) + 0.5) * dt
+    radial_term = r_centers ** k
+    accumulators = [
+        np.zeros(tau.shape[:2], dtype=np.complex128) for _ in range(s_arr.size)
+    ]
+
+    for bin_idx, r in enumerate(r_centers):
+        tau_bin = tau[:, :, bin_idx].astype(np.float64, copy=False)
+        for acc, s in zip(accumulators, s_arr):
+            weight = radial_term[bin_idx] * np.exp(-1j * (r ** 2) / (4 * s ** 2)) * dt
+            acc += weight * tau_bin
+
+    if len(accumulators) == 1:
+        return accumulators[0]
+    return tuple(accumulators)
+
+
 def quasi_fresnel_spatial_deconv(phi, s, area):
     """
     Step 2: Recover psi(x; s) from phi(x; s) via 2D convolution.
@@ -141,7 +182,15 @@ def extract_albedo_depth(psi, s, psi2=None, ds=None):
     return albedo, depth
 
 
-def quasi_fresnel_reconstruct(tau, s, dt, k=4, area=None, use_fdh=False):
+def quasi_fresnel_reconstruct(
+    tau,
+    s,
+    dt,
+    k=4,
+    area=None,
+    use_fdh=False,
+    integration_mode="traditional",
+):
     """
     Full Quasi-Fresnel Transform reconstruction pipeline.
 
@@ -152,6 +201,8 @@ def quasi_fresnel_reconstruct(tau, s, dt, k=4, area=None, use_fdh=False):
       k: int — scattering parameter
       area: float — physical area of relay wall (meters). Required for correct scaling.
       use_fdh: bool — use FDH mode
+      integration_mode: "traditional" for direct full-histogram integration or
+        "loading" for the paper's sequential-loading accumulation
 
     Returns:
       albedo: real array of shape (N, N)
@@ -160,16 +211,20 @@ def quasi_fresnel_reconstruct(tau, s, dt, k=4, area=None, use_fdh=False):
     if area is None:
         area = float(tau.shape[0])
 
-    # Step 1: Time integration
-    phi = quasi_fresnel_time_integral(tau, s, dt, k)
+    ds = s * 0.01  # small step for numerical derivative
+    if integration_mode == "traditional":
+        phi = quasi_fresnel_time_integral(tau, s, dt, k)
+        phi2 = quasi_fresnel_time_integral(tau, s + ds, dt, k)
+    elif integration_mode == "loading":
+        phi, phi2 = quasi_fresnel_time_integral_loading(tau, (s, s + ds), dt, k)
+    else:
+        raise ValueError(
+            f"Unsupported integration_mode={integration_mode!r}; "
+            "expected 'traditional' or 'loading'"
+        )
 
     # Step 2: Spatial deconvolution
     psi = quasi_fresnel_spatial_deconv(phi, s, area)
-
-    # Step 3: Extract albedo and depth
-    # Use finite differences for better depth estimation
-    ds = s * 0.01  # small step for numerical derivative
-    phi2 = quasi_fresnel_time_integral(tau, s + ds, dt, k)
     psi2 = quasi_fresnel_spatial_deconv(phi2, s + ds, area)
 
     albedo, depth = extract_albedo_depth(psi, s, psi2, ds)
