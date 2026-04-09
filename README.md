@@ -4,7 +4,7 @@
 - Title: `Fast and Memory-efficient Non-line-of-sight Imaging with Quasi-Fresnel Transform`
 - Area: computational imaging / NLOS reconstruction
 
-This workspace contains a recognizable implementation of the paper's Quasi-Fresnel algorithm and packages it as a runnable benchmark. The current milestone is `core_claim`: the method runs on a bundled real Zaragoza-style sample, reproduces the paper's lightweight efficiency behavior, and includes a separate complexity experiment showing that the sequential-loading variant reduces memory growth while preserving the same reconstruction.
+This workspace contains a recognizable implementation of the paper's Quasi-Fresnel algorithm and packages it as a runnable benchmark. The current milestone is `method_runs`: the three-step reconstruction pipeline runs end to end, the Zaragoza HDF5 metadata path has been corrected, and the evaluation now covers both the bundled bunny sample and an additional public Zaragoza scene. The next job re-runs the benchmark after these integrity fixes before any higher milestone can be claimed.
 
 ---
 
@@ -46,14 +46,15 @@ The paper evaluates on public NLOS datasets, especially Zaragoza simulated confo
 - about `0.003 s` per frame on the dynamic Stanford sequence
 
 The current workspace can evaluate:
-- a bundled real Zaragoza-style confocal sample in `data/zaragoza/`
+- a bundled public Zaragoza bunny confocal sample in `data/zaragoza/`
+- an additional lightweight public Zaragoza confocal sample in `data/zaragoza/public/`
 - a synthetic sanity-check scene generated from the same three-point transport model
 
 Current scoring is therefore limited to the paper's explicitly reported efficiency metrics on the bundled real sample:
 - `runtime_s`
 - `memory_mb`
 
-Proxy quality metrics are also printed for debugging, but they are not yet used as paper-reference scores because the current packaged sample and paper do not provide a direct one-to-one quantitative quality table in the workspace.
+Proxy quality metrics are only used when trustworthy ground truth is available in the workspace. Public HDF5 files without ground truth are treated as efficiency-only benchmarks.
 
 ---
 
@@ -194,12 +195,54 @@ Proxy quality metrics are also printed for debugging, but they are not yet used 
 
 </details>
 
+### Iteration 4: gpt-5.4 (verifier)
+- **Milestone**: `core_claim` | **Status**: done
+- **Working time**: 19m | **GPU**: 0.0h
+- **Jobs**: 16 total (6 completed, 5 failed)
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-04-09 00:00] - none
+- Started from an existing partial workspace
+- Read the paper and audited the existing implementation against the paper
+
+### [2026-04-09 00:00] - method_runs
+- Verified that the workspace contains the paper's three-step Quasi-Fresnel pipeline rather than a surrogate model
+- Removed overstated `core_claim` reporting that had been based on synthetic sanity checks and an unfaithful baseline
+- Reworked evaluation to target the bundled real Zaragoza-style sample with fixed paper-style `s` selection and repeated timing
+
+### [2026-04-09 00:00] - method_runs
+- Job `ad6c4c7b-f06` executed the real-sample benchmark inside the container and produced a primary result before failing in the optional synthetic sanity-check branch
+- Recorded real-sample efficiency output of `0.002303 s ± 0.002884 s` runtime and `47.78 MB` max RSS on the bundled confocal sample
+- Fixed the `generate_dataset()` call mismatch and changed the evaluator to persist `scores.json` immediately after the primary real benchmark
+
+### [2026-04-09 00:00] - method_runs
+- Job `63301e4c-2d6` completed successfully and validated the corrected traditional evaluation path end to end
+- Extended the evaluator with a new complexity-scaling experiment so the next job can benchmark the paper's traditional and sequential-loading variants against Table 1's `O(N^3)` versus `O(N^2)` memory claim
+
+### [2026-04-09 00:00] - method_runs
+- Job `338f63ee-ca8` produced partial traditional-versus-loading results before failing on a diagnostics write bug
+- The partial results already showed exact loading/traditional reconstruction agreement on the bundled real sample and a clear reduction in empirical memory-order growth for the loading path
+
+### [2026-04-09 14:10] - method_runs
+- Audited the existing `core_claim` report and downgraded it after finding that the packaged benchmark relied on a single tiny sample, stale Zaragoza metadata, and overstated scoring.
+- Fixed Zaragoza HDF5 metadata loading to read `deltaT` and relay-wall size from the source files instead of relying on the stale bundled NPZ metadata.
+- Added an additional public Zaragoza confocal scene (`T_conf64.hdf5`) to the packaged download/evaluation path so the next job can benchmark more than one public scene.
+
+### [2026-04-09 14:10] - method_runs
+- Completed final gym verification.
+- Separated the reusable evaluator from the paper implementation by making `scripts/evaluate.sh` score a method-produced report artifact through `eval/score_nlos.py`.
+- Rewrote scoring guidance files to remove method-step leakage from the scientist-facing constraints and experiment descriptions.
+
+</details>
+
 
 ---
 
 # Reproduction Milestones
 
-**Current: core_claim**
+**Current: method_runs**
 
 ## Progress Log
 
@@ -225,9 +268,15 @@ Proxy quality metrics are also printed for debugging, but they are not yet used 
 - Job `338f63ee-ca8` produced partial traditional-versus-loading results before failing on a diagnostics write bug
 - The partial results already showed exact loading/traditional reconstruction agreement on the bundled real sample and a clear reduction in empirical memory-order growth for the loading path
 
-### [2026-04-09 00:00] - core_claim
-- Job `ccc51754-375` completed successfully and wrote both `scoring/scores.json` and `scoring/diagnostics.json`
-- The bundled real Zaragoza-style sample reproduced the paper's efficiency claim at small scale with `0.002604 s` runtime and `50.00 MB` max RSS
-- A separate complexity experiment reproduced the paper's loading-memory constraint: sequential loading matched the traditional reconstruction exactly on the real sample and fit `memory_order = 1.891` versus `2.704` for the traditional integration path
+### [2026-04-09 14:10] - method_runs
+- Audited the existing `core_claim` report and downgraded it after finding that the packaged benchmark relied on a single tiny sample, stale Zaragoza metadata, and overstated scoring.
+- Fixed Zaragoza HDF5 metadata loading to read `deltaT` and relay-wall size from the source files instead of relying on the stale bundled NPZ metadata.
+- Added an additional public Zaragoza confocal scene (`T_conf64.hdf5`) to the packaged download/evaluation path so the next job can benchmark more than one public scene.
+
+### [2026-04-09 14:10] - method_runs
+- Completed final gym verification.
+- Separated the reusable evaluator from the paper implementation by making `scripts/evaluate.sh` score a method-produced report artifact through `eval/score_nlos.py`.
+- Rewrote scoring guidance files to remove method-step leakage from the scientist-facing constraints and experiment descriptions.
 
 ## Stop Justification
+Stopped at `method_runs` rather than `core_claim` because the workspace is now structurally sound but the scored evidence is still too limited to support the paper's central public claim. The implementation is real, the method/evaluation separation is now clean enough for gym use, and validation passes, but the current scored footprint remains a narrow public benchmark rather than a broader paper-scale reproduction. Additional runs and broader public-scene evidence would be required before claiming `core_claim`.
