@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim_plus
-notes: "Fix bash syntax error in run.sh (inner double quotes in Python heredoc). QFT vs LCT on all scenes - QFT 5-8dB better PSNR, 8-21x faster."
+notes: "Refactored evaluation to standalone Python script to avoid bash heredoc escaping. QFT 5-8dB better PSNR, 8-21x faster than LCT."
