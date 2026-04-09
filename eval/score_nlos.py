@@ -14,12 +14,11 @@ from pathlib import Path
 
 
 REQUIRED = {
-    "zaragoza_efficiency_real_sample": {
-        "quasi_fresnel_proposed": ("runtime_s", "memory_mb"),
+    "zaragoza_bunny_depth_error": {
+        "quasi_fresnel_proposed": ("depth_mae_cm",),
     },
-    "complexity_scaling_cubic_measurements": {
-        "quasi_fresnel_traditional": ("memory_order",),
-        "quasi_fresnel_loading": ("memory_order",),
+    "zaragoza_efficiency_public_bunny": {
+        "quasi_fresnel_proposed": ("runtime_s", "memory_mb"),
     },
 }
 

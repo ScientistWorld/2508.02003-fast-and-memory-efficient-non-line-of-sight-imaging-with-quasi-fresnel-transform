@@ -1,14 +1,14 @@
 # Research Direction
 
-Work on fast direct reconstruction for confocal non-line-of-sight surface recovery under the same problem setup as this workspace.
+Work on fast direct reconstruction for confocal non-line-of-sight surface recovery under the same public Zaragoza setup as this workspace.
 
 Priority directions:
-- improve runtime or working memory without changing the task to a different NLOS formulation
-- strengthen the lower-memory path so the scaling advantage holds more clearly on larger public settings
-- expand the same evaluation family from the bundled sample to more public Zaragoza or Stanford-style confocal measurements
-- improve numerical stability or reconstruction quality while staying in the same direct surface-recovery family
+- improve bunny depth accuracy while staying within the paper's Quasi-Fresnel direct-reconstruction family
+- improve runtime or working memory on the same scored bunny scene
+- strengthen the lower-memory loading path and test it on additional public Zaragoza scenes
+- expand the same evaluation family to more public confocal scenes without changing the task definition
 
 Out of scope:
-- replacing the problem with a full 3D volumetric benchmark
-- switching to a generic supervised black-box model trained on extra labels
-- redefining success around unscored diagnostics instead of the packaged efficiency targets
+- replacing the problem with an unrelated volumetric or learned black-box benchmark
+- switching to a generic supervised predictor trained on extra labels
+- redefining success around unscored diagnostics instead of the packaged quality-plus-efficiency targets

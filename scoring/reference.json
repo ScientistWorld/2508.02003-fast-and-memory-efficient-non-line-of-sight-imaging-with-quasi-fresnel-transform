@@ -1,8 +1,41 @@
 {
   "experiments": {
-    "zaragoza_efficiency_real_sample": {
-      "description": "Paper-reported efficiency target for Zaragoza-style reconstruction. The paper reports about 0.17 s runtime and less than 50 MB memory for its public Zaragoza evaluation, while prior volumetric methods require more than 6.39 s and more than 13.105 GB memory.",
-      "weight": 0.6,
+    "zaragoza_bunny_depth_error": {
+      "description": "Depth MAE on the Zaragoza Stanford bunny scene from Fig. 5. The paper reports that Quasi-Fresnel achieves the lowest bunny depth error among the compared direct methods.",
+      "weight": 0.55,
+      "primary_metric": "depth_mae_cm",
+      "metrics": {
+        "depth_mae_cm": {
+          "higher_is_better": false,
+          "coefficient": -1.0
+        }
+      },
+      "results": {
+        "fbp": {
+          "type": "baseline",
+          "depth_mae_cm": 4.69
+        },
+        "lct": {
+          "type": "baseline",
+          "depth_mae_cm": 0.16
+        },
+        "fk": {
+          "type": "baseline",
+          "depth_mae_cm": 0.31
+        },
+        "phasor": {
+          "type": "baseline",
+          "depth_mae_cm": 0.31
+        },
+        "quasi_fresnel_proposed": {
+          "type": "proposed",
+          "depth_mae_cm": 0.15
+        }
+      }
+    },
+    "zaragoza_efficiency_public_bunny": {
+      "description": "Public Zaragoza efficiency claim from the Results section. The paper reports about 0.17 s runtime and less than 50 MB memory for the proposed method, versus more than 6.39 s runtime and more than 13.105 GB memory for prior volumetric methods.",
+      "weight": 0.45,
       "primary_metric": "runtime_s",
       "metrics": {
         "runtime_s": {
@@ -24,27 +57,6 @@
           "type": "proposed",
           "runtime_s": 0.17,
           "memory_mb": 50.0
-        }
-      }
-    },
-    "complexity_scaling_cubic_measurements": {
-      "description": "Table 1 memory-scaling claim for cubic N x N x N measurements. The paper reports O(N^3) memory for the traditional implementation and O(N^2) memory for the sequential-loading implementation.",
-      "weight": 0.4,
-      "primary_metric": "memory_order",
-      "metrics": {
-        "memory_order": {
-          "higher_is_better": false,
-          "coefficient": -1.0
-        }
-      },
-      "results": {
-        "quasi_fresnel_traditional": {
-          "type": "proposed",
-          "memory_order": 3.0
-        },
-        "quasi_fresnel_loading": {
-          "type": "proposed",
-          "memory_order": 2.0
         }
       }
     }

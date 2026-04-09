@@ -3,21 +3,21 @@
 ## What Works
 - The workspace contains a recognizable implementation of the paper's Quasi-Fresnel reconstruction equations.
 - The method is packaged behind `scripts/method.sh`, while `scripts/evaluate.sh` now scores a method-produced report artifact without importing `method/`.
-- Public Zaragoza confocal samples are packaged in `data/zaragoza/` and `data/zaragoza/public/`.
-- The evaluation path now avoids oracle tuning on the test target and removes misleading baseline claims.
+- Public Zaragoza confocal samples are packaged in `data/zaragoza/`, `data/zaragoza/public/`, and `data/zaragoza_public/`.
+- The evaluation path now targets the public Zaragoza bunny scene for both quality and efficiency instead of scoring only a stale bundled proxy pair.
 - The method code now includes both the paper's direct full-histogram integration path and its sequential-loading aggregation path.
-- The Zaragoza loader now reads `deltaT` and relay-wall size from the source HDF5 files, avoiding stale metadata copied into the older NPZ bundle.
-- The evaluation pipeline can benchmark an additional public Zaragoza scene without inventing quality targets when the HDF5 file has no ground-truth maps.
+- The Zaragoza loader now reads `deltaT`, grid size, and nested HDF5 datasets from the source files, and can derive 2D albedo/depth proxies from stored voxel volumes when available.
+- The spatial deconvolution step now uses the paper's separable quadratic kernel directly rather than a circular 2D FFT surrogate, and depth differentiation now uses a paper-style tiny `s` perturbation.
 
 ## Results Achieved
 - The method has previously run successfully inside the packaged container, so `method_runs` remains secure.
-- Earlier reported `core_claim`-style results are now considered stale because they were computed before the `deltaT` metadata fix and before broadening the public-scene evaluation beyond the single bundled bunny sample.
-- The current packaged scores are regenerated from a method report artifact through the new method-agnostic evaluation entrypoint, and `python validate.py --compare` passes.
-- Final wrap-up confirms the workspace is usable as a partial gym: improve-mode agents can iterate on the packaged method, and from-scratch agents can use the separated problem/eval contract without importing `method/`.
+- Earlier reported results are considered stale because they were computed on retired experiment definitions and before the HDF5 loader / discretization fixes.
+- The scoring contract has been rewritten around the paper's numeric bunny depth MAE figure and Zaragoza runtime/memory claim.
+- `python validate.py --compare` now fails only because the corrected benchmark has not been rerun yet, so `scores.json` is intentionally cleared pending the next job.
 
 ## What Remains
-- Run broader public-scene experiments after the metadata fix and scene-expansion changes.
-- Determine whether corrected multi-scene efficiency results are strong enough to justify `core_claim`; current status remains `method_runs`.
+- Run the corrected public bunny benchmark in the container and inspect whether the new loader plus separable inversion produce a credible bunny depth MAE and Zaragoza-style efficiency result.
+- Determine whether those corrected public-scene results are strong enough to justify `core_claim`; current status remains `method_runs`.
 - Implement the paper's FDH-style path.
 - Add a faithful published baseline implementation.
 - Expand to larger public Zaragoza and Stanford datasets if download and budget permit.
@@ -26,10 +26,10 @@
 - The previous repo state mislabeled synthetic experiments as Zaragoza/Stanford reproductions.
 - The prior LCT baseline was explicitly simplified and cannot support the paper's comparison claims.
 - The paper's strongest quantitative evidence is efficiency, while direct quality tables are mostly qualitative in the manuscript.
-- The bundled Zaragoza NPZ stored stale timing metadata (`dt=0.003`) while the source HDF5 files declare `deltaT=0.0025`; the evaluator now reads metadata from the HDF5 source.
-- Public Zaragoza HDF5 files do not consistently contain ground-truth albedo/depth maps, so they can only be used as efficiency benchmarks unless paired with trustworthy GT from another source.
+- The bundled Zaragoza NPZ paired a `32x32x64` transient tensor with unrelated `1024x1024` maps, so it could not support an honest scored quality target.
+- Public Zaragoza HDF5 files do not consistently expose 2D ground-truth maps at the root, so the loader has to search nested datasets and fall back to voxel-volume-derived proxies when available.
 
 ## Deviations from Paper
-- Current packaging still uses lightweight public Zaragoza scenes rather than the full public Zaragoza and Stanford benchmark suites.
-- The efficient FDH acquisition path is not yet implemented; the current method corresponds to the analytical three-step algorithm but not the paper's strongest deployment-oriented path.
-- The complexity experiment measures empirical working-memory scaling on synthetic `N x N x N` tensors to validate the Table 1 memory claim; it is a complexity probe, not a physical-scene benchmark.
+- Current packaging still uses a minimum public Zaragoza benchmark rather than the full public Zaragoza and Stanford benchmark suites.
+- The efficient FDH acquisition path is not yet implemented; the current method corresponds to the analytical three-step algorithm and the sequential-loading variant, but not the paper's strongest deployment-oriented path.
+- The scored benchmark is now centered on the public bunny quality/efficiency claim rather than the broader Zaragoza suite reported in the paper.

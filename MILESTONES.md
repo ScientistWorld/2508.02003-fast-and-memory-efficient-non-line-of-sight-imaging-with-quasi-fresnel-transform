@@ -36,5 +36,10 @@
 - Separated the reusable evaluator from the paper implementation by making `scripts/evaluate.sh` score a method-produced report artifact through `eval/score_nlos.py`.
 - Rewrote scoring guidance files to remove method-step leakage from the scientist-facing constraints and experiment descriptions.
 
+### [2026-04-09 14:40] - method_runs
+- Found that the bundled scored bunny artifact was invalid for quality benchmarking because it paired a `32x32x64` transient tensor with unrelated `1024x1024` maps.
+- Reworked the Zaragoza HDF5 loader to interpret the public confocal file structure directly, including nested metadata and voxel-volume ground truth when present.
+- Retargeted the scored benchmark to the paper's numeric public bunny depth-MAE and Zaragoza efficiency claims, and prepared a new job to test the corrected loader plus discretization.
+
 ## Stop Justification
-Stopped at `method_runs` rather than `core_claim` because the workspace is now structurally sound but the scored evidence is still too limited to support the paper's central public claim. The implementation is real, the method/evaluation separation is now clean enough for gym use, and validation passes, but the current scored footprint remains a narrow public benchmark rather than a broader paper-scale reproduction. Additional runs and broader public-scene evidence would be required before claiming `core_claim`.
+Current status remains `method_runs` because the corrected public bunny benchmark has not been rerun yet. The implementation is real and the benchmark contract is now materially stronger, but claiming `core_claim` still depends on the next job producing credible quality-plus-efficiency results on the public scene.

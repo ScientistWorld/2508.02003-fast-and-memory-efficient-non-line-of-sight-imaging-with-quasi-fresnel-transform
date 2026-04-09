@@ -1,3 +1,5 @@
-action: done
+action: submit
+gpus: 0
+test: true
 milestone: method_runs
-notes: "Final verification completed: reusable evaluator added, method-safe scoring docs cleaned up, milestone remains method_runs."
+notes: "Run the corrected public Zaragoza bunny benchmark after fixing HDF5 loading, separable spatial inversion, and the quality-plus-efficiency scoring contract."

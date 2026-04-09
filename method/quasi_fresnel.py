@@ -15,7 +15,6 @@ The parameter dt is the spatial distance per time bin (e.g., 0.003 m per bin).
 """
 
 import numpy as np
-from numpy.fft import fft2, ifft2, fftshift
 
 
 SPEED_OF_LIGHT = 299792458  # m/s
@@ -93,51 +92,79 @@ def quasi_fresnel_time_integral_loading(tau, s_values, dt, k=4):
     return tuple(accumulators)
 
 
-def quasi_fresnel_spatial_deconv(phi, s, area):
+def _centered_coordinates(n, spacing):
+    return (np.arange(n, dtype=np.float64) - (n - 1) / 2.0) * spacing
+
+
+def _quadrature_spacing(coords):
+    if coords.size < 2:
+        return 1.0
+    diffs = np.diff(coords)
+    return float(np.mean(np.abs(diffs)))
+
+
+def quasi_fresnel_spatial_deconv(phi, s, area=None, wall_x=None, wall_y=None):
     """
     Step 2: Recover psi(x; s) from phi(x; s) via 2D convolution.
 
     Implements Eq. (5):
       psi(x; s) = (1/16*pi^2*s^4) * integral e^{i*|x~-x|^2/4s^2} * phi(x~;s) dx~
 
-    This is a 2D convolution with kernel h(x) = e^{i*|x|^2/4s^2}.
-    Implemented via FFT.
+    The kernel is separable:
+      exp(i * (|x~-x|^2 + |y~-y|^2) / 4s^2)
+    so the discrete Riemann sum can be evaluated as two 1D transforms
+    without forming a full 2D kernel.
 
     Parameters:
       phi: complex array of shape (N, N)
       s: float — Quasi-Fresnel parameter (meters)
       area: float — physical area of the relay wall in meters
+      wall_x: optional 1D x coordinates of relay-wall samples
+      wall_y: optional 1D y coordinates of relay-wall samples
 
     Returns:
       psi: complex array of shape (N, N)
     """
-    N = phi.shape[0]
-    dx = area / N  # pixel spacing in meters
+    nx, ny = phi.shape
+    if wall_x is None:
+        if area is None:
+            area = float(nx)
+        dx = area / max(nx - 1, 1)
+        wall_x = _centered_coordinates(nx, dx)
+    else:
+        wall_x = np.asarray(wall_x, dtype=np.float64)
+        dx = _quadrature_spacing(wall_x)
 
-    # Build centered quadratic phase kernel in physical coordinates
-    # h(x_pix) = exp(i * (x_pix * dx)^2 / 4s^2) = exp(i * x_pix^2 * dx^2 / 4s^2)
-    x = np.arange(N, dtype=np.float64) - N // 2
-    X, Y = np.meshgrid(x, x, indexing='ij')
-    r_sq_pix = X ** 2 + Y ** 2
+    if wall_y is None:
+        if area is None:
+            area = float(ny)
+        dy = area / max(ny - 1, 1)
+        wall_y = _centered_coordinates(ny, dy)
+    else:
+        wall_y = np.asarray(wall_y, dtype=np.float64)
+        dy = _quadrature_spacing(wall_y)
 
-    # Kernel phase with physical coordinate scaling
-    kernel = np.exp(1j * r_sq_pix * dx ** 2 / (4.0 * s ** 2))
+    kernel_x = np.exp(
+        1j * (wall_x[:, np.newaxis] - wall_x[np.newaxis, :]) ** 2 / (4.0 * s ** 2)
+    ).astype(np.complex128)
+    kernel_y = np.exp(
+        1j * (wall_y[:, np.newaxis] - wall_y[np.newaxis, :]) ** 2 / (4.0 * s ** 2)
+    ).astype(np.complex128)
 
-    # FFT-based convolution
-    phi_ft = fft2(phi.astype(np.complex128))
-    kernel_ft = fft2(kernel.astype(np.complex128))
-    psi = ifft2(phi_ft * kernel_ft)
-    psi = fftshift(psi)
+    # Apply the separable 2D transform:
+    # psi = C * K phi K^T * dx^2
+    phi_complex = phi.astype(np.complex128, copy=False)
+    psi = kernel_x @ phi_complex @ kernel_y.T
 
-    # Apply normalization from Eq. (5): 1/(16*pi^2*s^4) * dx^2
-    # The dx^2 accounts for the discrete integration (Riemann sum approximation)
-    norm = dx ** 2 / (16.0 * np.pi ** 2 * s ** 4)
+    # Apply normalization from Eq. (5): 1/(16*pi^2*s^4) and the dx*dy
+    # factor from the 2D Riemann sum.
+    norm = (dx * dy) / (16.0 * np.pi ** 2 * s ** 4)
     psi *= norm
 
     return psi
 
 
-def extract_albedo_depth(psi, s, psi2=None, ds=None):
+def extract_albedo_depth(psi, s, psi_prev=None, psi_next=None, ds=None):
     """
     Step 3: Extract albedo and depth from psi(x; s).
 
@@ -146,13 +173,14 @@ def extract_albedo_depth(psi, s, psi2=None, ds=None):
     Albedo: a(x) = |psi(x; s)|
     Depth: d(x) = sqrt(-2i * s^3 * psi^{-1} * dpsi/ds)
 
-    When psi2 is provided (psi computed at s+ds), depth is extracted via
+    When neighboring reconstructions are provided, depth is extracted via
     finite differences. Otherwise, depth is estimated from phase only.
 
     Parameters:
       psi: complex array of shape (N, N) — reconstruction at parameter s
       s: float — Quasi-Fresnel parameter
-      psi2: complex array of shape (N, N) — reconstruction at s+ds (optional)
+      psi_prev: complex array of shape (N, N) — reconstruction at s-ds (optional)
+      psi_next: complex array of shape (N, N) — reconstruction at s+ds (optional)
       ds: float — step size for numerical differentiation
 
     Returns:
@@ -161,11 +189,19 @@ def extract_albedo_depth(psi, s, psi2=None, ds=None):
     """
     albedo = np.abs(psi)
 
-    if psi2 is not None and ds is not None and ds > 0:
-        # Depth via finite differences: d(x) = sqrt(-2i*s^3 * (psi2-psi)/(ds*psi))
+    if ds is not None and ds > 0 and (psi_prev is not None or psi_next is not None):
         eps = 1e-10
-        psi_safe = psi + eps * np.exp(1j * np.angle(psi))  # avoid division by zero
-        dpsi_ds = (psi2 - psi) / ds
+        psi_safe = np.where(
+            np.abs(psi) > eps,
+            psi,
+            eps * np.exp(1j * np.angle(psi + eps)),
+        )
+        if psi_prev is not None and psi_next is not None:
+            dpsi_ds = (psi_next - psi_prev) / (2.0 * ds)
+        elif psi_next is not None:
+            dpsi_ds = (psi_next - psi) / ds
+        else:
+            dpsi_ds = (psi - psi_prev) / ds
         depth_sq = -2j * s ** 3 * dpsi_ds / psi_safe
 
         # depth_sq should be approximately real and positive
@@ -188,6 +224,8 @@ def quasi_fresnel_reconstruct(
     dt,
     k=4,
     area=None,
+    wall_x=None,
+    wall_y=None,
     use_fdh=False,
     integration_mode="traditional",
 ):
@@ -199,7 +237,10 @@ def quasi_fresnel_reconstruct(
       s: float — Quasi-Fresnel parameter (meters)
       dt: float — spatial distance per time bin (meters/bin)
       k: int — scattering parameter
-      area: float — physical area of relay wall (meters). Required for correct scaling.
+      area: float — physical area of relay wall (meters). Required when explicit
+        relay-wall coordinates are unavailable.
+      wall_x: optional 1D x coordinates of relay-wall samples
+      wall_y: optional 1D y coordinates of relay-wall samples
       use_fdh: bool — use FDH mode
       integration_mode: "traditional" for direct full-histogram integration or
         "loading" for the paper's sequential-loading accumulation
@@ -211,12 +252,17 @@ def quasi_fresnel_reconstruct(
     if area is None:
         area = float(tau.shape[0])
 
-    ds = s * 0.01  # small step for numerical derivative
+    # The paper uses very close s values in the regular confocal setting.
+    # A coarse finite-difference step noticeably degrades depth estimates.
+    ds = 1e-7
     if integration_mode == "traditional":
+        phi_prev = quasi_fresnel_time_integral(tau, s - ds, dt, k)
         phi = quasi_fresnel_time_integral(tau, s, dt, k)
-        phi2 = quasi_fresnel_time_integral(tau, s + ds, dt, k)
+        phi_next = quasi_fresnel_time_integral(tau, s + ds, dt, k)
     elif integration_mode == "loading":
-        phi, phi2 = quasi_fresnel_time_integral_loading(tau, (s, s + ds), dt, k)
+        phi_prev, phi, phi_next = quasi_fresnel_time_integral_loading(
+            tau, (s - ds, s, s + ds), dt, k
+        )
     else:
         raise ValueError(
             f"Unsupported integration_mode={integration_mode!r}; "
@@ -224,15 +270,20 @@ def quasi_fresnel_reconstruct(
         )
 
     # Step 2: Spatial deconvolution
-    psi = quasi_fresnel_spatial_deconv(phi, s, area)
-    psi2 = quasi_fresnel_spatial_deconv(phi2, s + ds, area)
+    psi_prev = quasi_fresnel_spatial_deconv(
+        phi_prev, s - ds, area=area, wall_x=wall_x, wall_y=wall_y
+    )
+    psi = quasi_fresnel_spatial_deconv(phi, s, area=area, wall_x=wall_x, wall_y=wall_y)
+    psi_next = quasi_fresnel_spatial_deconv(
+        phi_next, s + ds, area=area, wall_x=wall_x, wall_y=wall_y
+    )
 
-    albedo, depth = extract_albedo_depth(psi, s, psi2, ds)
+    albedo, depth = extract_albedo_depth(psi, s, psi_prev=psi_prev, psi_next=psi_next, ds=ds)
 
     return albedo, depth
 
 
-def benchmark_reconstruction(tau, s, dt, k=4, area=None):
+def benchmark_reconstruction(tau, s, dt, k=4, area=None, wall_x=None, wall_y=None):
     """
     Benchmark the reconstruction: measure runtime and memory.
     """
@@ -250,17 +301,23 @@ def benchmark_reconstruction(tau, s, dt, k=4, area=None):
     t1 = time.perf_counter()
 
     # Step 2: Spatial deconvolution
-    psi = quasi_fresnel_spatial_deconv(phi, s, area)
+    psi = quasi_fresnel_spatial_deconv(phi, s, area=area, wall_x=wall_x, wall_y=wall_y)
     t2 = time.perf_counter()
 
     # Also compute at s+ds for depth extraction
-    ds = s * 0.01
+    ds = 1e-7
+    phi_prev = quasi_fresnel_time_integral(tau, s - ds, dt, k)
     phi2 = quasi_fresnel_time_integral(tau, s + ds, dt, k)
-    psi2 = quasi_fresnel_spatial_deconv(phi2, s + ds, area)
+    psi_prev = quasi_fresnel_spatial_deconv(
+        phi_prev, s - ds, area=area, wall_x=wall_x, wall_y=wall_y
+    )
+    psi2 = quasi_fresnel_spatial_deconv(
+        phi2, s + ds, area=area, wall_x=wall_x, wall_y=wall_y
+    )
     t3 = time.perf_counter()
 
     # Step 3: Extract albedo and depth
-    albedo, depth = extract_albedo_depth(psi, s, psi2, ds)
+    albedo, depth = extract_albedo_depth(psi, s, psi_prev=psi_prev, psi_next=psi2, ds=ds)
     t4 = time.perf_counter()
 
     current, peak = tracemalloc.get_traced_memory()

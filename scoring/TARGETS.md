@@ -1,23 +1,35 @@
 # Evaluation Targets
 
-Every scored target below corresponds to one experiment in [`scores.json`](/home/user/scoring/scores.json).
+Each scored target below corresponds to one experiment in [`scores.json`](/home/user/scoring/scores.json).
 Run all scored targets with:
 
 ```bash
 bash scripts/evaluate.sh /home/user/scoring/raw_results.json /home/user/scoring/scores.json
 ```
 
-The paper implementation that produces the report artifact is run with:
+The paper implementation that produces the raw report artifact is run with:
 
 ```bash
 bash scripts/method.sh
 ```
 
-## `zaragoza_efficiency_real_sample`
-Type: Primary + Constraint
+## `zaragoza_bunny_depth_error`
+Type: Constraint / quality target
 
 What it tests:
-End-to-end efficiency on the bundled real Zaragoza-style confocal sample, using the same task and output format as the paper-aligned benchmark in this workspace.
+Depth accuracy on the public Zaragoza Stanford bunny confocal scene, matching the paper's Fig. 5 comparison.
+
+Primary metric:
+- `depth_mae_cm` — lower is better
+
+Interpretation:
+This is the quality side of the paper's claim. A faster method that loses bunny depth fidelity should score worse here.
+
+## `zaragoza_efficiency_public_bunny`
+Type: Benefit target
+
+What it tests:
+Runtime and memory usage for the public Zaragoza bunny reconstruction, matching the paper's reported public-dataset efficiency claim.
 
 Primary metric:
 - `runtime_s` — lower is better
@@ -26,22 +38,7 @@ Constraint metric:
 - `memory_mb` — lower is better
 
 Interpretation:
-Scientists should improve speed without increasing working memory. A method that is faster only because it uses much more memory should score worse after the weighted comparison.
-
-## `complexity_scaling_cubic_measurements`
-Type: Ablation-style constraint check
-
-What it tests:
-Whether the lower-memory execution path preserves the intended scaling advantage on cubic confocal measurement tensors instead of collapsing back toward the standard higher-memory behavior.
-
-Primary metric:
-- `memory_order` for `quasi_fresnel_loading` — lower is better
-
-Constraint / comparison target:
-- `memory_order` for `quasi_fresnel_traditional` is included as the reference behavior that the lower-memory path should improve upon
-
-Interpretation:
-This is the scored check for what breaks if the memory-saving idea is ineffective. Improvements should move the lower-memory path downward without redefining the benchmark or changing tensor scaling.
+Scientists should improve runtime without inflating working memory. The score rewards speed only when memory remains controlled.
 
 ## Unscored diagnostics
-`scoring/diagnostics.json` may include extra sanity metrics, but those diagnostics are not gym targets and do not affect the score.
+[`scoring/diagnostics.json`](/home/user/scoring/diagnostics.json) may include additional public-scene results, loading-path consistency, and extra quality metrics, but those diagnostics do not affect the score.

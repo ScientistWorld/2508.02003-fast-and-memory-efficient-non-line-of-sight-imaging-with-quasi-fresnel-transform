@@ -9,6 +9,6 @@ The paper models the hidden scene as a 2D albedo map and a 2D depth map rather t
 This workspace already implements that three-step Quasi-Fresnel pipeline directly from the paper equations.
 
 What is not yet fully reproduced:
-- the paper's lower-memory sequential-loading or FDH acquisition path
+- the FDH acquisition path
 - a faithful published volumetric baseline for direct comparison
 - the full public Zaragoza and Stanford benchmark suite at paper scale
