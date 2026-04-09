@@ -1,11 +1,8 @@
 #!/bin/bash
-# Baseline evaluation script.
-set -e
+# Baseline entrypoint placeholder.
+# A faithful published LCT/FBP baseline is not yet installed in this workspace,
+# so this script intentionally fails rather than producing misleading numbers.
+set -euo pipefail
 
-cd /home/user
-
-METHOD=${1:-fbp}
-DATA_DIR=${2:-/home/user/data/kylin}
-
-echo "Running $METHOD baseline on $DATA_DIR..."
-bash scripts/evaluate.sh $METHOD $DATA_DIR
+echo "No faithful baseline is currently packaged. Baseline comparisons are disabled."
+exit 1

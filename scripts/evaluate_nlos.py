@@ -1,210 +1,188 @@
 #!/usr/bin/env python3
 """
-NLOS imaging evaluation script.
-Runs QFT and LCT on synthetic scenes and outputs scores to scoring/scores.json.
+Evaluate the Quasi-Fresnel implementation on the bundled real Zaragoza-style
+sample and on a synthetic sanity-check scene.
+
+This script is intentionally conservative:
+- no oracle tuning on test ground truth
+- no claims against unfaithful baselines
+- paper-matched scoring uses only metrics the paper explicitly reports
+  numerically for the public Zaragoza efficiency comparison
 """
-import sys
+
+from __future__ import annotations
+
 import json
-import time
-import tracemalloc
 import os
-
-sys.path.insert(0, '/home/user')
-os.chdir('/home/user')
-
-# Disable threading
-os.environ['OPENBLAS_NUM_THREADS'] = '1'
-os.environ['MKL_NUM_THREADS'] = '1'
-os.environ['OMP_NUM_THREADS'] = '1'
-os.environ['NUMEXPR_NUM_THREADS'] = '1'
+import resource
+import sys
+import time
+from pathlib import Path
 
 import numpy as np
+
+ROOT = Path("/home/user")
+sys.path.insert(0, str(ROOT))
+
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+
 from data.generate_nlos_data import generate_dataset
-from method.quasi_fresnel import benchmark_reconstruction
-from baseline.lct import lct_reconstruct
+from method.quasi_fresnel import quasi_fresnel_reconstruct
 from eval.metrics import compute_metrics
 
 
-def run_s_sweep(tau, albedo_gt, depth_gt, dt, k, area):
-    s_values = [0.005, 0.008, 0.010, 0.015, 0.020, 0.025, 0.030, 0.040, 0.050, 0.075, 0.100]
-    best_psnr = -999
-    best_s = 0.025
-    best_result = None
-    best_metrics = None
-    for s in s_values:
-        try:
-            result = benchmark_reconstruction(tau, s, dt, k, area=area)
-            metrics = compute_metrics(result['albedo'], result['depth'], albedo_gt, depth_gt)
-            print(f'    s={s:.3f}: time={result["timing"]["total"]:.4f}s, mem={result["memory_mb"]:.1f}MB, PSNR={metrics["psnr"]:.2f}dB')
-            if metrics['psnr'] > best_psnr:
-                best_psnr = metrics['psnr']
-                best_s = s
-                best_result = result
-                best_metrics = metrics
-        except Exception as e:
-            print(f'    s={s:.3f}: ERROR {e}')
-    return best_s, best_result, best_metrics
+def _linux_maxrss_mb() -> float:
+    """Return ru_maxrss in MB on Linux."""
+    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
 
 
-def main():
-    dt = 0.003
-    k = 4
-    area = 0.3
-    depth_val = 0.15
+def _downsample_mean(image: np.ndarray, out_shape: tuple[int, int]) -> np.ndarray:
+    """Average-pool an image to a smaller shape."""
+    in_h, in_w = image.shape
+    out_h, out_w = out_shape
+    if (in_h, in_w) == (out_h, out_w):
+        return image.astype(np.float64, copy=False)
+    if in_h % out_h != 0 or in_w % out_w != 0:
+        raise ValueError(
+            f"Cannot evenly downsample from {(in_h, in_w)} to {(out_h, out_w)}"
+        )
+    sh = in_h // out_h
+    sw = in_w // out_w
+    return image.reshape(out_h, sh, out_w, sw).mean(axis=(1, 3))
 
-    results = {}
 
-    # ---- Main scenes (64x64) ----
-    for scene_name in ['shapes', 'kylin', 'bunny']:
-        print(f'\n===== Scene: {scene_name} (64x64) =====')
-        data = generate_dataset(scene_name, 64, 256, area, dt, k, 64, default_depth=depth_val)
-        tau = data['tau']
-        albedo_gt = data['albedo']
-        depth_gt = data['depth']
+def _scene_quality_metrics(
+    albedo_pred: np.ndarray,
+    depth_pred: np.ndarray,
+    albedo_gt: np.ndarray,
+    depth_gt: np.ndarray,
+) -> dict[str, float]:
+    albedo_gt_small = _downsample_mean(albedo_gt, albedo_pred.shape)
+    depth_gt_small = _downsample_mean(depth_gt, depth_pred.shape)
+    return compute_metrics(albedo_pred, depth_pred, albedo_gt_small, depth_gt_small)
 
-        best_s, best_result, best_metrics = run_s_sweep(tau, albedo_gt, depth_gt, dt, k, area)
-        print(f'  Best: s={best_s:.3f}, PSNR={best_metrics["psnr"]:.2f}dB')
 
-        results[scene_name] = {
-            'qft': {
-                'runtime_s': best_result['timing']['total'],
-                'memory_mb': best_result['memory_mb'],
-                'albedo_psnr': best_metrics['psnr'],
-                'albedo_mae': best_metrics['albedo_mae'],
-                'depth_mae': best_metrics['depth_mae'],
-                'ssim': best_metrics['ssim'],
-            }
-        }
+def benchmark_qft(
+    tau: np.ndarray,
+    s: float,
+    dt: float,
+    k: int,
+    area: float,
+    repeats: int = 5,
+) -> dict[str, object]:
+    runtimes: list[float] = []
+    albedo = None
+    depth = None
 
-        # LCT baseline
-        tracemalloc.start()
+    rss_before = _linux_maxrss_mb()
+    for _ in range(repeats):
         t0 = time.perf_counter()
-        lct_a, lct_d = lct_reconstruct(tau, dt, k)
-        lct_time = time.perf_counter() - t0
-        _, lct_mem = tracemalloc.get_traced_memory()
-        tracemalloc.stop()
-        lct_metrics = compute_metrics(lct_a, lct_d, albedo_gt, depth_gt)
-        print(f'  LCT: time={lct_time:.4f}s, PSNR={lct_metrics["psnr"]:.2f}dB')
-        results[scene_name]['lct'] = {
-            'runtime_s': lct_time,
-            'memory_mb': lct_mem / (1024*1024),
-            'albedo_psnr': lct_metrics['psnr'],
-            'albedo_mae': lct_metrics['albedo_mae'],
-            'depth_mae': lct_metrics['depth_mae'],
-            'ssim': lct_metrics['ssim'],
-        }
+        albedo, depth = quasi_fresnel_reconstruct(tau, s=s, dt=dt, k=k, area=area)
+        runtimes.append(time.perf_counter() - t0)
+    rss_after = _linux_maxrss_mb()
 
-    # ---- Dynamic scene (32x32) ----
-    print(f'\n===== Scene: dynamic (32x32) =====')
-    dyn_data = generate_dataset('dynamic', 32, 128, area, dt, k, 32, default_depth=depth_val)
-    dyn_tau = dyn_data['tau']
-
-    best_s, best_result, _ = run_s_sweep(dyn_tau, dyn_data['albedo'], dyn_data['depth'], dt, k, area)
-    results['dynamic'] = {
-        'qft': {
-            'runtime_s': best_result['timing']['total'],
-            'memory_mb': best_result['memory_mb'],
-        }
+    return {
+        "albedo": albedo,
+        "depth": depth,
+        "runtime_mean_s": float(np.mean(runtimes)),
+        "runtime_std_s": float(np.std(runtimes)),
+        "runtime_min_s": float(np.min(runtimes)),
+        "runtime_max_s": float(np.max(runtimes)),
+        "maxrss_mb": max(rss_before, rss_after),
     }
 
-    # LCT on dynamic
-    tracemalloc.start()
-    t0 = time.perf_counter()
-    lct_a, lct_d = lct_reconstruct(dyn_tau, dt, k)
-    lct_time = time.perf_counter() - t0
-    _, lct_mem = tracemalloc.get_traced_memory()
-    tracemalloc.stop()
-    results['dynamic']['lct'] = {
-        'runtime_s': lct_time,
-        'memory_mb': lct_mem / (1024*1024),
+
+def load_real_sample() -> dict[str, object]:
+    path = ROOT / "data" / "zaragoza" / "bunny_conf64.npz"
+    data = np.load(path)
+    return {
+        "tau": data["tau"],
+        "albedo": data["albedo"],
+        "depth": data["depth"],
+        "dt": float(data["dt"]),
+        "k": int(data["k"]),
+        "area": float(data["area"]),
+        "scene_name": str(data["scene_name"]),
     }
 
-    # ---- Summary ----
-    print()
-    print('='*70)
-    print('RESULTS SUMMARY')
-    print('='*70)
-    for sn, sr in results.items():
-        qft = sr['qft']
-        psnr = qft.get('albedo_psnr', 'N/A')
-        ssim = qft.get('ssim', 'N/A')
-        print(f'{sn}: QFT {qft["runtime_s"]:.4f}s, {qft["memory_mb"]:.1f}MB, PSNR={psnr}dB, SSIM={ssim}')
-        if 'lct' in sr:
-            lct = sr['lct']
-            speedup = lct['runtime_s'] / qft['runtime_s'] if qft['runtime_s'] > 0 else float('inf')
-            lct_psnr = lct.get('albedo_psnr', 'N/A')
-            print(f'  LCT: {lct["runtime_s"]:.4f}s, PSNR={lct_psnr}dB, speedup={speedup:.1f}x')
-    print('='*70)
 
-    # ---- Build scores matching reference.json structure ----
-    scores = {
-        'experiments': {
-            'zaragoza_kylin_reconstruction': {
-                'results': {
-                    'quasi_fresnel_proposed': {
-                        'runtime_s': round(results['kylin']['qft']['runtime_s'], 6),
-                        'memory_mb': round(results['kylin']['qft']['memory_mb'], 2),
-                        'albedo_psnr': round(results['kylin']['qft']['albedo_psnr'], 2),
-                        'albedo_mae': round(results['kylin']['qft']['albedo_mae'], 4),
-                        'depth_mae': round(results['kylin']['qft']['depth_mae'], 4),
-                        'ssim': round(results['kylin']['qft']['ssim'], 4),
-                    },
-                    'fourier_transform': {
-                        'runtime_s': round(results['kylin']['lct']['runtime_s'], 6),
-                        'memory_mb': round(results['kylin']['lct']['memory_mb'], 2),
-                        'albedo_psnr': round(results['kylin']['lct']['albedo_psnr'], 2),
-                        'albedo_mae': round(results['kylin']['lct']['albedo_mae'], 4),
-                        'depth_mae': round(results['kylin']['lct']['depth_mae'], 4),
-                        'ssim': round(results['kylin']['lct']['ssim'], 4),
-                    }
-                }
-            },
-            'stanford_reconstruction': {
-                'results': {
-                    'quasi_fresnel_proposed': {
-                        'runtime_s': round(results['bunny']['qft']['runtime_s'], 6),
-                        'memory_mb': round(results['bunny']['qft']['memory_mb'], 2),
-                        'albedo_psnr': round(results['bunny']['qft']['albedo_psnr'], 2),
-                        'albedo_mae': round(results['bunny']['qft']['albedo_mae'], 4),
-                        'depth_mae': round(results['bunny']['qft']['depth_mae'], 4),
-                    },
-                    'fourier_transform': {
-                        'runtime_s': round(results['bunny']['lct']['runtime_s'], 6),
-                        'memory_mb': round(results['bunny']['lct']['memory_mb'], 2),
-                        'albedo_psnr': round(results['bunny']['lct']['albedo_psnr'], 2),
-                        'albedo_mae': round(results['bunny']['lct']['albedo_mae'], 4),
-                        'depth_mae': round(results['bunny']['lct']['depth_mae'], 4),
-                    }
-                }
-            },
-            'dynamic_scene': {
-                'results': {
-                    'quasi_fresnel_proposed': {
-                        'runtime_s': round(results['dynamic']['qft']['runtime_s'], 6),
-                        'memory_mb': round(results['dynamic']['qft']['memory_mb'], 2),
-                    },
-                    'fourier_transform': {
-                        'runtime_s': round(results['dynamic']['lct']['runtime_s'], 6),
-                        'memory_mb': round(results['dynamic']['lct']['memory_mb'], 2),
+def build_scores(real_result: dict[str, object]) -> dict[str, object]:
+    return {
+        "experiments": {
+            "zaragoza_efficiency_real_sample": {
+                "results": {
+                    "quasi_fresnel_proposed": {
+                        "runtime_s": round(real_result["runtime_mean_s"], 6),
+                        "memory_mb": round(real_result["maxrss_mb"], 2),
                     }
                 }
             }
         }
     }
 
-    os.makedirs('scoring', exist_ok=True)
-    with open('scoring/scores.json', 'w') as f:
-        json.dump(scores, f, indent=2)
-    print('Scores saved to scoring/scores.json')
 
-    # Validate
-    if os.path.exists('scoring/validate.py'):
-        import subprocess
-        result = subprocess.run(['python3', 'scoring/validate.py', '--compare'], capture_output=True, text=True)
-        print(result.stdout)
-        if result.stderr:
-            print(result.stderr)
+def main() -> None:
+    print("=== Real Zaragoza-style Sample ===")
+    real = load_real_sample()
+    # Paper uses scene-specific fixed s values, not test-set tuning.
+    # The bundled sample is a bunny scene; we use the paper's 0.02 setting
+    # for non-USAF Zaragoza instances.
+    real_s = 0.02
+    real_result = benchmark_qft(
+        real["tau"], s=real_s, dt=real["dt"], k=real["k"], area=real["area"], repeats=5
+    )
+    real_metrics = _scene_quality_metrics(
+        real_result["albedo"], real_result["depth"], real["albedo"], real["depth"]
+    )
+    print(
+        f"scene={real['scene_name']} s={real_s:.3f} "
+        f"runtime={real_result['runtime_mean_s']:.6f}s +/- {real_result['runtime_std_s']:.6f}s "
+        f"maxrss={real_result['maxrss_mb']:.2f}MB"
+    )
+    print(
+        "proxy_quality "
+        f"PSNR={real_metrics['psnr']:.2f}dB "
+        f"SSIM={real_metrics['ssim']:.4f} "
+        f"albedo_MAE={real_metrics['albedo_mae']:.4f} "
+        f"depth_MAE={real_metrics['depth_mae']:.4f}"
+    )
+
+    print("\n=== Synthetic Sanity Check ===")
+    synthetic = generate_dataset(
+        "kylin", 64, 256, area=0.3, dt=0.003, k=4, N_relay=64, default_depth=0.15
+    )
+    syn_s = 0.025
+    syn_result = benchmark_qft(
+        synthetic["tau"],
+        s=syn_s,
+        dt=synthetic["dt"],
+        k=synthetic["k"],
+        area=synthetic["area"],
+        repeats=3,
+    )
+    syn_metrics = compute_metrics(
+        syn_result["albedo"],
+        syn_result["depth"],
+        synthetic["albedo"],
+        synthetic["depth"],
+    )
+    print(
+        f"scene=kylin_synthetic s={syn_s:.3f} "
+        f"runtime={syn_result['runtime_mean_s']:.6f}s "
+        f"maxrss={syn_result['maxrss_mb']:.2f}MB "
+        f"PSNR={syn_metrics['psnr']:.2f}dB "
+        f"SSIM={syn_metrics['ssim']:.4f}"
+    )
+
+    scores = build_scores(real_result)
+    out_path = ROOT / "scoring" / "scores.json"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(scores, indent=2) + "\n")
+    print(f"\nWrote {out_path}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
