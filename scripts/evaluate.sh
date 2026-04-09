@@ -5,10 +5,12 @@
 # ground truth, measuring PSNR, MAE, SSIM, runtime, and memory usage.
 #
 # Usage:
-#   ./evaluate.sh <method> <data_dir> [options]
-#   ./evaluate.sh quasi_fresnel /home/user/data/kylin --s 0.025
-#   ./evaluate.sh fbp /home/user/data/kylin
-#   ./evaluate.sh lct /home/user/data/kylin
+#   ./evaluate.sh <method> <data_dir> [s_param]
+#   ./evaluate.sh quasi_fresnel /home/user/data/kylin 0.025
+#   ./evaluate.sh fbp /home/user/data/shapes
+#   ./evaluate.sh lct /home/user/data/shapes
+#
+# Writes results to scoring/scores.json in the reference.json experiment format.
 
 set -e
 
@@ -31,6 +33,11 @@ import tracemalloc
 method = '$METHOD'
 data_dir = '$DATA_DIR'
 s_param = float('$S_PARAM')
+
+# Threading fixes
+os.environ['OPENBLAS_NUM_THREADS'] = '1'
+os.environ['MKL_NUM_THREADS'] = '1'
+os.environ['OMP_NUM_THREADS'] = '1'
 
 # Load ground truth data
 data_files = [f for f in os.listdir(data_dir) if f.endswith('.npz')]
@@ -60,14 +67,16 @@ if method == 'quasi_fresnel':
     depth_recon = result['depth']
     runtime = result['timing']['total']
     memory_mb = result['memory_mb']
+    method_key = 'quasi_fresnel_proposed'
 elif method == 'fbp':
-    from baseline.fbp import fbp_reconstruct
+    from baseline.fbp import fbp_reconstruct_v2 as fbp_reconstruct
     result = fbp_reconstruct(tau, dt, k)
     albedo_recon = result['albedo']
     depth_recon = result['depth']
     runtime = time.perf_counter() - t0
     _, peak = tracemalloc.get_traced_memory()
     memory_mb = peak / (1024 * 1024)
+    method_key = 'fbp_baseline'
 elif method == 'lct':
     from baseline.lct import lct_reconstruct
     result = lct_reconstruct(tau, dt, k)
@@ -76,6 +85,7 @@ elif method == 'lct':
     runtime = time.perf_counter() - t0
     _, peak = tracemalloc.get_traced_memory()
     memory_mb = peak / (1024 * 1024)
+    method_key = 'fourier_transform'  # maps to reference.json baseline
 else:
     print(f'Unknown method: {method}')
     sys.exit(1)
@@ -100,25 +110,48 @@ print(f'Albedo MAE: {metrics[\"albedo_mae\"]:.4f}')
 print(f'Depth MAE: {metrics[\"depth_mae\"]:.4f}m')
 print(f'SSIM: {metrics[\"ssim\"]:.4f}')
 
-# Write scores
-scores = {
-    'nlos_reconstruction': {
-        'results': {
-            method: {
-                'type': 'proposed' if method == 'quasi_fresnel' else 'baseline',
-                'runtime_s': round(runtime, 6),
-                'memory_mb': round(memory_mb, 2),
-                'albedo_psnr': round(metrics['psnr'], 2),
-                'albedo_mae': round(metrics['albedo_mae'], 4),
-                'depth_mae': round(metrics['depth_mae'], 4),
-                'ssim': round(metrics['ssim'], 4),
-            }
-        }
-    }
+# Build result dict
+result_dict = {
+    'runtime_s': round(runtime, 6),
+    'memory_mb': round(memory_mb, 2),
+    'albedo_psnr': round(metrics['psnr'], 2),
+    'albedo_mae': round(metrics['albedo_mae'], 4),
+    'depth_mae': round(metrics['depth_mae'], 4),
+    'ssim': round(metrics['ssim'], 4),
 }
 
-with open('scoring/scores.json', 'w') as f:
+# Determine experiment name from scene
+scene_to_exp = {
+    'kylin': 'zaragoza_kylin_reconstruction',
+    'bunny': 'stanford_reconstruction',
+    'shapes': 'zaragoza_kylin_reconstruction',
+    'dynamic': 'dynamic_scene',
+}
+exp_name = scene_to_exp.get(scene_name, 'nlos_reconstruction')
+
+# Load existing scores or create new structure
+scores_path = 'scoring/scores.json'
+if os.path.exists(scores_path):
+    try:
+        with open(scores_path) as f:
+            scores = json.load(f)
+    except Exception:
+        scores = {'experiments': {}}
+else:
+    scores = {'experiments': {}}
+
+if 'experiments' not in scores:
+    scores = {'experiments': scores}
+
+if exp_name not in scores['experiments']:
+    scores['experiments'][exp_name] = {'results': {}}
+if 'results' not in scores['experiments'][exp_name]:
+    scores['experiments'][exp_name]['results'] = {}
+
+scores['experiments'][exp_name]['results'][method_key] = result_dict
+
+with open(scores_path, 'w') as f:
     json.dump(scores, f, indent=2)
 
-print(f'Scores saved to scoring/scores.json')
+print(f'Scores saved to {scores_path}')
 "
