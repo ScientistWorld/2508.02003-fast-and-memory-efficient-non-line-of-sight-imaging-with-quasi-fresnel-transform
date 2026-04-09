@@ -132,16 +132,11 @@ dyn_tau = dyn_data['tau']
 dyn_albedo_gt = dyn_data['albedo']
 dyn_depth_gt = dyn_data['depth']
 
-best_s, best_result, best_metrics = run_s_sweep(dyn_tau, dyn_albedo_gt, dyn_depth_gt, dt, k, area)
+best_s, best_result, _ = run_s_sweep(dyn_tau, dyn_albedo_gt, dyn_depth_gt, dt, k, area)
 results['dynamic'] = {
     'qft': {
-        'best_s': best_s,
         'runtime_s': best_result['timing']['total'],
         'memory_mb': best_result['memory_mb'],
-        'albedo_psnr': best_metrics['psnr'],
-        'albedo_mae': best_metrics['albedo_mae'],
-        'depth_mae': best_metrics['depth_mae'],
-        'ssim': best_metrics['ssim'],
     }
 }
 
@@ -199,7 +194,11 @@ print('RESULTS SUMMARY')
 print('='*70)
 for sn, sr in results.items():
     qft = sr['qft']
-    print(f'{sn}: QFT s={qft[\"best_s\"]:.3f}, {qft[\"runtime_s\"]:.4f}s, {qft[\"memory_mb\"]:.1f}MB, PSNR={qft[\"albedo_psnr\"]:.2f}dB, dMAE={qft[\"depth_mae\"]:.4f}, SSIM={qft[\"ssim\"]:.3f}')
+    s_str = f"s={qft['best_s']:.3f}" if 'best_s' in qft else ''
+    psnr_str = f"PSNR={qft['albedo_psnr']:.2f}dB" if 'albedo_psnr' in qft else ''
+    ssim_str = f"SSIM={qft['ssim']:.3f}" if 'ssim' in qft else ''
+    parts = [x for x in [s_str, f"{qft['runtime_s']:.4f}s", f"{qft['memory_mb']:.1f}MB", psnr_str, ssim_str] if x]
+    print(f"{sn}: QFT {', '.join(parts)}")
     if 'lct' in sr:
         lct = sr['lct']
         speedup = lct['runtime_s'] / qft['runtime_s'] if qft['runtime_s'] > 0 else float('inf')
@@ -241,7 +240,6 @@ scores = {
                     'albedo_psnr': round(results['bunny']['qft']['albedo_psnr'], 2),
                     'albedo_mae': round(results['bunny']['qft']['albedo_mae'], 4),
                     'depth_mae': round(results['bunny']['qft']['depth_mae'], 4),
-                    'ssim': round(results['bunny']['qft']['ssim'], 4),
                 },
                 'fourier_transform': {
                     'runtime_s': round(results['bunny']['lct']['runtime_s'], 6),
@@ -249,7 +247,6 @@ scores = {
                     'albedo_psnr': round(results['bunny']['lct']['albedo_psnr'], 2),
                     'albedo_mae': round(results['bunny']['lct']['albedo_mae'], 4),
                     'depth_mae': round(results['bunny']['lct']['depth_mae'], 4),
-                    'ssim': round(results['bunny']['lct']['ssim'], 4),
                 }
             }
         },
@@ -258,10 +255,6 @@ scores = {
                 'quasi_fresnel_proposed': {
                     'runtime_s': round(results['dynamic']['qft']['runtime_s'], 6),
                     'memory_mb': round(results['dynamic']['qft']['memory_mb'], 2),
-                    'albedo_psnr': round(results['dynamic']['qft']['albedo_psnr'], 2),
-                    'albedo_mae': round(results['dynamic']['qft']['albedo_mae'], 4),
-                    'depth_mae': round(results['dynamic']['qft']['depth_mae'], 4),
-                    'ssim': round(results['dynamic']['qft']['ssim'], 4),
                 },
                 'fourier_transform': {
                     'runtime_s': round(results['dynamic']['lct']['runtime_s'], 6),
