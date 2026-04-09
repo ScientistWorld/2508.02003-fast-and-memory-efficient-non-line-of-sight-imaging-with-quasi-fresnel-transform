@@ -95,10 +95,41 @@ def load_zaragoza_hdf5(hdf5_path, dt=0.003, k=4, area=0.6):
     print(f"  tau shape: {tau.shape}")
     print(f"  tau range: [{tau.min():.6f}, {tau.max():.6f}]")
 
-    # Transpose if needed — Zaragoza data is typically (N_laser, N_scan, N_bins)
-    # For confocal: laser=scan, so shape should be (N, N, N_bins)
-    if tau.ndim == 3:
-        # If first two dims differ from expected, may need transpose
+    # Handle Zaragoza data format:
+    # Confocal: data shape is (N_laser_points, N_patterns, N_time, N_scan_per_axis)
+    # or (N_laser_points, N_patterns, N_time_bins) for some files.
+    # For confocal measurement: laser_i == camera_i, extract diagonal.
+    #
+    # Typical confocal 4D shape: (N^2, patterns, T, N_scan) where N^2 is laser grid
+    # We need to reshape to (N_scan, N_scan, N_time) for confocal extraction.
+    if tau.ndim == 4:
+        n_laser = tau.shape[0]
+        n_pat = tau.shape[1]
+        n_t = tau.shape[2]
+        n_scan = tau.shape[3]
+        print(f"  4D data detected: ({n_laser}, {n_pat}, {n_t}, {n_scan})")
+
+        # For confocal: grid size is sqrt(n_laser) x sqrt(n_laser)
+        grid_size = int(np.sqrt(n_laser))
+        scan_grid = n_scan  # scan points per axis
+
+        if grid_size * grid_size == n_laser:
+            print(f"  Laser grid: {grid_size}x{grid_size}, scan: {scan_grid}, patterns: {n_pat}, time: {n_t}")
+            # Confocal extraction: for each laser position i, take measurement at
+            # matching scan position. Pattern dim is averaged or first used.
+            # Reshape laser dim to 2D grid
+            conf_tau = np.zeros((grid_size, grid_size, n_t), dtype=np.float64)
+            for i in range(grid_size):
+                for j in range(grid_size):
+                    laser_idx = i * grid_size + j
+                    # Average over patterns, extract this laser's time signal
+                    conf_tau[i, j, :] = tau[laser_idx, :, :, j].mean(axis=0)
+            tau = conf_tau
+            print(f"  Extracted confocal: {tau.shape}")
+        else:
+            print(f"  Warning: n_laser={n_laser} not a perfect square, taking first pattern")
+            tau = tau[:, 0, :, :]  # (N_laser, N_time, N_scan)
+    elif tau.ndim == 3:
         if tau.shape[0] != tau.shape[1]:
             print(f"  Warning: non-square spatial dims {tau.shape[:2]}")
 

@@ -35,8 +35,8 @@ def lct_reconstruct(tau, dt, k=4, c=299792458, z_range=None):
     if z_range is None:
         z_range = N_bins
 
-    # Convert time to depth: z = c*t/2
-    z_bins = np.arange(N_bins) * dt * c / 2
+    # Spatial distance per bin (already in meters since dt = c*t_bin/2)
+    r_bins = (np.arange(N_bins) + 0.5) * dt
 
     # Step 1: Apply the light-cone transform kernel
     # The LCT kernel in Fourier domain is: K(w_x, w_y, w_z) = exp(-i*w_z*z_0)
@@ -49,7 +49,7 @@ def lct_reconstruct(tau, dt, k=4, c=299792458, z_range=None):
     dx = dt  # Relay wall spacing (approximation)
     freq_x = fftfreq(N, dx)
     freq_y = fftfreq(N, dx)
-    freq_z = fftfreq(N_bins, dt * c / 2)
+    freq_z = fftfreq(N_bins, dt)
 
     FX, FY, FZ = np.meshgrid(freq_x, freq_y, freq_z, indexing='ij')
 
@@ -73,10 +73,6 @@ def lct_reconstruct(tau, dt, k=4, c=299792458, z_range=None):
     for i in range(N):
         for j in range(N):
             peak_z = np.argmax(psi[i, j, :])
-            depth_map[i, j] = z_bins[min(peak_z, N_bins-1)]
-
-    # Normalize depth
-    if depth_map.max() > 0.1:
-        depth_map = depth_map / depth_map.max() * 2.0
+            depth_map[i, j] = r_bins[min(peak_z, N_bins-1)]
 
     return albedo, depth_map
