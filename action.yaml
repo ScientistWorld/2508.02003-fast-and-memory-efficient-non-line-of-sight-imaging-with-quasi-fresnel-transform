@@ -1,3 +1,5 @@
-action: done
-milestone: core_claim
-notes: "Reproduced the core claim with a successful standalone evaluation: the Quasi-Fresnel method runs on a bundled real Zaragoza-style sample with paper-style lightweight efficiency, and a separate complexity experiment verifies that sequential loading preserves the reconstruction while reducing empirical memory scaling toward O(N^2)."
+action: submit
+gpus: 0
+test: true
+milestone: method_runs
+notes: "Re-run the packaged CPU evaluation after fixing Zaragoza HDF5 metadata loading and adding an additional public confocal scene benchmark."
