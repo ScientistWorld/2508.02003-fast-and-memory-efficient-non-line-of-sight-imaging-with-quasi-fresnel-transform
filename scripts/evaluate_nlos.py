@@ -124,6 +124,40 @@ def build_scores(real_result: dict[str, object]) -> dict[str, object]:
     }
 
 
+def build_diagnostics(
+    real_result: dict[str, object],
+    real_metrics: dict[str, float],
+    syn_result: dict[str, object],
+    syn_metrics: dict[str, float],
+) -> dict[str, object]:
+    return {
+        "real_sample": {
+            "runtime_mean_s": round(real_result["runtime_mean_s"], 6),
+            "runtime_std_s": round(real_result["runtime_std_s"], 6),
+            "runtime_min_s": round(real_result["runtime_min_s"], 6),
+            "runtime_max_s": round(real_result["runtime_max_s"], 6),
+            "memory_mb": round(real_result["maxrss_mb"], 2),
+            "proxy_quality": {
+                "psnr": round(real_metrics["psnr"], 4),
+                "ssim": round(real_metrics["ssim"], 4),
+                "albedo_mae": round(real_metrics["albedo_mae"], 6),
+                "depth_mae": round(real_metrics["depth_mae"], 6),
+            },
+        },
+        "synthetic_sanity": {
+            "runtime_mean_s": round(syn_result["runtime_mean_s"], 6),
+            "runtime_std_s": round(syn_result["runtime_std_s"], 6),
+            "memory_mb": round(syn_result["maxrss_mb"], 2),
+            "quality": {
+                "psnr": round(syn_metrics["psnr"], 4),
+                "ssim": round(syn_metrics["ssim"], 4),
+                "albedo_mae": round(syn_metrics["albedo_mae"], 6),
+                "depth_mae": round(syn_metrics["depth_mae"], 6),
+            },
+        },
+    }
+
+
 def main() -> None:
     print("=== Real Zaragoza-style Sample ===")
     real = load_real_sample()
@@ -182,6 +216,11 @@ def main() -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(scores, indent=2) + "\n")
     print(f"\nWrote {out_path}")
+
+    diagnostics = build_diagnostics(real_result, real_metrics, syn_result, syn_metrics)
+    diag_path = ROOT / "scoring" / "diagnostics.json"
+    diag_path.write_text(json.dumps(diagnostics, indent=2) + "\n")
+    print(f"Wrote {diag_path}")
 
 
 if __name__ == "__main__":
