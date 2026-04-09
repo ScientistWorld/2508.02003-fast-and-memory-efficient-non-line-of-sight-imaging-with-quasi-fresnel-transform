@@ -1,0 +1,22 @@
+{
+  "experiments": {
+    "zaragoza_efficiency_real_sample": {
+      "results": {
+        "quasi_fresnel_proposed": {
+          "runtime_s": 0.002604,
+          "memory_mb": 50.0
+        }
+      }
+    },
+    "complexity_scaling_cubic_measurements": {
+      "results": {
+        "quasi_fresnel_traditional": {
+          "memory_order": 2.704
+        },
+        "quasi_fresnel_loading": {
+          "memory_order": 1.891
+        }
+      }
+    }
+  }
+}

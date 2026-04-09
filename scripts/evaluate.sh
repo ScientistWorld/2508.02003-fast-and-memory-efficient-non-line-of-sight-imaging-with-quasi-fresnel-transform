@@ -1,9 +1,10 @@
 #!/bin/bash
 # Standard evaluation entrypoint.
-# Runs the honest paper-aligned evaluation currently supported by this workspace:
-# 1) real Zaragoza-style sample efficiency benchmark
-# 2) synthetic sanity-check reconstruction
+# Score a method-produced report artifact without importing method code.
 set -euo pipefail
 
 cd /home/user
-python3 scripts/evaluate_nlos.py
+INPUT_PATH="${1:-/home/user/scoring/raw_results.json}"
+OUTPUT_PATH="${2:-/home/user/scoring/scores.json}"
+
+python3 eval/score_nlos.py --input "${INPUT_PATH}" --output "${OUTPUT_PATH}"

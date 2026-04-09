@@ -431,7 +431,7 @@ def main() -> None:
         public_scene_results.append(scene_diag)
 
     scores = build_scores(real_result, scaling)
-    out_path = ROOT / "scoring" / "scores.json"
+    out_path = ROOT / "scoring" / "raw_results.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(scores, indent=2) + "\n")
     print(f"\nWrote {out_path}")

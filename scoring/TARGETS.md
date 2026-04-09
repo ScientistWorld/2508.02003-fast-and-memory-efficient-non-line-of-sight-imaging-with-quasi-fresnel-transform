@@ -1,12 +1,12 @@
 # Evaluation Targets
 
 ## Primary target: efficiency on confocal NLOS reconstruction
-Optimize runtime and memory on the bundled real Zaragoza-style sample while keeping the Quasi-Fresnel algorithm intact.
+Optimize runtime and memory on the bundled real Zaragoza-style sample while preserving the same task, data setting, and output format.
 - `runtime_s`: lower is better
 - `memory_mb`: lower is better
 
 ## Secondary target: loading-mode complexity
-Recover the paper's Table 1 claim that sequential loading preserves the Quasi-Fresnel computation while lowering the working-memory scaling from cubic to quadratic.
+Recover the paper's Table 1 claim that the lower-memory execution path reduces working-memory scaling from roughly cubic toward quadratic on cubic confocal measurement tensors.
 - `memory_order`: lower is better
 
 ## Diagnostic tracking: reconstruction sanity

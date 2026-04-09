@@ -2,7 +2,7 @@
 
 ## What Works
 - The workspace contains a recognizable implementation of the paper's Quasi-Fresnel reconstruction equations.
-- The method is packaged behind `scripts/evaluate.sh` and `scripts/reproduce.sh`.
+- The method is packaged behind `scripts/method.sh`, while `scripts/evaluate.sh` now scores a method-produced report artifact without importing `method/`.
 - Public Zaragoza confocal samples are packaged in `data/zaragoza/` and `data/zaragoza/public/`.
 - The evaluation path now avoids oracle tuning on the test target and removes misleading baseline claims.
 - The method code now includes both the paper's direct full-histogram integration path and its sequential-loading aggregation path.
@@ -12,7 +12,7 @@
 ## Results Achieved
 - The method has previously run successfully inside the packaged container, so `method_runs` remains secure.
 - Earlier reported `core_claim`-style results are now considered stale because they were computed before the `deltaT` metadata fix and before broadening the public-scene evaluation beyond the single bundled bunny sample.
-- The next submitted job will regenerate `scoring/scores.json` and `scoring/diagnostics.json` using the corrected HDF5 metadata path and the added public `T` scene benchmark.
+- The current packaged scores are regenerated from a method report artifact through the new method-agnostic evaluation entrypoint, and `python validate.py --compare` passes.
 
 ## What Remains
 - Re-run the packaged evaluation after the metadata fix and scene-expansion changes.

@@ -31,4 +31,9 @@
 - Fixed Zaragoza HDF5 metadata loading to read `deltaT` and relay-wall size from the source files instead of relying on the stale bundled NPZ metadata.
 - Added an additional public Zaragoza confocal scene (`T_conf64.hdf5`) to the packaged download/evaluation path so the next job can benchmark more than one public scene.
 
+### [2026-04-09 14:10] - method_runs
+- Completed final gym verification.
+- Separated the reusable evaluator from the paper implementation by making `scripts/evaluate.sh` score a method-produced report artifact through `eval/score_nlos.py`.
+- Rewrote scoring guidance files to remove method-step leakage from the scientist-facing constraints and experiment descriptions.
+
 ## Stop Justification

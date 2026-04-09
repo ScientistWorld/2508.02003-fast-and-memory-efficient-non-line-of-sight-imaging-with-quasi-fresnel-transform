@@ -1,5 +1,3 @@
-action: submit
-gpus: 0
-test: true
+action: done
 milestone: method_runs
-notes: "Re-run the packaged CPU evaluation after fixing Zaragoza HDF5 metadata loading and adding an additional public confocal scene benchmark."
+notes: "Final verification completed: reusable evaluator added, method-safe scoring docs cleaned up, milestone remains method_runs."

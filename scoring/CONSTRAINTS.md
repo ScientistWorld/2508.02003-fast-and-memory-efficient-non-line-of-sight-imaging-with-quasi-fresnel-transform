@@ -1,17 +1,13 @@
 # Scientist Constraints
 
 ## Method
-Keep the paper's Quasi-Fresnel reconstruction pipeline:
-- time aggregation of the transient histogram into a complex 2D field
-- spatial deconvolution in the relay-wall plane
-- albedo/depth extraction from the recovered complex field
-
-Replacing the method with a different NLOS reconstruction paradigm is out of scope.
+Stay within the paper's fast direct-reconstruction family for confocal NLOS surface recovery.
+Do not switch to a fundamentally different paradigm such as a generic learned black-box predictor, a full 3D volumetric pipeline, or a method that relies on extra supervision unavailable in this workspace.
 
 ## Data
 Use the packaged confocal sample in `data/zaragoza/` for the paper-aligned efficiency benchmark.
 Synthetic data may be used only as a sanity check, not as a relabeled replacement for the paper's public datasets.
 
 ## Evaluation
-Use `scripts/evaluate.sh` / `scripts/evaluate_nlos.py`.
+Use `scripts/evaluate.sh` with a report matching the packaged experiment/result structure.
 Do not oracle-tune the parameter `s` on the test target.
