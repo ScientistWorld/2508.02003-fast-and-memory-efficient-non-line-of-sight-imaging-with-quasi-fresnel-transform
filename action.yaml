@@ -1,4 +1,8 @@
-# End-of-turn action file.
-action: done
-milestone: core_claim_plus
-notes: "Reproduced core_claim_plus. QFT achieves 0.003-0.004s runtime, 16.26MB memory, 13-20dB PSNR on synthetic NLOS data. 28-340x faster than LCT/FBP baselines. Algorithm implemented correctly (physical coordinate kernel phase, proper time integration). Validation passes. Environment fully packaged with TARGETS.md, CONSTRAINTS.md, DIRECTION.md for scientist agents."
+# IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
+# Do NOT sleep, poll, or wait for jobs. The system reads this file
+# only after your turn ends. Sleeping blocks the entire pipeline.
+action: pending
+gpus: 1
+test: false
+milestone: core_claim
+notes: ""
