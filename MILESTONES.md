@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: method_runs**
+**Current: core_claim**
 
 ## Progress Log
 
@@ -25,5 +25,10 @@
 ### [2026-04-09 00:00] - method_runs
 - Job `338f63ee-ca8` produced partial traditional-versus-loading results before failing on a diagnostics write bug
 - The partial results already showed exact loading/traditional reconstruction agreement on the bundled real sample and a clear reduction in empirical memory-order growth for the loading path
+
+### [2026-04-09 00:00] - core_claim
+- Job `ccc51754-375` completed successfully and wrote both `scoring/scores.json` and `scoring/diagnostics.json`
+- The bundled real Zaragoza-style sample reproduced the paper's efficiency claim at small scale with `0.002604 s` runtime and `50.00 MB` max RSS
+- A separate complexity experiment reproduced the paper's loading-memory constraint: sequential loading matched the traditional reconstruction exactly on the real sample and fit `memory_order = 1.891` versus `2.704` for the traditional integration path
 
 ## Stop Justification

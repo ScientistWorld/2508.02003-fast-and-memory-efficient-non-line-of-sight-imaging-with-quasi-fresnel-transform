@@ -1,5 +1,3 @@
-action: submit
-gpus: 0
-test: true
-milestone: method_runs
-notes: "Rerun CPU evaluation after fixing diagnostics output and switching the Table 1 scaling experiment to benchmark the time-integration stage directly for traditional versus sequential-loading Quasi-Fresnel."
+action: done
+milestone: core_claim
+notes: "Reproduced the core claim with a successful standalone evaluation: the Quasi-Fresnel method runs on a bundled real Zaragoza-style sample with paper-style lightweight efficiency, and a separate complexity experiment verifies that sequential loading preserves the reconstruction while reducing empirical memory scaling toward O(N^2)."
