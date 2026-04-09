@@ -1,6 +1,8 @@
 # IMPORTANT: Once you set action to 'submit' or 'done', STOP immediately.
 # Do NOT sleep, poll, or wait for jobs. The system reads this file
 # only after your turn ends. Sleeping blocks the entire pipeline.
-action: done
-milestone: core_claim_plus
-notes: "Core claim reproduced and validated. QFT consistently 5-8dB better PSNR than LCT across all scenes with 9-16x speedup. Dynamic scene achieves 2ms/frame (target: 3ms). All 3 experiments validated, scores.json matches reference.json. Environment is complete and reusable."
+action: pending
+gpus: 1
+test: false
+milestone: core_claim
+notes: ""
