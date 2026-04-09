@@ -1,0 +1,26 @@
+{
+  "real_sample": {
+    "runtime_mean_s": 0.001707,
+    "runtime_std_s": 0.00191,
+    "runtime_min_s": 0.000681,
+    "runtime_max_s": 0.005527,
+    "memory_mb": 45.23,
+    "proxy_quality": {
+      "psnr": 2.9965,
+      "ssim": 0.0299,
+      "albedo_mae": 0.684281,
+      "depth_mae": 0.460573
+    }
+  },
+  "synthetic_sanity": {
+    "runtime_mean_s": 0.005769,
+    "runtime_std_s": 0.000474,
+    "memory_mb": 125.12,
+    "quality": {
+      "psnr": 12.8107,
+      "ssim": 0.1794,
+      "albedo_mae": 0.180766,
+      "depth_mae": 0.089789
+    }
+  }
+}

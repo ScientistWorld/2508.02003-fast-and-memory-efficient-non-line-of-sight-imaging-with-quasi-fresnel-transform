@@ -1,3 +1,12 @@
 {
-  "experiments": {}
+  "experiments": {
+    "zaragoza_efficiency_real_sample": {
+      "results": {
+        "quasi_fresnel_proposed": {
+          "runtime_s": 0.001707,
+          "memory_mb": 45.23
+        }
+      }
+    }
+  }
 }
