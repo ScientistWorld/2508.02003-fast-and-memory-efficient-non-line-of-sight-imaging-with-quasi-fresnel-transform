@@ -4,4 +4,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim_plus
-notes: "Comprehensive eval: 3 scenes (shapes, kylin, bunny) at 64x64 with s-parameter search. Compare QFT vs FBP vs LCT. Test on 128x128 if budget allows."
+notes: "Submitting comprehensive evaluation job (commit a76d5e6): 3 scenes (shapes, kylin, bunny), s-parameter search, QFT vs FBP vs LCT comparison."
