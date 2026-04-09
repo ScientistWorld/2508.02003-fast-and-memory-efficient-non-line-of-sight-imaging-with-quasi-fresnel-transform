@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Audit fixes: proper windowed SSIM, albedo-weighted depth MAE, filled EXPERIMENTS.md, fair baseline comparison (same scene for QFT vs LCT), proper dynamic scene evaluation."
+notes: "Comprehensive evaluation: QFT vs LCT on shapes/kylin/bunny/dynamic with proper SSIM, depth masking, fair comparison, Zaragoza HDF5 fix."

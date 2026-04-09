@@ -1,5 +1,5 @@
 #!/bin/bash
-# Job script: Comprehensive evaluation of improved QFT algorithm.
+# Job script: Comprehensive evaluation with improved QFT algorithm.
 # Tests on multiple scenes with s-parameter search and baseline comparisons.
 set -e
 
@@ -64,7 +64,7 @@ results = {}
 
 s_values = [0.005, 0.008, 0.010, 0.015, 0.020, 0.025, 0.030, 0.040, 0.050, 0.075, 0.100]
 
-def run_s_sweep(tau, albedo_gt, depth_gt, dt, k, area):
+def run_s_sweep(tau, albedo_gt, depth_gt, dt, k, area, label=''):
     best_psnr = -999
     best_s = 0.025
     best_result = None
@@ -106,7 +106,7 @@ for scene_name in ['shapes', 'kylin', 'bunny']:
         }
     }
 
-    # Run LCT baseline on all main scenes for fair comparison
+    # Run LCT baseline on all main scenes
     from baseline.lct import lct_reconstruct
     tracemalloc.start()
     t0 = time.perf_counter()
@@ -158,33 +158,39 @@ results['dynamic']['lct'] = {
     'memory_mb': lct_mem / (1024*1024),
 }
 
-# ---- Try real Zaragoza data if available ----
+# ---- Try real Zaragoza data (fixed loader) ----
 zaragoza_npz = 'data/zaragoza/bunny_conf64.npz'
 if os.path.exists(zaragoza_npz):
-    print(f'\n===== Real Zaragoza bunny (64x64) =====')
     zdata = np.load(zaragoza_npz)
     z_tau = zdata['tau']
-    z_albedo_gt = zdata['albedo']
-    z_depth_gt = zdata['depth']
-    z_dt = float(zdata['dt'])
-    z_k = int(zdata['k'])
-    z_area = float(zdata['area'])
-    print(f'  Data shape: tau={z_tau.shape}, albedo={z_albedo_gt.shape}')
+    print(f'\n===== Real Zaragoza bunny =====')
+    print(f'  tau shape: {z_tau.shape}')
 
-    best_s, best_result, best_metrics = run_s_sweep(z_tau, z_albedo_gt, z_depth_gt, z_dt, z_k, z_area)
-    if best_metrics:
-        print(f'  Best: s={best_s:.3f}, PSNR={best_metrics[\"psnr\"]:.2f}dB')
-        results['zaragoza_bunny'] = {
-            'qft': {
-                'best_s': best_s,
-                'runtime_s': best_result['timing']['total'],
-                'memory_mb': best_result['memory_mb'],
-                'albedo_psnr': best_metrics['psnr'],
-                'albedo_mae': best_metrics['albedo_mae'],
-                'depth_mae': best_metrics['depth_mae'],
-                'ssim': best_metrics['ssim'],
+    # Skip if shape is still 4D or obviously wrong
+    if z_tau.ndim != 3:
+        print(f'  Skipping Zaragoza data: unexpected shape {z_tau.shape}')
+    else:
+        z_albedo_gt = zdata['albedo']
+        z_depth_gt = zdata['depth']
+        z_dt = float(zdata.get('dt', 0.003))
+        z_k = int(zdata.get('k', 4))
+        z_area = float(zdata.get('area', 0.3))
+        print(f'  albedo shape: {z_albedo_gt.shape}, depth shape: {z_depth_gt.shape}')
+
+        best_s, best_result, best_metrics = run_s_sweep(z_tau, z_albedo_gt, z_depth_gt, z_dt, z_k, z_area)
+        if best_metrics:
+            print(f'  Best: s={best_s:.3f}, PSNR={best_metrics[\"psnr\"]:.2f}dB')
+            results['zaragoza_bunny'] = {
+                'qft': {
+                    'best_s': best_s,
+                    'runtime_s': best_result['timing']['total'],
+                    'memory_mb': best_result['memory_mb'],
+                    'albedo_psnr': best_metrics['psnr'],
+                    'albedo_mae': best_metrics['albedo_mae'],
+                    'depth_mae': best_metrics['depth_mae'],
+                    'ssim': best_metrics['ssim'],
+                }
             }
-        }
 
 # ---- Summary ----
 print()
@@ -200,7 +206,11 @@ for sn, sr in results.items():
         print(f'  LCT: {lct[\"runtime_s\"]:.4f}s, PSNR={lct.get(\"albedo_psnr\",\"N/A\")}dB, speedup={speedup:.1f}x')
 print('='*70)
 
-# ---- Save scores matching reference.json structure ----
+# ---- Build scores matching reference.json structure ----
+# zaragoza_kylin_reconstruction: QFT on kylin vs LCT on kylin
+# stanford_reconstruction: QFT on bunny vs LCT on bunny
+# dynamic_scene: QFT on dynamic vs LCT on dynamic
+
 scores = {
     'experiments': {
         'zaragoza_kylin_reconstruction': {
@@ -231,6 +241,15 @@ scores = {
                     'albedo_psnr': round(results['bunny']['qft']['albedo_psnr'], 2),
                     'albedo_mae': round(results['bunny']['qft']['albedo_mae'], 4),
                     'depth_mae': round(results['bunny']['qft']['depth_mae'], 4),
+                    'ssim': round(results['bunny']['qft']['ssim'], 4),
+                },
+                'fourier_transform': {
+                    'runtime_s': round(results['bunny']['lct']['runtime_s'], 6),
+                    'memory_mb': round(results['bunny']['lct']['memory_mb'], 2),
+                    'albedo_psnr': round(results['bunny']['lct']['albedo_psnr'], 2),
+                    'albedo_mae': round(results['bunny']['lct']['albedo_mae'], 4),
+                    'depth_mae': round(results['bunny']['lct']['depth_mae'], 4),
+                    'ssim': round(results['bunny']['lct']['ssim'], 4),
                 }
             }
         },
@@ -239,6 +258,10 @@ scores = {
                 'quasi_fresnel_proposed': {
                     'runtime_s': round(results['dynamic']['qft']['runtime_s'], 6),
                     'memory_mb': round(results['dynamic']['qft']['memory_mb'], 2),
+                    'albedo_psnr': round(results['dynamic']['qft']['albedo_psnr'], 2),
+                    'albedo_mae': round(results['dynamic']['qft']['albedo_mae'], 4),
+                    'depth_mae': round(results['dynamic']['qft']['depth_mae'], 4),
+                    'ssim': round(results['dynamic']['qft']['ssim'], 4),
                 },
                 'fourier_transform': {
                     'runtime_s': round(results['dynamic']['lct']['runtime_s'], 6),
@@ -253,7 +276,7 @@ with open('scoring/scores.json', 'w') as f:
     json.dump(scores, f, indent=2)
 print('Scores saved to scoring/scores.json')
 
-# Validate if validator exists
+# Validate
 if os.path.exists('validate.py'):
     os.system('python3 validate.py --compare')
 "
