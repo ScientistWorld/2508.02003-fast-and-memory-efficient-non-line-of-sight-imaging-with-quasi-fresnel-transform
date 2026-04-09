@@ -198,7 +198,7 @@ for sn, sr in results.items():
     psnr_str = f"PSNR={qft['albedo_psnr']:.2f}dB" if 'albedo_psnr' in qft else ''
     ssim_str = f"SSIM={qft['ssim']:.3f}" if 'ssim' in qft else ''
     parts = [x for x in [s_str, f"{qft['runtime_s']:.4f}s", f"{qft['memory_mb']:.1f}MB", psnr_str, ssim_str] if x]
-    print(f"{sn}: QFT {', '.join(parts)}")
+    print(f"{sn}: QFT " + ", ".join(parts))
     if 'lct' in sr:
         lct = sr['lct']
         speedup = lct['runtime_s'] / qft['runtime_s'] if qft['runtime_s'] > 0 else float('inf')
