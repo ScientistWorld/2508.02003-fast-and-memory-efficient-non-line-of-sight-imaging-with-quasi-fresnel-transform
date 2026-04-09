@@ -4,4 +4,4 @@
 - Title: `Fast and Memory-efficient Non-line-of-sight Imaging with Quasi-Fresnel Transform`
 - Area: computational imaging / NLOS reconstruction
 
-This workspace contains a recognizable implementation of the paper's Quasi-Fresnel algorithm and packages it as a runnable benchmark. The current milestone is `core_claim`: the method runs on a bundled real Zaragoza-style sample, reproduces the paper's lightweight efficiency behavior, and includes a separate complexity experiment showing that the sequential-loading variant reduces memory growth while preserving the same reconstruction.
+This workspace contains a recognizable implementation of the paper's Quasi-Fresnel algorithm and packages it as a runnable benchmark. The current milestone is `method_runs`: the three-step reconstruction pipeline runs end to end, the Zaragoza HDF5 metadata path has been corrected, and the evaluation now covers both the bundled bunny sample and an additional public Zaragoza scene. The next job re-runs the benchmark after these integrity fixes before any higher milestone can be claimed.

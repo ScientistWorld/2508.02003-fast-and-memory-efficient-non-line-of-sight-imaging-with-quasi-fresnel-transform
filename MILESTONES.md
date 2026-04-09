@@ -1,6 +1,6 @@
 # Reproduction Milestones
 
-**Current: core_claim**
+**Current: method_runs**
 
 ## Progress Log
 
@@ -26,9 +26,9 @@
 - Job `338f63ee-ca8` produced partial traditional-versus-loading results before failing on a diagnostics write bug
 - The partial results already showed exact loading/traditional reconstruction agreement on the bundled real sample and a clear reduction in empirical memory-order growth for the loading path
 
-### [2026-04-09 00:00] - core_claim
-- Job `ccc51754-375` completed successfully and wrote both `scoring/scores.json` and `scoring/diagnostics.json`
-- The bundled real Zaragoza-style sample reproduced the paper's efficiency claim at small scale with `0.002604 s` runtime and `50.00 MB` max RSS
-- A separate complexity experiment reproduced the paper's loading-memory constraint: sequential loading matched the traditional reconstruction exactly on the real sample and fit `memory_order = 1.891` versus `2.704` for the traditional integration path
+### [2026-04-09 14:10] - method_runs
+- Audited the existing `core_claim` report and downgraded it after finding that the packaged benchmark relied on a single tiny sample, stale Zaragoza metadata, and overstated scoring.
+- Fixed Zaragoza HDF5 metadata loading to read `deltaT` and relay-wall size from the source files instead of relying on the stale bundled NPZ metadata.
+- Added an additional public Zaragoza confocal scene (`T_conf64.hdf5`) to the packaged download/evaluation path so the next job can benchmark more than one public scene.
 
 ## Stop Justification

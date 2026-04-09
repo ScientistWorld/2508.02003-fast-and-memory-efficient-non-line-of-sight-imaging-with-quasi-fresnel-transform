@@ -31,6 +31,7 @@ os.environ.setdefault("OMP_NUM_THREADS", "1")
 os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
 
 from data.generate_nlos_data import generate_dataset
+from data.load_zaragoza import load_zaragoza_hdf5
 from method.quasi_fresnel import (
     quasi_fresnel_reconstruct,
     quasi_fresnel_time_integral,
@@ -116,16 +117,59 @@ def benchmark_qft(
 
 
 def load_real_sample() -> dict[str, object]:
-    path = ROOT / "data" / "zaragoza" / "bunny_conf64.npz"
-    data = np.load(path)
+    npz_path = ROOT / "data" / "zaragoza" / "bunny_conf64.npz"
+    hdf5_path = ROOT / "data" / "zaragoza" / "bunny_conf64.hdf5"
+    npz_data = np.load(npz_path)
+    hdf5_data = load_zaragoza_hdf5(hdf5_path)
     return {
-        "tau": data["tau"],
-        "albedo": data["albedo"],
-        "depth": data["depth"],
-        "dt": float(data["dt"]),
-        "k": int(data["k"]),
-        "area": float(data["area"]),
-        "scene_name": str(data["scene_name"]),
+        "tau": hdf5_data["tau"],
+        "albedo": npz_data["albedo"],
+        "depth": npz_data["depth"],
+        "has_ground_truth": True,
+        "dt": float(hdf5_data["dt"]),
+        "k": int(npz_data["k"]),
+        "area": float(hdf5_data["area"]),
+        "scene_name": str(hdf5_data["scene_name"]),
+    }
+
+
+def _scene_parameter_s(scene_name: str) -> float:
+    return 0.025 if "usaf" in scene_name.lower() else 0.02
+
+
+def discover_additional_public_scenes() -> list[Path]:
+    candidates = [
+        ROOT / "data" / "zaragoza" / "public" / "T_conf64.hdf5",
+    ]
+    return [path for path in candidates if path.exists()]
+
+
+def load_public_scene(path: Path) -> dict[str, object]:
+    if path.suffix == ".npz":
+        data = np.load(path)
+        return {
+            "tau": data["tau"],
+            "albedo": data["albedo"],
+            "depth": data["depth"],
+            "has_ground_truth": True,
+            "dt": float(data["dt"]),
+            "k": int(data["k"]),
+            "area": float(data["area"]),
+            "scene_name": str(data["scene_name"]),
+        }
+
+    hdf5_data = load_zaragoza_hdf5(path)
+    return {
+        "tau": hdf5_data["tau"],
+        "albedo": hdf5_data["albedo"],
+        "depth": hdf5_data["depth"],
+        "has_ground_truth": bool(
+            hdf5_data.get("has_albedo_gt", False) and hdf5_data.get("has_depth_gt", False)
+        ),
+        "dt": float(hdf5_data["dt"]),
+        "k": int(hdf5_data["k"]),
+        "area": float(hdf5_data["area"]),
+        "scene_name": str(hdf5_data["scene_name"]),
     }
 
 
@@ -145,11 +189,9 @@ def build_scores(
             "complexity_scaling_cubic_measurements": {
                 "results": {
                     "quasi_fresnel_traditional": {
-                        "runtime_order": round(scaling["traditional"]["runtime_order"], 3),
                         "memory_order": round(scaling["traditional"]["memory_order"], 3),
                     },
                     "quasi_fresnel_loading": {
-                        "runtime_order": round(scaling["loading"]["runtime_order"], 3),
                         "memory_order": round(scaling["loading"]["memory_order"], 3),
                     },
                 }
@@ -164,6 +206,7 @@ def build_diagnostics(
     loading_result: dict[str, object],
     loading_consistency: dict[str, float],
     scaling: dict[str, dict[str, object]],
+    public_scene_results: list[dict[str, object]],
     syn_result: dict[str, object],
     syn_metrics: dict[str, float],
 ) -> dict[str, object]:
@@ -199,6 +242,7 @@ def build_diagnostics(
             },
         },
         "complexity_scaling": scaling,
+        "additional_public_scenes": public_scene_results,
         "synthetic_sanity": {
             "runtime_mean_s": round(syn_result["runtime_mean_s"], 6),
             "runtime_std_s": round(syn_result["runtime_std_s"], 6),
@@ -272,7 +316,7 @@ def main() -> None:
     # Paper uses scene-specific fixed s values, not test-set tuning.
     # The bundled sample is a bunny scene; we use the paper's 0.02 setting
     # for non-USAF Zaragoza instances.
-    real_s = 0.02
+    real_s = _scene_parameter_s(real["scene_name"])
     real_result = benchmark_qft(
         real["tau"], s=real_s, dt=real["dt"], k=real["k"], area=real["area"], repeats=5
     )
@@ -332,6 +376,60 @@ def main() -> None:
             f"algorithm_peak_mb={scaling[mode]['memory_mb']}"
         )
 
+    public_scene_results: list[dict[str, object]] = []
+    additional_scenes = discover_additional_public_scenes()
+    if additional_scenes:
+        print("\n=== Additional Public Zaragoza Scenes ===")
+    for scene_path in additional_scenes:
+        public_scene = load_public_scene(scene_path)
+        public_s = _scene_parameter_s(public_scene["scene_name"])
+        public_result = benchmark_qft(
+            public_scene["tau"],
+            s=public_s,
+            dt=public_scene["dt"],
+            k=public_scene["k"],
+            area=public_scene["area"],
+            repeats=3,
+        )
+        scene_diag = {
+            "scene_name": public_scene["scene_name"],
+            "source_path": str(scene_path),
+            "s": round(public_s, 4),
+            "runtime_mean_s": round(public_result["runtime_mean_s"], 6),
+            "runtime_std_s": round(public_result["runtime_std_s"], 6),
+            "memory_mb": round(public_result["maxrss_mb"], 2),
+            "algorithm_peak_mb": round(public_result["algorithm_peak_mb"], 2),
+            "has_ground_truth": bool(public_scene["has_ground_truth"]),
+        }
+        if public_scene["has_ground_truth"]:
+            public_metrics = _scene_quality_metrics(
+                public_result["albedo"],
+                public_result["depth"],
+                public_scene["albedo"],
+                public_scene["depth"],
+            )
+            scene_diag["proxy_quality"] = {
+                "psnr": round(public_metrics["psnr"], 4),
+                "ssim": round(public_metrics["ssim"], 4),
+                "albedo_mae": round(public_metrics["albedo_mae"], 6),
+                "depth_mae": round(public_metrics["depth_mae"], 6),
+            }
+            print(
+                f"scene={public_scene['scene_name']} s={public_s:.3f} "
+                f"runtime={public_result['runtime_mean_s']:.6f}s "
+                f"maxrss={public_result['maxrss_mb']:.2f}MB "
+                f"PSNR={public_metrics['psnr']:.2f}dB "
+                f"SSIM={public_metrics['ssim']:.4f}"
+            )
+        else:
+            print(
+                f"scene={public_scene['scene_name']} s={public_s:.3f} "
+                f"runtime={public_result['runtime_mean_s']:.6f}s "
+                f"maxrss={public_result['maxrss_mb']:.2f}MB "
+                "quality=unavailable"
+            )
+        public_scene_results.append(scene_diag)
+
     scores = build_scores(real_result, scaling)
     out_path = ROOT / "scoring" / "scores.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
@@ -372,6 +470,7 @@ def main() -> None:
         loading_result,
         loading_consistency,
         scaling,
+        public_scene_results,
         syn_result,
         syn_metrics,
     )

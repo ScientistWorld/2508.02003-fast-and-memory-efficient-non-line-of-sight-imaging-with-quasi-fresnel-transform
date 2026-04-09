@@ -74,6 +74,9 @@ def load_zaragoza_hdf5(hdf5_path, dt=0.003, k=4, area=0.6):
                     depth = np.array(ds, dtype=np.float64)
 
         # If no ground truth found, create dummy (real evaluation uses visual inspection)
+        has_albedo_gt = albedo is not None
+        has_depth_gt = depth is not None
+
         if albedo is None:
             N = tau.shape[0]
             albedo = np.ones((N, N), dtype=np.float64)
@@ -84,13 +87,26 @@ def load_zaragoza_hdf5(hdf5_path, dt=0.003, k=4, area=0.6):
             depth = np.ones((N, N), dtype=np.float64) * 0.5
             print("  Warning: No ground truth depth found, using dummy")
 
-        # Read metadata from attributes
+        # Read metadata from attributes / datasets
         scene_name = os.path.basename(hdf5_path).split('_')[0]
 
-        # Try to read dt from attributes
-        if 'delta_t' in f.attrs:
+        if 'deltaT' in f:
+            dt = float(np.asarray(f['deltaT'][()]).squeeze())
+            print(f"  Using dt={dt} from dataset deltaT")
+        elif 'delta_t' in f.attrs:
             dt = float(f.attrs['delta_t'])
             print(f"  Using dt={dt} from file attributes")
+
+        if 'cameraGridSize' in f:
+            grid_size = np.asarray(f['cameraGridSize'][()]).reshape(-1)
+            if grid_size.size:
+                area = float(np.max(grid_size))
+                print(f"  Using area={area} from dataset cameraGridSize")
+        elif 'laserGridSize' in f:
+            grid_size = np.asarray(f['laserGridSize'][()]).reshape(-1)
+            if grid_size.size:
+                area = float(np.max(grid_size))
+                print(f"  Using area={area} from dataset laserGridSize")
 
     print(f"  tau shape: {tau.shape}")
     print(f"  tau range: [{tau.min():.6f}, {tau.max():.6f}]")
@@ -137,6 +153,8 @@ def load_zaragoza_hdf5(hdf5_path, dt=0.003, k=4, area=0.6):
         'tau': tau,
         'albedo': albedo,
         'depth': depth,
+        'has_albedo_gt': has_albedo_gt,
+        'has_depth_gt': has_depth_gt,
         'dt': dt,
         'k': k,
         'area': area,

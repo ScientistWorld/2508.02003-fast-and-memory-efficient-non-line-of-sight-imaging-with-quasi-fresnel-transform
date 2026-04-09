@@ -11,11 +11,9 @@
     "complexity_scaling_cubic_measurements": {
       "results": {
         "quasi_fresnel_traditional": {
-          "runtime_order": 3.009,
           "memory_order": 2.704
         },
         "quasi_fresnel_loading": {
-          "runtime_order": 1.764,
           "memory_order": 1.891
         }
       }

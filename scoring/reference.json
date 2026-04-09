@@ -28,14 +28,10 @@
       }
     },
     "complexity_scaling_cubic_measurements": {
-      "description": "Table 1 complexity claim for cubic N x N x N measurements. The paper reports O(N^3) runtime and O(N^3) memory for the traditional implementation, and O(N^3) runtime with O(N^2) memory for the sequential-loading implementation.",
+      "description": "Table 1 memory-scaling claim for cubic N x N x N measurements. The paper reports O(N^3) memory for the traditional implementation and O(N^2) memory for the sequential-loading implementation.",
       "weight": 0.4,
       "primary_metric": "memory_order",
       "metrics": {
-        "runtime_order": {
-          "higher_is_better": false,
-          "coefficient": -0.4
-        },
         "memory_order": {
           "higher_is_better": false,
           "coefficient": -1.0
@@ -44,12 +40,10 @@
       "results": {
         "quasi_fresnel_traditional": {
           "type": "proposed",
-          "runtime_order": 3.0,
           "memory_order": 3.0
         },
         "quasi_fresnel_loading": {
           "type": "proposed",
-          "runtime_order": 3.0,
           "memory_order": 2.0
         }
       }

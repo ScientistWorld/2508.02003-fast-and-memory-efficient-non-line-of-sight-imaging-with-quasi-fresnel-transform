@@ -7,7 +7,6 @@ Optimize runtime and memory on the bundled real Zaragoza-style sample while keep
 
 ## Secondary target: loading-mode complexity
 Recover the paper's Table 1 claim that sequential loading preserves the Quasi-Fresnel computation while lowering the working-memory scaling from cubic to quadratic.
-- `runtime_order`: lower is better
 - `memory_order`: lower is better
 
 ## Diagnostic tracking: reconstruction sanity
