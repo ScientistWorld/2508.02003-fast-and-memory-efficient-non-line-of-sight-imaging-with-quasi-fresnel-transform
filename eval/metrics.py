@@ -4,7 +4,6 @@ Compute PSNR, MAE, SSIM, runtime, and memory usage.
 """
 
 import numpy as np
-from scipy.signal import convolve2d
 
 
 def compute_metrics(albedo_recon, depth_recon, albedo_gt, depth_gt, eps=1e-10):
@@ -35,8 +34,13 @@ def compute_metrics(albedo_recon, depth_recon, albedo_gt, depth_gt, eps=1e-10):
     # MAE for albedo
     albedo_mae = np.mean(np.abs(a_norm - a_gt_norm))
 
-    # MAE for depth
-    depth_mae = np.mean(np.abs(depth_recon - depth_gt))
+    # MAE for depth — weighted by ground-truth albedo so background pixels
+    # (where depth is meaningless) don't dominate the metric
+    a_gt_mask = a_gt_norm > 0.1  # only count where there's actual object
+    if a_gt_mask.sum() > 0:
+        depth_mae = np.mean(np.abs(depth_recon[a_gt_mask] - depth_gt[a_gt_mask]))
+    else:
+        depth_mae = np.mean(np.abs(depth_recon - depth_gt))
 
     # SSIM for albedo (simplified)
     ssim = compute_ssim(a_norm, a_gt_norm)
@@ -49,22 +53,28 @@ def compute_metrics(albedo_recon, depth_recon, albedo_gt, depth_gt, eps=1e-10):
     }
 
 
-def compute_ssim(img1, img2, window_size=8, C1=0.01**2, C2=0.03**2):
+def compute_ssim(img1, img2, window_size=7, C1=0.01**2, C2=0.03**2):
     """
-    Simplified SSIM computation.
+    Windowed SSIM computation using uniform sliding window.
     """
-    mu1 = img1.mean()
-    mu2 = img2.mean()
-    sigma1_sq = img1.var()
-    sigma2_sq = img2.var()
-    sigma12 = ((img1 - mu1) * (img2 - mu2)).mean()
+    from scipy.ndimage import uniform_filter
 
-    numerator = (2 * mu1 * mu2 + C1) * (2 * sigma12 + C2)
-    denominator = (mu1**2 + mu2**2 + C1) * (sigma1_sq + sigma2_sq + C2)
+    mu1 = uniform_filter(img1, size=window_size)
+    mu2 = uniform_filter(img2, size=window_size)
 
-    if denominator < C2:
-        return 1.0
-    return numerator / denominator
+    mu1_sq = mu1 ** 2
+    mu2_sq = mu2 ** 2
+    mu12 = mu1 * mu2
+
+    sigma1_sq = uniform_filter(img1 ** 2, size=window_size) - mu1_sq
+    sigma2_sq = uniform_filter(img2 ** 2, size=window_size) - mu2_sq
+    sigma12 = uniform_filter(img1 * img2, size=window_size) - mu12
+
+    numerator = (2 * mu12 + C1) * (2 * sigma12 + C2)
+    denominator = (mu1_sq + mu2_sq + C1) * (sigma1_sq + sigma2_sq + C2)
+
+    ssim_map = numerator / denominator
+    return float(ssim_map.mean())
 
 
 def compute_runtime_stats(runtimes):
