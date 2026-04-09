@@ -2,4 +2,4 @@ action: submit
 gpus: 0
 test: true
 milestone: method_runs
-notes: "Rerun corrected CPU evaluation after fixing the synthetic sanity-check argument bug; write scores.json and diagnostics.json from the real bundled Zaragoza-style sample and validate the workspace."
+notes: "Run the updated CPU evaluation to benchmark traditional versus sequential-loading Quasi-Fresnel execution, fit empirical complexity exponents for the new Table 1 scaling experiment, and validate the refreshed scoring files."

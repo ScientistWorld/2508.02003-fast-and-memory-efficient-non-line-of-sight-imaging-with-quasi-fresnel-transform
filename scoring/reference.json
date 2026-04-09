@@ -2,7 +2,7 @@
   "experiments": {
     "zaragoza_efficiency_real_sample": {
       "description": "Paper-reported efficiency target for Zaragoza-style reconstruction. The paper reports about 0.17 s runtime and less than 50 MB memory for its public Zaragoza evaluation, while prior volumetric methods require more than 6.39 s and more than 13.105 GB memory.",
-      "weight": 1.0,
+      "weight": 0.6,
       "primary_metric": "runtime_s",
       "metrics": {
         "runtime_s": {
@@ -24,6 +24,33 @@
           "type": "proposed",
           "runtime_s": 0.17,
           "memory_mb": 50.0
+        }
+      }
+    },
+    "complexity_scaling_cubic_measurements": {
+      "description": "Table 1 complexity claim for cubic N x N x N measurements. The paper reports O(N^3) runtime and O(N^3) memory for the traditional implementation, and O(N^3) runtime with O(N^2) memory for the sequential-loading implementation.",
+      "weight": 0.4,
+      "primary_metric": "memory_order",
+      "metrics": {
+        "runtime_order": {
+          "higher_is_better": false,
+          "coefficient": -0.4
+        },
+        "memory_order": {
+          "higher_is_better": false,
+          "coefficient": -1.0
+        }
+      },
+      "results": {
+        "quasi_fresnel_traditional": {
+          "type": "proposed",
+          "runtime_order": 3.0,
+          "memory_order": 3.0
+        },
+        "quasi_fresnel_loading": {
+          "type": "proposed",
+          "runtime_order": 3.0,
+          "memory_order": 2.0
         }
       }
     }

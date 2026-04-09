@@ -17,6 +17,7 @@ import os
 import resource
 import sys
 import time
+import tracemalloc
 from pathlib import Path
 
 import numpy as np
@@ -75,11 +76,13 @@ def benchmark_qft(
     repeats: int = 5,
 ) -> dict[str, object]:
     runtimes: list[float] = []
+    algorithm_peak_mb: list[float] = []
     albedo = None
     depth = None
 
     rss_before = _linux_maxrss_mb()
     for _ in range(repeats):
+        tracemalloc.start()
         t0 = time.perf_counter()
         albedo, depth = quasi_fresnel_reconstruct(
             tau,
@@ -90,6 +93,9 @@ def benchmark_qft(
             integration_mode=integration_mode,
         )
         runtimes.append(time.perf_counter() - t0)
+        _, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+        algorithm_peak_mb.append(peak / (1024.0 * 1024.0))
     rss_after = _linux_maxrss_mb()
 
     return {
@@ -101,6 +107,7 @@ def benchmark_qft(
         "runtime_min_s": float(np.min(runtimes)),
         "runtime_max_s": float(np.max(runtimes)),
         "maxrss_mb": max(rss_before, rss_after),
+        "algorithm_peak_mb": float(np.max(algorithm_peak_mb)),
     }
 
 
@@ -118,7 +125,9 @@ def load_real_sample() -> dict[str, object]:
     }
 
 
-def build_scores(real_result: dict[str, object]) -> dict[str, object]:
+def build_scores(
+    real_result: dict[str, object], scaling: dict[str, dict[str, object]]
+) -> dict[str, object]:
     return {
         "experiments": {
             "zaragoza_efficiency_real_sample": {
@@ -127,6 +136,18 @@ def build_scores(real_result: dict[str, object]) -> dict[str, object]:
                         "runtime_s": round(real_result["runtime_mean_s"], 6),
                         "memory_mb": round(real_result["maxrss_mb"], 2),
                     }
+                }
+            },
+            "complexity_scaling_cubic_measurements": {
+                "results": {
+                    "quasi_fresnel_traditional": {
+                        "runtime_order": round(scaling["traditional"]["runtime_order"], 3),
+                        "memory_order": round(scaling["traditional"]["memory_order"], 3),
+                    },
+                    "quasi_fresnel_loading": {
+                        "runtime_order": round(scaling["loading"]["runtime_order"], 3),
+                        "memory_order": round(scaling["loading"]["memory_order"], 3),
+                    },
                 }
             }
         }
@@ -138,6 +159,7 @@ def build_diagnostics(
     real_metrics: dict[str, float],
     loading_result: dict[str, object],
     loading_consistency: dict[str, float],
+    scaling: dict[str, dict[str, object]],
     syn_result: dict[str, object],
     syn_metrics: dict[str, float],
 ) -> dict[str, object]:
@@ -149,6 +171,7 @@ def build_diagnostics(
                 "runtime_min_s": round(real_result["runtime_min_s"], 6),
                 "runtime_max_s": round(real_result["runtime_max_s"], 6),
                 "memory_mb": round(real_result["maxrss_mb"], 2),
+                "algorithm_peak_mb": round(real_result["algorithm_peak_mb"], 2),
                 "proxy_quality": {
                     "psnr": round(real_metrics["psnr"], 4),
                     "ssim": round(real_metrics["ssim"], 4),
@@ -162,6 +185,7 @@ def build_diagnostics(
                 "runtime_min_s": round(loading_result["runtime_min_s"], 6),
                 "runtime_max_s": round(loading_result["runtime_max_s"], 6),
                 "memory_mb": round(loading_result["maxrss_mb"], 2),
+                "algorithm_peak_mb": round(loading_result["algorithm_peak_mb"], 2),
                 "consistency_vs_traditional": {
                     "psnr": round(loading_consistency["psnr"], 4),
                     "ssim": round(loading_consistency["ssim"], 6),
@@ -170,10 +194,12 @@ def build_diagnostics(
                 },
             },
         },
+        "complexity_scaling": scaling,
         "synthetic_sanity": {
             "runtime_mean_s": round(syn_result["runtime_mean_s"], 6),
             "runtime_std_s": round(syn_result["runtime_std_s"], 6),
             "memory_mb": round(syn_result["maxrss_mb"], 2),
+            "algorithm_peak_mb": round(syn_result["algorithm_peak_mb"], 2),
             "quality": {
                 "psnr": round(syn_metrics["psnr"], 4),
                 "ssim": round(syn_metrics["ssim"], 4),
@@ -182,6 +208,53 @@ def build_diagnostics(
             },
         },
     }
+
+
+def _fit_scaling_order(sizes: list[int], values: list[float]) -> float:
+    x = np.log(np.asarray(sizes, dtype=np.float64))
+    y = np.log(np.asarray(values, dtype=np.float64))
+    slope, _ = np.polyfit(x, y, 1)
+    return float(slope)
+
+
+def benchmark_complexity_scaling(
+    sizes: tuple[int, ...] = (32, 48, 64, 96),
+    s: float = 0.02,
+    dt: float = 0.003,
+    k: int = 4,
+    area: float = 0.3,
+) -> dict[str, dict[str, object]]:
+    rng = np.random.default_rng(250802003)
+    per_mode: dict[str, dict[str, list[float]]] = {
+        "traditional": {"runtime_s": [], "memory_mb": []},
+        "loading": {"runtime_s": [], "memory_mb": []},
+    }
+
+    for n in sizes:
+        tau = rng.random((n, n, n), dtype=np.float64)
+        for mode in ("traditional", "loading"):
+            result = benchmark_qft(
+                tau,
+                s=s,
+                dt=dt,
+                k=k,
+                area=area,
+                integration_mode=mode,
+                repeats=2,
+            )
+            per_mode[mode]["runtime_s"].append(result["runtime_mean_s"])
+            per_mode[mode]["memory_mb"].append(result["algorithm_peak_mb"])
+
+    summary: dict[str, dict[str, object]] = {}
+    for mode, metrics in per_mode.items():
+        summary[mode] = {
+            "sizes": list(sizes),
+            "runtime_s": [round(v, 6) for v in metrics["runtime_s"]],
+            "memory_mb": [round(v, 4) for v in metrics["memory_mb"]],
+            "runtime_order": _fit_scaling_order(list(sizes), metrics["runtime_s"]),
+            "memory_order": _fit_scaling_order(list(sizes), metrics["memory_mb"]),
+        }
+    return summary
 
 
 def main() -> None:
@@ -240,45 +313,21 @@ def main() -> None:
         f"depth_MAE={loading_consistency['depth_mae']:.8f}"
     )
 
-    scores = build_scores(real_result)
+    print("\n=== Complexity Scaling ===")
+    scaling = benchmark_complexity_scaling()
+    for mode in ("traditional", "loading"):
+        print(
+            f"{mode} runtime_order={scaling[mode]['runtime_order']:.3f} "
+            f"memory_order={scaling[mode]['memory_order']:.3f} "
+            f"sizes={scaling[mode]['sizes']} "
+            f"algorithm_peak_mb={scaling[mode]['memory_mb']}"
+        )
+
+    scores = build_scores(real_result, scaling)
     out_path = ROOT / "scoring" / "scores.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(scores, indent=2) + "\n")
     print(f"\nWrote {out_path}")
-
-    diagnostics = {
-        "real_sample": {
-            "traditional": {
-                "runtime_mean_s": round(real_result["runtime_mean_s"], 6),
-                "runtime_std_s": round(real_result["runtime_std_s"], 6),
-                "runtime_min_s": round(real_result["runtime_min_s"], 6),
-                "runtime_max_s": round(real_result["runtime_max_s"], 6),
-                "memory_mb": round(real_result["maxrss_mb"], 2),
-                "proxy_quality": {
-                    "psnr": round(real_metrics["psnr"], 4),
-                    "ssim": round(real_metrics["ssim"], 4),
-                    "albedo_mae": round(real_metrics["albedo_mae"], 6),
-                    "depth_mae": round(real_metrics["depth_mae"], 6),
-                },
-            },
-            "loading": {
-                "runtime_mean_s": round(loading_result["runtime_mean_s"], 6),
-                "runtime_std_s": round(loading_result["runtime_std_s"], 6),
-                "runtime_min_s": round(loading_result["runtime_min_s"], 6),
-                "runtime_max_s": round(loading_result["runtime_max_s"], 6),
-                "memory_mb": round(loading_result["maxrss_mb"], 2),
-                "consistency_vs_traditional": {
-                    "psnr": round(loading_consistency["psnr"], 4),
-                    "ssim": round(loading_consistency["ssim"], 6),
-                    "albedo_mae": round(loading_consistency["albedo_mae"], 8),
-                    "depth_mae": round(loading_consistency["depth_mae"], 8),
-                },
-            },
-        }
-    }
-    diag_path = ROOT / "scoring" / "diagnostics.json"
-    diag_path.write_text(json.dumps(diagnostics, indent=2) + "\n")
-    print(f"Wrote {diag_path}")
 
     print("\n=== Synthetic Sanity Check ===")
     synthetic = generate_dataset(
@@ -312,6 +361,7 @@ def main() -> None:
         real_metrics,
         loading_result,
         loading_consistency,
+        scaling,
         syn_result,
         syn_metrics,
     )

@@ -13,10 +13,10 @@
 - Successful job `63301e4c-2d6` validated the corrected evaluation pipeline end to end and produced `scoring/scores.json`.
 - Real bundled Zaragoza-style sample result from the successful run: `runtime = 0.001707 s ± 0.001910 s`, `memory = 45.23 MB`, proxy quality `PSNR = 3.00 dB`, `SSIM = 0.0299`, `albedo MAE = 0.6843`, `depth MAE = 0.4606`.
 - Synthetic sanity result from the successful run: `runtime = 0.005769 s`, `memory = 125.12 MB`, `PSNR = 12.81 dB`, `SSIM = 0.1794`.
-- The next revision adds the paper's sequential-loading integration path so the evaluation can compare it directly against the traditional full-histogram path.
+- The current revision extends evaluation with a new Table 1 scaling experiment that fits empirical runtime and working-memory orders for the traditional and sequential-loading variants on cubic `N x N x N` measurement tensors.
 
 ## What Remains
-- Run the updated evaluation job and inspect the traditional-versus-loading results.
+- Run the updated evaluation job and inspect the fitted scaling exponents plus the traditional-versus-loading consistency metrics.
 - Implement the paper's FDH-style path.
 - Add a faithful published baseline implementation.
 - Expand to larger public Zaragoza and Stanford datasets if download and budget permit.

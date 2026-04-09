@@ -20,6 +20,6 @@
 
 ### [2026-04-09 00:00] - method_runs
 - Job `63301e4c-2d6` completed successfully and validated the corrected traditional evaluation path end to end
-- Added the paper's sequential-loading aggregation mode to the Quasi-Fresnel implementation so the next job can benchmark traditional versus loading execution on the same bundled real sample
+- Extended the evaluator with a new complexity-scaling experiment so the next job can benchmark the paper's traditional and sequential-loading variants against Table 1's `O(N^3)` versus `O(N^2)` memory claim
 
 ## Stop Justification
