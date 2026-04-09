@@ -3,42 +3,55 @@
     "zaragoza_kylin_reconstruction": {
       "results": {
         "quasi_fresnel_proposed": {
-          "runtime_s": 0.006127,
+          "runtime_s": 0.006584,
           "memory_mb": 16.39,
           "albedo_psnr": 13.22,
-          "albedo_mae": 0.1698,
-          "depth_mae": 0.0736,
-          "ssim": 0.195
+          "albedo_mae": 0.1662,
+          "depth_mae": 0.0845,
+          "ssim": 0.2027
         },
         "fourier_transform": {
-          "runtime_s": 0.115608,
+          "runtime_s": 0.136624,
           "memory_mb": 112.01,
-          "albedo_psnr": 11.85,
-          "albedo_mae": 0.1983,
-          "depth_mae": 1.0613,
-          "ssim": 0.1876
+          "albedo_psnr": 7.42,
+          "albedo_mae": 0.4122,
+          "depth_mae": 0.0837,
+          "ssim": 0.0732
         }
       }
     },
     "stanford_reconstruction": {
       "results": {
         "quasi_fresnel_proposed": {
-          "runtime_s": 0.006492,
+          "runtime_s": 0.00637,
           "memory_mb": 16.39,
-          "albedo_psnr": 19.68,
-          "albedo_mae": 0.0778,
-          "depth_mae": 0.1537
+          "albedo_psnr": 19.63,
+          "albedo_mae": 0.0784,
+          "depth_mae": 0.1537,
+          "ssim": 0.7862
+        },
+        "fourier_transform": {
+          "runtime_s": 0.128772,
+          "memory_mb": 112.01,
+          "albedo_psnr": 11.5,
+          "albedo_mae": 0.2262,
+          "depth_mae": 0.2348,
+          "ssim": 0.4606
         }
       }
     },
     "dynamic_scene": {
       "results": {
         "quasi_fresnel_proposed": {
-          "runtime_s": 0.001707,
-          "memory_mb": 2.29
+          "runtime_s": 0.002234,
+          "memory_mb": 2.29,
+          "albedo_psnr": 15.33,
+          "albedo_mae": 0.1312,
+          "depth_mae": 0.022,
+          "ssim": 0.2937
         },
         "fourier_transform": {
-          "runtime_s": 0.019566,
+          "runtime_s": 0.018999,
           "memory_mb": 14.01
         }
       }
