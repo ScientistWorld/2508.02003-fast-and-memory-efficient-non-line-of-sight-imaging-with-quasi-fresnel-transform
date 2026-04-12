@@ -4,6 +4,7 @@
 - The workspace contains a recognizable implementation of the paper's Quasi-Fresnel reconstruction equations.
 - The spatial inversion step now uses an FFT-based separable convolution on uniform relay-wall grids, matching the paper's Eq. (5) implementation strategy instead of the earlier dense matrix quadrature.
 - The method is packaged behind `scripts/method.sh`, while `scripts/evaluate.sh` now scores a method-produced report artifact without importing `method/`.
+- The scorer accepts arbitrary method identifiers as long as they emit the required experiment and metric structure, so future scientist agents do not need to reuse the paper's method name to be evaluated.
 - Public Zaragoza confocal samples are packaged in `data/zaragoza/`, `data/zaragoza/public/`, and `data/zaragoza_public/`.
 - The evaluation path now targets the public Zaragoza bunny scene for both quality and efficiency instead of scoring only a stale bundled proxy pair.
 - The method code now includes both the paper's direct full-histogram integration path and its sequential-loading aggregation path.

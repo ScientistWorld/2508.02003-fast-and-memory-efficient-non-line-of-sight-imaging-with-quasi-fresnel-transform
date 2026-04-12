@@ -7,7 +7,7 @@
 - Additional public Zaragoza scenes may be used for diagnostics, but they do not replace the scored bunny target.
 
 ## Compute / comparison setup
-  - Keep the scored experiment structure fixed to the two entries already present in [`scores.json`](/home/user/scoring/scores.json):
+- Keep the scored experiment structure fixed to the packaged public-bunny benchmark contract:
   - `zaragoza_bunny_depth_error`
   - `zaragoza_efficiency_public_bunny`
 - Keep metric definitions fixed:

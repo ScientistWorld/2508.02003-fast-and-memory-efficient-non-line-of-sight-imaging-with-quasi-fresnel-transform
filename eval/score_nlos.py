@@ -13,13 +13,9 @@ import json
 from pathlib import Path
 
 
-REQUIRED = {
-    "zaragoza_bunny_depth_error": {
-        "quasi_fresnel_proposed": ("depth_mae_cm",),
-    },
-    "zaragoza_efficiency_public_bunny": {
-        "quasi_fresnel_proposed": ("runtime_s", "memory_mb"),
-    },
+REQUIRED_METRICS = {
+    "zaragoza_bunny_depth_error": ("depth_mae_cm",),
+    "zaragoza_efficiency_public_bunny": ("runtime_s", "memory_mb"),
 }
 
 
@@ -40,20 +36,21 @@ def _normalize_results(report: dict) -> dict:
         raise ValueError("Input report must contain an 'experiments' object")
 
     scores: dict[str, dict] = {"experiments": {}}
-    for experiment_name, methods in REQUIRED.items():
+    for experiment_name, metric_names in REQUIRED_METRICS.items():
         experiment_payload = experiments.get(experiment_name)
         if not isinstance(experiment_payload, dict):
             raise ValueError(f"Missing experiment {experiment_name!r} in input report")
         result_payload = experiment_payload.get("results")
         if not isinstance(result_payload, dict):
             raise ValueError(f"Experiment {experiment_name!r} must contain a 'results' object")
+        if not result_payload:
+            raise ValueError(f"Experiment {experiment_name!r} must contain at least one method")
 
         normalized_methods: dict[str, dict[str, float]] = {}
-        for method_name, metric_names in methods.items():
-            method_payload = result_payload.get(method_name)
+        for method_name, method_payload in result_payload.items():
             if not isinstance(method_payload, dict):
                 raise ValueError(
-                    f"Experiment {experiment_name!r} is missing method {method_name!r}"
+                    f"Experiment {experiment_name!r} method {method_name!r} must be an object"
                 )
             normalized_metrics: dict[str, float] = {}
             for metric_name in metric_names:

@@ -51,5 +51,10 @@
 - Tightened the evaluator's memory accounting so the next efficiency run is not based only on `tracemalloc`, which misses large native array allocations.
 - Milestone remains `method_runs` until the corrected public Zaragoza bunny benchmark repopulates `scores.json` and demonstrates a credible quality-plus-efficiency result.
 
+### [2026-04-12 16:15] - method_runs
+- Final verification found that the scorer still hardcoded the paper's own method name, which would have broken gym reuse for future scientist agents.
+- Generalized the reusable scorer to accept any method identifier with the required metric schema and corrected the scientist-facing constraints/checklist to match the still-pending rerun state.
+- Milestone remains `method_runs` because the corrected benchmark still needs to regenerate `scores.json` before `core_claim` can be defended.
+
 ## Stop Justification
 Current status remains `method_runs` because the corrected public bunny benchmark has not been rerun yet. The implementation is now closer to the paper's intended FFT-based reconstruction path, but claiming `core_claim` still depends on the next job producing credible quality-plus-efficiency results on the public scene and repopulating `scores.json`.
