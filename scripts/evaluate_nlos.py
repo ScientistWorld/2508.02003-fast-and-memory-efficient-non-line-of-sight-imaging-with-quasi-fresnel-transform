@@ -80,11 +80,13 @@ def benchmark_qft(
 ) -> dict[str, object]:
     runtimes: list[float] = []
     algorithm_peak_mb: list[float] = []
+    rss_growth_mb: list[float] = []
     albedo = None
     depth = None
 
-    rss_before = _linux_maxrss_mb()
+    initial_rss_before = _linux_maxrss_mb()
     for _ in range(repeats):
+        rss_before = _linux_maxrss_mb()
         tracemalloc.start()
         t0 = time.perf_counter()
         albedo, depth = quasi_fresnel_reconstruct(
@@ -100,7 +102,11 @@ def benchmark_qft(
         runtimes.append(time.perf_counter() - t0)
         _, peak = tracemalloc.get_traced_memory()
         tracemalloc.stop()
-        algorithm_peak_mb.append(peak / (1024.0 * 1024.0))
+        rss_after = _linux_maxrss_mb()
+        tracemalloc_peak_mb = peak / (1024.0 * 1024.0)
+        rss_delta_mb = max(0.0, rss_after - rss_before)
+        algorithm_peak_mb.append(max(tracemalloc_peak_mb, rss_delta_mb))
+        rss_growth_mb.append(rss_delta_mb)
     rss_after = _linux_maxrss_mb()
 
     return {
@@ -111,8 +117,9 @@ def benchmark_qft(
         "runtime_std_s": float(np.std(runtimes)),
         "runtime_min_s": float(np.min(runtimes)),
         "runtime_max_s": float(np.max(runtimes)),
-        "maxrss_mb": max(rss_before, rss_after),
+        "maxrss_mb": max(initial_rss_before, rss_after),
         "algorithm_peak_mb": float(np.max(algorithm_peak_mb)),
+        "rss_growth_mb": float(np.max(rss_growth_mb)),
     }
 
 

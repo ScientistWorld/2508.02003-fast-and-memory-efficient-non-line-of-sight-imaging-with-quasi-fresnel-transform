@@ -46,5 +46,10 @@
 - Tightened the scientist-facing scoring documents to avoid method-name leakage and adjusted experiment weighting so quality remains the dominant scored target.
 - Found one remaining blocking issue: the current packaged `scores.json` is empty, so the corrected public bunny benchmark must be rerun before `core_claim` can be defended or the workspace can be marked done.
 
+### [2026-04-12 16:08] - method_runs
+- Replaced the dense spatial deconvolution in Eq. (5) with an FFT-based separable convolution on uniform relay-wall grids, which is materially closer to the paper's claimed `O(N^2 log N)` implementation.
+- Tightened the evaluator's memory accounting so the next efficiency run is not based only on `tracemalloc`, which misses large native array allocations.
+- Milestone remains `method_runs` until the corrected public Zaragoza bunny benchmark repopulates `scores.json` and demonstrates a credible quality-plus-efficiency result.
+
 ## Stop Justification
-Current status remains `method_runs` because the corrected public bunny benchmark has not been rerun yet. The implementation is real and the benchmark contract is now materially stronger, but claiming `core_claim` still depends on the next job producing credible quality-plus-efficiency results on the public scene and repopulating `scores.json`.
+Current status remains `method_runs` because the corrected public bunny benchmark has not been rerun yet. The implementation is now closer to the paper's intended FFT-based reconstruction path, but claiming `core_claim` still depends on the next job producing credible quality-plus-efficiency results on the public scene and repopulating `scores.json`.

@@ -103,6 +103,58 @@ def _quadrature_spacing(coords):
     return float(np.mean(np.abs(diffs)))
 
 
+def _is_uniform_grid(coords, rtol=1e-5, atol=1e-9):
+    if coords.size < 3:
+        return True
+    diffs = np.diff(coords)
+    return bool(np.allclose(diffs, diffs[0], rtol=rtol, atol=atol))
+
+
+def _next_fast_length(size):
+    length = 1
+    while length < size:
+        length <<= 1
+    return length
+
+
+def _fft_convolve_same_axis(data, kernel, axis):
+    """
+    Linear convolution with centered ``same`` output along one axis.
+
+    ``kernel`` is assumed to be indexed on offsets ``[-n+1, ..., n-1]`` where
+    ``n`` is the size of ``data`` along ``axis``.
+    """
+    n = data.shape[axis]
+    m = kernel.shape[0]
+    full_length = n + m - 1
+    fft_length = _next_fast_length(full_length)
+
+    data_fft = np.fft.fft(data, n=fft_length, axis=axis)
+    reshape = [1] * data.ndim
+    reshape[axis] = m
+    kernel_fft = np.fft.fft(kernel.reshape(reshape), n=fft_length, axis=axis)
+    convolved = np.fft.ifft(data_fft * kernel_fft, n=fft_length, axis=axis)
+
+    start = (m - 1) // 2
+    stop = start + n
+    slicer = [slice(None)] * data.ndim
+    slicer[axis] = slice(start, stop)
+    return convolved[tuple(slicer)]
+
+
+def _spatial_deconv_dense(phi, s, wall_x, wall_y, dx, dy):
+    kernel_x = np.exp(
+        1j * (wall_x[:, np.newaxis] - wall_x[np.newaxis, :]) ** 2 / (4.0 * s ** 2)
+    ).astype(np.complex128)
+    kernel_y = np.exp(
+        1j * (wall_y[:, np.newaxis] - wall_y[np.newaxis, :]) ** 2 / (4.0 * s ** 2)
+    ).astype(np.complex128)
+
+    psi = kernel_x @ phi.astype(np.complex128, copy=False) @ kernel_y.T
+    psi *= (dx * dy) / (16.0 * np.pi ** 2 * s ** 4)
+    return psi
+
+
 def quasi_fresnel_spatial_deconv(phi, s, area=None, wall_x=None, wall_y=None):
     """
     Step 2: Recover psi(x; s) from phi(x; s) via 2D convolution.
@@ -110,10 +162,10 @@ def quasi_fresnel_spatial_deconv(phi, s, area=None, wall_x=None, wall_y=None):
     Implements Eq. (5):
       psi(x; s) = (1/16*pi^2*s^4) * integral e^{i*|x~-x|^2/4s^2} * phi(x~;s) dx~
 
-    The kernel is separable:
-      exp(i * (|x~-x|^2 + |y~-y|^2) / 4s^2)
-    so the discrete Riemann sum can be evaluated as two 1D transforms
-    without forming a full 2D kernel.
+    On a uniform relay-wall grid the kernel depends only on coordinate
+    differences, so Eq. (5) becomes a separable 2D convolution and can be
+    evaluated in O(N^2 log N) time using FFTs, matching the paper's analysis.
+    For nonuniform coordinates we fall back to the direct dense quadrature.
 
     Parameters:
       phi: complex array of shape (N, N)
@@ -144,23 +196,18 @@ def quasi_fresnel_spatial_deconv(phi, s, area=None, wall_x=None, wall_y=None):
         wall_y = np.asarray(wall_y, dtype=np.float64)
         dy = _quadrature_spacing(wall_y)
 
-    kernel_x = np.exp(
-        1j * (wall_x[:, np.newaxis] - wall_x[np.newaxis, :]) ** 2 / (4.0 * s ** 2)
-    ).astype(np.complex128)
-    kernel_y = np.exp(
-        1j * (wall_y[:, np.newaxis] - wall_y[np.newaxis, :]) ** 2 / (4.0 * s ** 2)
-    ).astype(np.complex128)
-
-    # Apply the separable 2D transform:
-    # psi = C * K phi K^T * dx^2
     phi_complex = phi.astype(np.complex128, copy=False)
-    psi = kernel_x @ phi_complex @ kernel_y.T
+    if not (_is_uniform_grid(wall_x) and _is_uniform_grid(wall_y)):
+        return _spatial_deconv_dense(phi_complex, s, wall_x, wall_y, dx, dy)
 
-    # Apply normalization from Eq. (5): 1/(16*pi^2*s^4) and the dx*dy
-    # factor from the 2D Riemann sum.
-    norm = (dx * dy) / (16.0 * np.pi ** 2 * s ** 4)
-    psi *= norm
+    offsets_x = (np.arange(-(nx - 1), nx, dtype=np.float64)) * dx
+    offsets_y = (np.arange(-(ny - 1), ny, dtype=np.float64)) * dy
+    kernel_x = np.exp(1j * offsets_x ** 2 / (4.0 * s ** 2)).astype(np.complex128)
+    kernel_y = np.exp(1j * offsets_y ** 2 / (4.0 * s ** 2)).astype(np.complex128)
 
+    psi = _fft_convolve_same_axis(phi_complex, kernel_x, axis=0)
+    psi = _fft_convolve_same_axis(psi, kernel_y, axis=1)
+    psi *= (dx * dy) / (16.0 * np.pi ** 2 * s ** 4)
     return psi
 
 
