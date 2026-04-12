@@ -2,4 +2,4 @@ action: submit
 gpus: 0
 test: true
 milestone: method_runs
-notes: "Final verification found empty packaged scores; rerun the corrected public Zaragoza bunny benchmark to regenerate raw_results.json and scores.json."
+notes: "Rerun the public Zaragoza bunny benchmark after replacing dense Eq. (5) deconvolution with an FFT-based separable implementation and tightening memory accounting; regenerate raw_results.json and scores.json."
