@@ -8,6 +8,16 @@
         "depth_mae_cm": {
           "higher_is_better": false,
           "coefficient": -1.0
+        },
+        "albedo_psnr_db": {
+          "higher_is_better": true,
+          "coefficient": 0.3,
+          "description": "Albedo PSNR on the same public bunny scene, included to catch methods that preserve depth while degrading the reconstructed appearance emphasized in Fig. 4."
+        },
+        "albedo_ssim": {
+          "higher_is_better": true,
+          "coefficient": 0.2,
+          "description": "Albedo SSIM on the same public bunny scene, a structural image-quality check complementary to depth MAE."
         }
       },
       "results": {
@@ -45,6 +55,21 @@
         "memory_mb": {
           "higher_is_better": false,
           "coefficient": -0.3
+        },
+        "traditional_runtime_order": {
+          "higher_is_better": false,
+          "coefficient": -0.2,
+          "description": "Empirical log-log runtime scaling slope for the direct Quasi-Fresnel reconstruction path, checking that speed is not achieved only at the benchmark resolution."
+        },
+        "loading_memory_order": {
+          "higher_is_better": false,
+          "coefficient": -0.2,
+          "description": "Empirical log-log memory scaling slope for the sequential-loading variant, checking the paper's low-memory complexity claim."
+        },
+        "loading_depth_consistency_cm": {
+          "higher_is_better": false,
+          "coefficient": -0.2,
+          "description": "Depth disagreement between the sequential-loading and direct reconstruction paths on the public bunny scene, catching methods whose memory-saving path changes the result."
         }
       },
       "results": {

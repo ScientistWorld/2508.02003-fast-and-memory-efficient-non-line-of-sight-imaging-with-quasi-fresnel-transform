@@ -1,2 +1,4 @@
-action: done
-notes: "Fixed fresh-clone public data downloads and tracked the Zaragoza loader."
+action: submit
+gpus: 0
+test: false
+notes: "CPU job: regenerate public Zaragoza method report, diagnostics, and real train/test score files."
