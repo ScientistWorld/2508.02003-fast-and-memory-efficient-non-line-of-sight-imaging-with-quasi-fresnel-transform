@@ -1,4 +1,3 @@
-action: submit
+action: done
 gpus: 0
-test: false
-notes: "CPU job: run Quasi-Fresnel on bundled bunny NPZ ground-truth scene, then emit real train/test score files."
+notes: "Metric-triangulation split on bundled bunny NPZ; train has 4 metrics, test has 7 metrics; shared depth/runtime/memory match and hidden test adds SSIM, scaling, and loading-consistency checks."
