@@ -1,4 +1,4 @@
 action: submit
 gpus: 0
 test: false
-notes: "CPU job after exposing cached Zaragoza public files: regenerate method report, diagnostics, and real train/test scores."
+notes: "CPU job: run Quasi-Fresnel on bundled bunny NPZ ground-truth scene, then emit real train/test score files."
