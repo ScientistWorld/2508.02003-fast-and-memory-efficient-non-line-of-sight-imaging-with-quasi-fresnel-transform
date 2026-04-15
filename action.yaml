@@ -1,5 +1,2 @@
-action: submit
-gpus: 0
-test: true
-milestone: method_runs
-notes: "Post-verification CPU rerun of the corrected public Zaragoza bunny benchmark to regenerate raw_results.json and scores.json after the FFT-based Eq. (5) fix."
+action: done
+notes: "Fixed fresh-clone public data downloads and tracked the Zaragoza loader."
