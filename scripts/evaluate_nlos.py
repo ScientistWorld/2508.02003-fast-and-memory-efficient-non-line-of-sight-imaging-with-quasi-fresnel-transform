@@ -149,7 +149,7 @@ def load_public_scene(path: Path) -> dict[str, object]:
 
 def load_primary_public_scene() -> dict[str, object]:
     candidates = [
-        ROOT / "data" / "zaragoza_public" / "bunny_simple_256_conf.hdf5",
+        ROOT / "data" / "downloads" / "zaragoza" / "bunny_simple_256_conf.hdf5",
         ROOT / "data" / "zaragoza" / "bunny_conf64.hdf5",
     ]
     for path in candidates:
@@ -166,8 +166,8 @@ def load_primary_public_scene() -> dict[str, object]:
 
 def discover_additional_public_scenes() -> list[Path]:
     candidates = [
-        ROOT / "data" / "zaragoza_public" / "usaf_simple_256_conf.hdf5",
-        ROOT / "data" / "zaragoza" / "public" / "T_conf64.hdf5",
+        ROOT / "data" / "downloads" / "zaragoza" / "usaf_simple_256_conf.hdf5",
+        ROOT / "data" / "downloads" / "zaragoza" / "public" / "T_conf64.hdf5",
     ]
     return [path for path in candidates if path.exists()]
 

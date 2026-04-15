@@ -25,10 +25,18 @@ checkpoints/
 *.pb
 
 # Files too large for git: public fetched data (datasets, weights) and
-# agent-generated data that exceeds git's size limit. Repopulated from
-# scratch by scripts/download.sh. Everything else under data/ IS tracked.
+# agent-generated data that exceeds git's size limit. Public benchmark
+# downloads are repopulated from scratch by scripts/download.sh.
 data/downloads/
+!data/downloads/
 !data/downloads/.gitkeep
+data/generate_nlos_data.py
+data/bunny/
+data/dynamic/
+data/kylin/
+data/shapes/
+data/zaragoza/
+data/zaragoza_public/
 
 # Container artifacts (multi-GB)
 environment/container.sif
@@ -186,7 +194,6 @@ Thumbs.db
 core.*
 # Auto-added by swarm
 environment/overlay.img
-data/
 jobs/
 tmp/
 protocol.md
