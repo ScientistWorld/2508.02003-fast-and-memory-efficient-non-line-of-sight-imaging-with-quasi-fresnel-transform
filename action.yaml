@@ -1,4 +1,4 @@
 action: submit
 gpus: 0
 test: false
-notes: "CPU job: regenerate public Zaragoza method report, diagnostics, and real train/test score files."
+notes: "CPU job after exposing cached Zaragoza public files: regenerate method report, diagnostics, and real train/test scores."
