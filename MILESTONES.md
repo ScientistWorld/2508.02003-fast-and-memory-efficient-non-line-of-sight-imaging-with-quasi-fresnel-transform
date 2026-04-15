@@ -57,4 +57,4 @@
 - Milestone remains `method_runs` because the corrected benchmark still needs to regenerate `scores.json` before `core_claim` can be defended.
 
 ## Stop Justification
-Current status remains `method_runs` because the corrected public bunny benchmark has not been rerun yet. The implementation is now closer to the paper's intended FFT-based reconstruction path, but claiming `core_claim` still depends on the next job producing credible quality-plus-efficiency results on the public scene and repopulating `scores.json`.
+- Completed at milestone `core_claim`.
