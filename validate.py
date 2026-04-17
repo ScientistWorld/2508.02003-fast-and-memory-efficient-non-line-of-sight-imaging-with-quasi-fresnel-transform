@@ -327,15 +327,61 @@ def _resolve_local_import(module: str, from_file: Path | None, level: int) -> Pa
     return None
 
 
+# Top-level workspace directories that always hold local code / data. An
+# import whose first dotted component matches this set is workspace-local by
+# convention, even if the directory doesn't exist in the current tree (e.g.
+# a fresh clone before download.sh runs).
+_WORKSPACE_IMPORT_PREFIXES = frozenset({"data", "method", "eval", "baseline"})
+
+
+def _expected_import_base(module: str, from_file: Path | None, level: int) -> Path | None:
+    """Compute the expected workspace path for an import (existence not required).
+
+    Returns the candidate base path (without .py suffix) if the import looks
+    workspace-local, else None. Workspace-local = relative imports anchored
+    in from_file OR absolute imports whose first dotted component is a known
+    workspace directory.
+
+    Policy: every workspace-local import must resolve to a git-tracked file.
+    This includes vendored third-party libraries under ``method/`` — they
+    should be committed, not gitignored, so fresh clones work without a
+    runtime clone step (up to reasonable size limits).
+    """
+    if level > 0 and from_file is not None:
+        anchor = from_file.parent
+        for _ in range(level - 1):
+            anchor = anchor.parent
+        parts = module.split(".") if module else []
+        candidate_base = anchor.joinpath(*parts) if parts else anchor
+    else:
+        if not module:
+            return None
+        parts = module.split(".")
+        if parts[0] not in _WORKSPACE_IMPORT_PREFIXES:
+            return None
+        candidate_base = WORKSPACE_DIR.joinpath(*parts)
+    try:
+        candidate_base.resolve().relative_to(WORKSPACE_DIR.resolve())
+    except ValueError:
+        return None
+    return candidate_base
+
+
 def check_imports_not_gitignored() -> list[str]:
     """Check that every workspace-local import in eval/, method/, baseline/
-    resolves to a file that git tracks.
+    resolves to a file that git *tracks*.
 
-    If an import resolves to a gitignored file, that file will NOT exist after
-    a fresh `git clone`, so the gym will fail with ImportError for anyone else.
+    Two failure modes both break a fresh clone:
+      (a) import target exists on disk but is gitignored (won't be committed)
+      (b) import target does not exist at all in git (file missing entirely)
+
+    Both fail here — (a) was historically caught by walking the disk and
+    cross-checking ``git check-ignore``; (b) was silently skipped because the
+    old resolver returned None for missing files. Both now resolve to the
+    expected path and are validated against the tracked fileset.
     """
     errors: list[str] = []
-    # resolved_path -> list of (source_file, lineno) tuples
+    # expected_path -> list of (source_file, lineno) tuples
     import_map: dict[Path, list[tuple[Path, int]]] = {}
 
     for dirname in ("eval", "method", "baseline"):
@@ -354,42 +400,51 @@ def check_imports_not_gitignored() -> list[str]:
             for node in ast.walk(tree):
                 if isinstance(node, ast.Import):
                     for alias in node.names:
-                        resolved = _resolve_local_import(alias.name, None, 0)
-                        if resolved:
-                            import_map.setdefault(resolved, []).append((pyfile, node.lineno))
+                        base = _expected_import_base(alias.name, None, 0)
+                        if base is not None:
+                            import_map.setdefault(base, []).append((pyfile, node.lineno))
                 elif isinstance(node, ast.ImportFrom):
-                    # Skip `from __future__ import ...` etc. where level==0 and module is None
                     if node.module is None and node.level == 0:
                         continue
-                    resolved = _resolve_local_import(node.module or "", pyfile, node.level)
-                    if resolved:
-                        import_map.setdefault(resolved, []).append((pyfile, node.lineno))
+                    base = _expected_import_base(node.module or "", pyfile, node.level)
+                    if base is not None:
+                        import_map.setdefault(base, []).append((pyfile, node.lineno))
 
     if not import_map:
         return errors
 
-    # Batch one `git check-ignore --stdin` call for all resolved paths.
-    rel_paths = [str(p.relative_to(WORKSPACE_DIR)) for p in import_map]
+    # Ask git for the full tracked fileset once, then match each expected path
+    # against it. A ".py" file or a "/__init__.py" package either exists in the
+    # tree or it doesn't — anything else is a fresh-clone failure.
     try:
-        result = subprocess.run(
-            ["git", "-C", str(WORKSPACE_DIR), "check-ignore", "--stdin"],
-            input="\n".join(rel_paths),
-            capture_output=True,
-            text=True,
-            timeout=30,
+        tracked_result = subprocess.run(
+            ["git", "-C", str(WORKSPACE_DIR), "ls-files"],
+            capture_output=True, text=True, timeout=30,
         )
     except (subprocess.SubprocessError, FileNotFoundError):
-        # Git unavailable or not a repo — skip this check rather than fail.
         return errors
+    tracked = {line.strip() for line in tracked_result.stdout.splitlines() if line.strip()}
 
-    ignored_rels = {line.strip() for line in result.stdout.splitlines() if line.strip()}
-    for ignored_rel in sorted(ignored_rels):
-        ignored_path = WORKSPACE_DIR / ignored_rel
-        for source_file, lineno in import_map.get(ignored_path, []):
+    for base, callsites in sorted(import_map.items(), key=lambda kv: str(kv[0])):
+        rel_base = base.relative_to(WORKSPACE_DIR)
+        py_rel = str(rel_base) + ".py"
+        pkg_rel = str(rel_base) + "/__init__.py"
+        if py_rel in tracked or pkg_rel in tracked:
+            continue  # import target is tracked — fresh clone is fine
+        for source_file, lineno in callsites:
             rel_source = source_file.relative_to(WORKSPACE_DIR)
+            on_disk = (
+                (WORKSPACE_DIR / py_rel).is_file()
+                or (WORKSPACE_DIR / pkg_rel).is_file()
+            )
+            reason = (
+                f"exists locally but is gitignored"
+                if on_disk
+                else f"not present in git at all"
+            )
             errors.append(
-                f"{rel_source}:{lineno}: imports {ignored_rel}, which is gitignored "
-                f"(will not exist on fresh clone)"
+                f"{rel_source}:{lineno}: imports {rel_base} ({py_rel} or "
+                f"{pkg_rel}), which is {reason} — fresh clone will hit ImportError"
             )
     return errors
 
