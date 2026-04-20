@@ -66,11 +66,11 @@ From: python:3.11-slim
     pip install --break-system-packages uv 2>/dev/null || pip install uv 2>/dev/null || true
     export UV_SYSTEM_PYTHON=1 UV_BREAK_SYSTEM_PACKAGES=1
     uv pip install --system \
-        'h5py' \  # setup
-        'numba' \  # setup
-        'numpy' \  # setup
-        'pillow' \  # setup
-        'scipy'  # setup
+        'h5py' \
+        'numba' \
+        'numpy' \
+        'pillow' \
+        'scipy'
 
 %environment
     export HOME=/home/user
