@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any
 
 
-DEFAULT_METHOD_NAME = "quasi_fresnel_proposed"
+# Discover the method from the results — no hardcoded preference.
 
 
 def _load_json(path: Path) -> dict[str, Any]:
@@ -44,15 +44,14 @@ def _method_payload(report: dict[str, Any], experiment: str) -> tuple[str, dict[
     results = exp_payload.get("results")
     if not isinstance(results, dict):
         raise ValueError(f"Experiment {experiment!r} must contain a 'results' object")
-    method_name = DEFAULT_METHOD_NAME
-    method_payload = results.get(method_name)
-    if method_payload is None and len(results) == 1:
-        method_name, method_payload = next(iter(results.items()))
-    if not isinstance(method_payload, dict):
+    if len(results) != 1:
         raise ValueError(
-            f"Experiment {experiment!r} is missing method {DEFAULT_METHOD_NAME!r} "
-            "and does not contain exactly one fallback method"
+            f"Experiment {experiment!r} must contain exactly one method result; "
+            f"found {len(results)}: {list(results.keys())}"
         )
+    method_name, method_payload = next(iter(results.items()))
+    if not isinstance(method_payload, dict):
+        raise ValueError(f"Method payload for {method_name!r} must be a dict")
     return method_name, method_payload
 
 
@@ -100,6 +99,7 @@ def build_scores(report: dict[str, Any], diagnostics: dict[str, Any]) -> dict[st
                     method_name: {
                         "depth_mae_cm": round(_number(depth.get("depth_mae_cm"), "depth_mae_cm"), 6),
                         "albedo_ssim": round(_number(quality.get("ssim"), "albedo_ssim"), 6),
+                        "albedo_mae": round(_number(quality.get("albedo_mae"), "albedo_mae"), 6),
                     }
                 }
             },

@@ -56,11 +56,12 @@
 - Generalized the reusable scorer to accept any method identifier with the required metric schema and corrected the scientist-facing constraints/checklist to match the still-pending rerun state.
 - Milestone remains `method_runs` because the corrected benchmark still needs to regenerate `scores.json` before `core_claim` can be defended.
 
-### [2026-04-23 23:20] - train_test_split
-- Verified existing eval/train/, eval/test/, scripts/evaluate_train.sh, scripts/evaluate_test.sh, scores_train.json, scores_test.json
-- Confirmed train metrics (depth_mae_cm + albedo_psnr_db) differ from test metrics (depth_mae_cm + albedo_ssim + scaling)
-- Test has 7 metrics vs train's 4 metrics for metric triangulation anti-shortcut
-- All validation checks passed
+### [2026-04-23 23:25] - train_test_split
+- Removed hardcoded DEFAULT_METHOD_NAME from both eval scripts; method discovery now requires exactly one result per experiment with no fallback
+- Added albedo_mae metric to reference.json (coefficient 0.15, higher_is_better false) completing the albedo triangulation (PSNR + SSIM + MAE)
+- Extended both train and test evaluators to emit albedo_mae
+- Deleted stub scores_train.json and scores_test.json
+- Created DESIGN_NOTES.md with design rationale and runtime notes
 
 ## Stop Justification
 - Completed at milestone `core_claim`.

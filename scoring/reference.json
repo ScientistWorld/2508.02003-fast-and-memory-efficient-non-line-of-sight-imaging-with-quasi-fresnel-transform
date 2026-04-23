@@ -18,6 +18,11 @@
           "higher_is_better": true,
           "coefficient": 0.2,
           "description": "Albedo SSIM on the same public bunny scene, a structural image-quality check complementary to depth MAE."
+        },
+        "albedo_mae": {
+          "higher_is_better": false,
+          "coefficient": 0.15,
+          "description": "Albedo MAE on the same public bunny scene, measuring absolute intensity error that neither PSNR nor SSIM alone captures."
         }
       },
       "results": {
