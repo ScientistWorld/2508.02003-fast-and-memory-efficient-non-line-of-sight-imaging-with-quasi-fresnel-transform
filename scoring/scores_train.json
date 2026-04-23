@@ -1,0 +1,21 @@
+{
+  "experiments": {
+    "zaragoza_bunny_depth_error": {
+      "results": {
+        "quasi_fresnel_proposed": {
+          "depth_mae_cm": 16.5373,
+          "albedo_psnr_db": 11.637,
+          "albedo_mae": 0.234199
+        }
+      }
+    },
+    "zaragoza_efficiency_public_bunny": {
+      "results": {
+        "quasi_fresnel_proposed": {
+          "runtime_s": 0.025103,
+          "memory_mb": 16.39
+        }
+      }
+    }
+  }
+}
