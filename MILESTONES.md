@@ -56,5 +56,11 @@
 - Generalized the reusable scorer to accept any method identifier with the required metric schema and corrected the scientist-facing constraints/checklist to match the still-pending rerun state.
 - Milestone remains `method_runs` because the corrected benchmark still needs to regenerate `scores.json` before `core_claim` can be defended.
 
+### [2026-04-23 23:20] - train_test_split
+- Verified existing eval/train/, eval/test/, scripts/evaluate_train.sh, scripts/evaluate_test.sh, scores_train.json, scores_test.json
+- Confirmed train metrics (depth_mae_cm + albedo_psnr_db) differ from test metrics (depth_mae_cm + albedo_ssim + scaling)
+- Test has 7 metrics vs train's 4 metrics for metric triangulation anti-shortcut
+- All validation checks passed
+
 ## Stop Justification
 - Completed at milestone `core_claim`.
