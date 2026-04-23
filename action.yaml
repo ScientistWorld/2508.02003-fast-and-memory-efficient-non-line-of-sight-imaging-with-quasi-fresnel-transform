@@ -1,4 +1,3 @@
-action: submit
+action: done
 gpus: 0
-test: false
-notes: "Run scripts/run.sh to regenerate raw_results.json plus scores_train.json and scores_test.json for the existing Quasi-Fresnel method on the designer bunny benchmark."
+notes: "metric-triangulation split on bundled bunny NPZ; 5 train metrics and 8 test metrics; shared depth/runtime/memory match by design while held-out test adds SSIM, scaling, and loading-consistency checks; caveat: absolute depth MAE is 16.54 cm on the NPZ fallback rather than the paper's public-HDF5 value."
