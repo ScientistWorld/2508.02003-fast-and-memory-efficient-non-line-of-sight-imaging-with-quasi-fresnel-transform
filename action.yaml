@@ -1,3 +1,4 @@
-action: done
+action: submit
 gpus: 0
-notes: "Removed hardcoded method name; added albedo_mae to both slices; deleted stubs; extended albedo triangulation (PSNR+SSIM+MAE) in train, (SSIM+MAE) in test with 6 total metrics."
+test: false
+notes: "Run scripts/run.sh to regenerate raw_results.json plus scores_train.json and scores_test.json for the existing Quasi-Fresnel method on the designer bunny benchmark."
