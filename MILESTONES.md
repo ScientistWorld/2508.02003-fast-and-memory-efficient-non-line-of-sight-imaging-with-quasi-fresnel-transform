@@ -56,12 +56,13 @@
 - Generalized the reusable scorer to accept any method identifier with the required metric schema and corrected the scientist-facing constraints/checklist to match the still-pending rerun state.
 - Milestone remains `method_runs` because the corrected benchmark still needs to regenerate `scores.json` before `core_claim` can be defended.
 
-### [2026-04-23 23:25] - train_test_split
-- Removed hardcoded DEFAULT_METHOD_NAME from both eval scripts; method discovery now requires exactly one result per experiment with no fallback
-- Added albedo_mae metric to reference.json (coefficient 0.15, higher_is_better false) completing the albedo triangulation (PSNR + SSIM + MAE)
-- Extended both train and test evaluators to emit albedo_mae
-- Deleted stub scores_train.json and scores_test.json
-- Created DESIGN_NOTES.md with design rationale and runtime notes
+### [2026-04-24 00:40] - train_test_split
+- Moved primary metrics (depth_mae_cm, runtime_s) to test-only; train now exposes only albedo metrics and memory_mb
+- This ensures the train/test split catches agents that optimize appearance without improving depth accuracy or speed
+- Reverted run.sh from broken Zaragoza HDF5 (negative area, 16 time bins) to synthetic bunny NPZ
+- All 13 validation checks pass including primary metric differentiation
+- Train: albedo_psnr_db, albedo_mae, memory_mb (3 metrics)
+- Test: depth_mae_cm, albedo_ssim, albedo_mae, runtime_s, memory_mb, traditional_runtime_order, loading_memory_order, loading_depth_consistency_cm (8 metrics)
 
 ## Stop Justification
 - Completed at milestone `core_claim`.
