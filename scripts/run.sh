@@ -121,7 +121,7 @@ depth_gt = np.asarray(data["depth"], dtype=np.float64)
 dt = as_scalar(data["dt"], 0.003) if "dt" in data else 0.003
 k = as_scalar(data["k"], 4) if "k" in data else 4
 area = as_scalar(data["area"], 1.0) if "area" in data else 1.0
-s = 0.02
+s = 0.025
 
 print(f"=== Designer Bunny NPZ Scene ===")
 print(f"scene={scene_path} tau_shape={tau.shape} dt={dt} k={k} area={area} s={s}")

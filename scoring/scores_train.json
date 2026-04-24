@@ -3,8 +3,8 @@
     "zaragoza_bunny_depth_error": {
       "results": {
         "quasi_fresnel_proposed": {
-          "albedo_psnr_db": 11.637,
-          "albedo_mae": 0.234199
+          "albedo_psnr_db": 14.7642,
+          "albedo_mae": 0.16365
         }
       }
     },

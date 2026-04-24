@@ -5,26 +5,26 @@
     "dt": 0.003,
     "area_m": 0.3,
     "traditional": {
-      "runtime_mean_s": 0.025413,
-      "runtime_std_s": 0.010139,
-      "runtime_min_s": 0.015274,
-      "runtime_max_s": 0.035552,
-      "maxrss_mb": 53.86,
+      "runtime_mean_s": 0.024918,
+      "runtime_std_s": 0.012017,
+      "runtime_min_s": 0.012902,
+      "runtime_max_s": 0.036935,
+      "maxrss_mb": 54.43,
       "algorithm_peak_mb": 16.39,
       "quality": {
-        "psnr": 11.637,
-        "ssim": 0.1651,
-        "albedo_mae": 0.234199,
-        "depth_mae_m": 0.165373,
-        "depth_mae_cm": 16.5373
+        "psnr": 14.7642,
+        "ssim": 0.5583,
+        "albedo_mae": 0.16365,
+        "depth_mae_m": 0.004936,
+        "depth_mae_cm": 0.4936
       }
     },
     "loading": {
-      "runtime_mean_s": 0.031109,
-      "runtime_std_s": 0.000609,
-      "runtime_min_s": 0.0305,
-      "runtime_max_s": 0.031718,
-      "maxrss_mb": 71.86,
+      "runtime_mean_s": 0.033537,
+      "runtime_std_s": 0.00034,
+      "runtime_min_s": 0.033197,
+      "runtime_max_s": 0.033877,
+      "maxrss_mb": 68.66,
       "algorithm_peak_mb": 1.7,
       "consistency_vs_traditional": {
         "psnr": 100.0,
@@ -43,10 +43,10 @@
         64
       ],
       "runtime_s": [
-        0.000188,
-        0.000393,
-        0.000793,
-        0.00159
+        0.000233,
+        0.000377,
+        0.000952,
+        0.001707
       ],
       "memory_mb": [
         0.1897,
@@ -54,7 +54,7 @@
         1.9399,
         4.254
       ],
-      "runtime_order": 1.4997993391826496,
+      "runtime_order": 1.4366573329651091,
       "memory_order": 2.2207806629660434
     },
     "loading": {
@@ -65,10 +65,10 @@
         64
       ],
       "runtime_s": [
-        0.000974,
-        0.002035,
-        0.003187,
-        0.005186
+        0.001066,
+        0.002202,
+        0.003655,
+        0.005599
       ],
       "memory_mb": [
         0.0222,
@@ -76,7 +76,7 @@
         0.1789,
         0.3159
       ],
-      "runtime_order": 1.1763201761135904,
+      "runtime_order": 1.1831936407667782,
       "memory_order": 1.9149904642657258
     }
   },
