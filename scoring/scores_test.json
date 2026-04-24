@@ -3,18 +3,18 @@
     "zaragoza_bunny_depth_error": {
       "results": {
         "quasi_fresnel_proposed": {
-          "depth_mae_cm": 99.8658,
-          "albedo_ssim": 0.0624,
-          "albedo_mae": 0.725159
+          "depth_mae_cm": 16.5373,
+          "albedo_ssim": 0.1651,
+          "albedo_mae": 0.234199
         }
       }
     },
     "zaragoza_efficiency_public_bunny": {
       "results": {
         "quasi_fresnel_proposed": {
-          "runtime_s": 0.061089,
-          "memory_mb": 64.42,
-          "traditional_runtime_order": 1.726391,
+          "runtime_s": 0.024575,
+          "memory_mb": 16.39,
+          "traditional_runtime_order": 1.49132,
           "loading_memory_order": 1.91499,
           "loading_depth_consistency_cm": 0.0
         }
