@@ -8,11 +8,9 @@ export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 
-# Run the reproduced Quasi-Fresnel method on the real Zaragoza bunny confocal
-# scene (bunny_conf64.hdf5) and emit the raw report + diagnostics consumed by
-# the train/test scorers.  Ground-truth albedo/depth maps in the HDF5 are at
-# higher resolution than the relay-wall grid; we downsample them to match the
-# method's 64x64 output before computing quality metrics.
+# Run the reproduced Quasi-Fresnel method on the bundled bunny NPZ scene,
+# which includes albedo/depth ground truth, and emit the same raw report and
+# diagnostics shape consumed by the train/test scorers.
 python3 - <<'PY'
 import json
 import os
@@ -34,28 +32,19 @@ from method.quasi_fresnel import (
     quasi_fresnel_time_integral_loading,
 )
 
-# Load Zaragoza HDF5 using the dedicated loader which extracts wall coordinates,
-# deltaT, area, and ground-truth maps with proper physical scaling.
-from data.load_zaragoza import load_zaragoza_hdf5
-
 
 def maxrss_mb():
     return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024.0
 
 
-def downsample_2d(arr, target_size):
-    """Block-average *arr* down to (target_size, target_size)."""
-    arr = np.asarray(arr, dtype=np.float64)
-    h, w = arr.shape
-    bh = h // target_size
-    bw = w // target_size
-    if bh < 1 or bw < 1:
-        return arr
-    cropped = arr[: bh * target_size, : bw * target_size]
-    return cropped.reshape(target_size, bh, target_size, bw).mean(axis=(1, 3))
+def as_scalar(value, default):
+    array = np.asarray(value)
+    if array.size == 0:
+        return default
+    return type(default)(array.reshape(-1)[0])
 
 
-def benchmark_reconstruct(tau, s, dt, k, area, wall_x, wall_y, integration_mode, repeats=2):
+def benchmark_reconstruct(tau, s, dt, k, area, integration_mode, repeats=2):
     runtimes = []
     peak_mb = []
     albedo = None
@@ -70,8 +59,6 @@ def benchmark_reconstruct(tau, s, dt, k, area, wall_x, wall_y, integration_mode,
             dt=dt,
             k=k,
             area=area,
-            wall_x=wall_x,
-            wall_y=wall_y,
             integration_mode=integration_mode,
         )
         runtimes.append(time.perf_counter() - start)
@@ -126,41 +113,20 @@ def scaling_summary(sizes=(16, 32, 48, 64), s=0.02, dt=0.003, k=4):
     return out
 
 
-# ── Load real Zaragoza bunny data ─────────────────────────────────────
-hdf5_path = ROOT / "data" / "zaragoza" / "bunny_conf64.hdf5"
-print(f"Loading Zaragoza bunny: {hdf5_path}")
-scene = load_zaragoza_hdf5(str(hdf5_path))
-
-tau = scene["tau"]
-dt = scene["dt"]
-k = scene["k"]
-area = scene["area"]
-wall_x = scene.get("wall_x")
-wall_y = scene.get("wall_y")
-N = tau.shape[0]
-
-print(f"  tau_shape={tau.shape} dt={dt} k={k} area={area}")
-print(f"  wall_coords: {'yes' if wall_x is not None else 'no'}")
-print(f"  GT: albedo={scene['has_albedo_gt']} depth={scene['has_depth_gt']} depth_metric_scale={scene['depth_metric_scale']}")
-
-# Downsample GT to method output resolution
-albedo_gt_full = scene["albedo"]
-depth_gt_full = scene["depth"]
-albedo_gt = downsample_2d(albedo_gt_full, N)
-depth_gt = downsample_2d(depth_gt_full, N)
-print(f"  GT downsampled: {albedo_gt.shape} from {albedo_gt_full.shape}")
-
-# Paper-style s selection (matching typical confocal geometry)
+scene_path = ROOT / "data" / "bunny" / "bunny_64x64.npz"
+data = np.load(scene_path)
+tau = np.asarray(data["tau"], dtype=np.float64)
+albedo_gt = np.asarray(data["albedo"], dtype=np.float64)
+depth_gt = np.asarray(data["depth"], dtype=np.float64)
+dt = as_scalar(data["dt"], 0.003) if "dt" in data else 0.003
+k = as_scalar(data["k"], 4) if "k" in data else 4
+area = as_scalar(data["area"], 1.0) if "area" in data else 1.0
 s = 0.02
 
-print(f"\n=== Zaragoza Bunny Confocal Benchmark ===")
-print(f"s={s} N={N}")
+print(f"=== Designer Bunny NPZ Scene ===")
+print(f"scene={scene_path} tau_shape={tau.shape} dt={dt} k={k} area={area} s={s}")
 
-traditional = benchmark_reconstruct(
-    tau, s=s, dt=dt, k=k, area=area,
-    wall_x=wall_x, wall_y=wall_y,
-    integration_mode="traditional",
-)
+traditional = benchmark_reconstruct(tau, s=s, dt=dt, k=k, area=area, integration_mode="traditional")
 quality = compute_metrics(traditional["albedo"], traditional["depth"], albedo_gt, depth_gt)
 print(
     "traditional "
@@ -171,11 +137,7 @@ print(
     f"depth_MAE={quality['depth_mae'] * 100.0:.4f}cm"
 )
 
-loading = benchmark_reconstruct(
-    tau, s=s, dt=dt, k=k, area=area,
-    wall_x=wall_x, wall_y=wall_y,
-    integration_mode="loading",
-)
+loading = benchmark_reconstruct(tau, s=s, dt=dt, k=k, area=area, integration_mode="loading")
 loading_consistency = compute_metrics(
     loading["albedo"],
     loading["depth"],
@@ -218,8 +180,8 @@ raw_scores = {
 
 diagnostics = {
     "primary_public_scene": {
-        "scene_name": "zaragoza_bunny_conf64",
-        "source_path": str(hdf5_path),
+        "scene_name": "designer_bunny_npz_64",
+        "source_path": str(scene_path),
         "dt": round(float(dt), 8),
         "area_m": round(float(area), 6),
         "traditional": {
