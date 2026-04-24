@@ -10,8 +10,8 @@
     "zaragoza_efficiency_public_bunny": {
       "results": {
         "quasi_fresnel_proposed": {
-          "runtime_s": 0.028456,
-          "memory_mb": 17.14
+          "runtime_s": 0.032194,
+          "memory_mb": 16.86
         }
       }
     }
