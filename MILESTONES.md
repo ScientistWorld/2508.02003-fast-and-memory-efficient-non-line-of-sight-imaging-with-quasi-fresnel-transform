@@ -65,4 +65,4 @@
 - Test: depth_mae_cm, albedo_ssim, albedo_mae, runtime_s, memory_mb, traditional_runtime_order, loading_memory_order, loading_depth_consistency_cm (8 metrics)
 
 ## Stop Justification
-- Completed at milestone `core_claim`.
+- Completed at milestone `none`.
