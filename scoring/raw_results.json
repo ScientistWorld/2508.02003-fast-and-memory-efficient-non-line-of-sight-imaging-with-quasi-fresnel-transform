@@ -3,15 +3,15 @@
     "zaragoza_bunny_depth_error": {
       "results": {
         "quasi_fresnel_proposed": {
-          "depth_mae_cm": 16.5373
+          "depth_mae_cm": 99.8658
         }
       }
     },
     "zaragoza_efficiency_public_bunny": {
       "results": {
         "quasi_fresnel_proposed": {
-          "runtime_s": 0.025103,
-          "memory_mb": 16.39
+          "runtime_s": 0.061089,
+          "memory_mb": 64.42
         }
       }
     }

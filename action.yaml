@@ -1,3 +1,3 @@
-action: done
+action: submit
 gpus: 0
-notes: "metric-triangulation split on bundled bunny NPZ; 5 train metrics and 8 test metrics; shared depth/runtime/memory match by design while held-out test adds SSIM, scaling, and loading-consistency checks; caveat: absolute depth MAE is 16.54 cm on the NPZ fallback rather than the paper's public-HDF5 value."
+notes: "Run QFT on real Zaragoza bunny HDF5; populate raw_results, diagnostics, scores_train, scores_test."
