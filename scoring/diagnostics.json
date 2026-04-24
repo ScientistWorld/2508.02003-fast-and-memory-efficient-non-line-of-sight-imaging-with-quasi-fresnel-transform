@@ -5,11 +5,11 @@
     "dt": 0.003,
     "area_m": 0.3,
     "traditional": {
-      "runtime_mean_s": 0.023665,
-      "runtime_std_s": 0.011315,
-      "runtime_min_s": 0.01235,
-      "runtime_max_s": 0.034981,
-      "maxrss_mb": 51.73,
+      "runtime_mean_s": 0.023013,
+      "runtime_std_s": 0.011903,
+      "runtime_min_s": 0.01111,
+      "runtime_max_s": 0.034916,
+      "maxrss_mb": 58.18,
       "algorithm_peak_mb": 16.39,
       "quality": {
         "psnr": 11.637,
@@ -20,11 +20,11 @@
       }
     },
     "loading": {
-      "runtime_mean_s": 0.034289,
-      "runtime_std_s": 0.000143,
-      "runtime_min_s": 0.034146,
-      "runtime_max_s": 0.034433,
-      "maxrss_mb": 71.18,
+      "runtime_mean_s": 0.033786,
+      "runtime_std_s": 0.000416,
+      "runtime_min_s": 0.03337,
+      "runtime_max_s": 0.034202,
+      "maxrss_mb": 72.48,
       "algorithm_peak_mb": 1.7,
       "consistency_vs_traditional": {
         "psnr": 100.0,
@@ -43,10 +43,10 @@
         64
       ],
       "runtime_s": [
-        0.000215,
-        0.000388,
-        0.000906,
-        0.00178
+        0.00022,
+        0.00039,
+        0.00093,
+        0.00177
       ],
       "memory_mb": [
         0.1897,
@@ -54,7 +54,7 @@
         1.9399,
         4.254
       ],
-      "runtime_order": 1.500509662560895,
+      "runtime_order": 1.4893865973509228,
       "memory_order": 2.2207806629660434
     },
     "loading": {
@@ -65,10 +65,10 @@
         64
       ],
       "runtime_s": [
-        0.001085,
-        0.002273,
-        0.003702,
-        0.005794
+        0.001116,
+        0.002321,
+        0.003734,
+        0.00605
       ],
       "memory_mb": [
         0.0222,
@@ -76,7 +76,7 @@
         0.1789,
         0.3159
       ],
-      "runtime_order": 1.1891479883350378,
+      "runtime_order": 1.1931803995689718,
       "memory_order": 1.9149904642657258
     }
   },
