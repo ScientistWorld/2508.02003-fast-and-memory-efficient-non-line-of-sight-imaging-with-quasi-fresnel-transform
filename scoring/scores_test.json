@@ -3,9 +3,9 @@
     "zaragoza_bunny_depth_error": {
       "results": {
         "quasi_fresnel_scaled_reproduction": {
-          "depth_mae_cm": 16.5373,
-          "albedo_ssim": 0.5583,
-          "albedo_mae": 0.16365
+          "depth_mae_cm": 14.626,
+          "albedo_ssim": 0.1448,
+          "albedo_mae": 0.18078
         }
       }
     },

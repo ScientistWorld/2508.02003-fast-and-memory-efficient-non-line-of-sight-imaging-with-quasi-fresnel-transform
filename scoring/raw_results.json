@@ -10,7 +10,7 @@
     "zaragoza_efficiency_public_bunny": {
       "results": {
         "quasi_fresnel_scaled_reproduction": {
-          "runtime_s": 0.075464,
+          "runtime_s": 0.134111,
           "memory_mb": 1.7
         }
       }
