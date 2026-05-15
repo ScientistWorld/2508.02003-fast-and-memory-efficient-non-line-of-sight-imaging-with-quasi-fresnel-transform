@@ -21,5 +21,10 @@
 - Final CPU validation job `eca1622c-006` passed after verifier fixes, including the FDH smoke test, method artifact regeneration, train/test scoring, and `python validate.py --compare`.
 - Final verification confirmed the gym remains at `core_claim`, with runtime-dependent metrics removed from scoring and held-out scorer wiring fixed.
 
+### [2026-05-15 22:48] - core_claim
+- Final CPU validation job `5241c7d8-6d9` passed after artifact-contract and train/test metric fixes.
+- The validated score contract now includes depth and albedo quality metrics plus memory, direct-path scaling, low-memory scaling, and low-memory consistency constraints.
+- `python validate.py --compare` passed, including import separation, artifact-based evaluation checks, and train/test split checks.
+
 ## Stop Justification
 - Completed at milestone `core_claim`.
