@@ -1,3 +1,5 @@
-action: done
+action: submit
+gpus: 0
+test: false
 milestone: core_claim
-notes: "Final verification passed after CPU validation job eca1622c-006; workspace is ready at core_claim."
+notes: "CPU validation for artifact-based scoring plus extra public Zaragoza diagnostics; if it passes, update scores and consider core_claim_plus."
