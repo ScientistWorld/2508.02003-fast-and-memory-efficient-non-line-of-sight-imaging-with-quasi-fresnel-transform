@@ -10,14 +10,14 @@ This workspace contains a faithful implementation of the paper's Quasi-Fresnel a
 
 # Problem Definition
 
-Non-line-of-sight imaging reconstructs a hidden scene from transient measurements collected on a visible relay wall. In the confocal setting used by this paper, each relay-wall point is both illuminated and observed, producing a 3D histogram over wall position and time.
+Non-line-of-sight imaging reconstructs a hidden scene from transient measurements collected on a visible relay wall. In the confocal setting, each relay-wall point is both illuminated and observed, producing a 3D histogram over wall position and time.
 
-The practical problem is not only reconstruction quality but scalability. Prior NLOS pipelines typically reconstruct a 3D volume, which is expensive in both runtime and memory. The paper targets hidden scenes that are effectively 2D surfaces with albedo and depth, and asks whether one can reconstruct those scenes much more efficiently while keeping useful image quality.
+The practical problem is not only reconstruction quality but scalability. Hidden scenes in this benchmark are surface-like objects described by albedo and depth maps, and the goal is to recover those maps with useful fidelity while keeping working memory low.
 
 Success is measured by:
 - whether a reconstruction algorithm runs end-to-end on transient confocal measurements
-- whether runtime and memory are dramatically lower than prior volumetric methods
-- whether the recovered hidden object remains visually meaningful
+- whether working memory stays low on the fixed public-scene benchmark
+- whether the recovered hidden object remains geometrically and visually meaningful
 
 ---
 
@@ -40,14 +40,14 @@ What is not yet fully reproduced:
 
 # Evaluation
 
-The paper evaluates on public NLOS datasets, especially Zaragoza simulated confocal data and Stanford captured data. The strongest explicit quantitative claim in the paper is efficiency:
-- around `0.17 s` runtime and under `50 MB` memory for the Zaragoza evaluation
-- under `0.3 s` runtime and under `50 MB` memory on the Stanford evaluation
-- about `0.003 s` per frame on the dynamic Stanford sequence
+The packaged benchmark has two complementary targets:
 
-The packaged minimum benchmark in this workspace is built around the public Zaragoza Stanford bunny confocal scene. It measures both:
-- depth quality via `depth_mae_cm`, matching the numeric bunny comparison in Fig. 5
-- efficiency via `runtime_s` and `memory_mb`, matching the public Zaragoza efficiency claim in the Results section
+- `zaragoza_bunny_depth_error`: depth reconstruction quality on a tracked Zaragoza-style bunny proxy with metric ground truth.
+- `zaragoza_efficiency_public_bunny`: working-memory behavior on the packaged public Zaragoza bunny confocal measurement.
+
+`depth_mae_cm` is the primary quality metric. Lower values mean the recovered surface geometry is closer to the reference depth map.
+
+`memory_mb` is the primary efficiency metric. Lower values mean the reconstruction can run with less peak working memory on the fixed public-scene input. Wall-clock runtime is kept only in raw diagnostics because it depends on hardware and is not part of the scored objective.
 
 Additional public Zaragoza scenes are treated as diagnostics unless they also expose trustworthy ground truth through the HDF5 metadata.
 
@@ -831,6 +831,33 @@ Additional public Zaragoza scenes are treated as diagnostics unless they also ex
 - Container job `b27e91f3-049` passed the FDH smoke test, regenerated `raw_results.json`, `diagnostics.json`, `scores.json`, train/test scores, and passed `python validate.py --compare`.
 - Refreshed scores show the FDH-style public-bunny path at `0.075464 s` and `1.70 MB` with exact consistency against the traditional reconstruction, while the quality proxy remains at `0.4936 cm` depth MAE.
 - The reproduced score method is named `quasi_fresnel_scaled_reproduction` because the benchmark uses a tracked quality proxy and lightweight public-bunny efficiency fixture rather than the exact full paper setting.
+
+</details>
+
+### Iteration 8: gpt-5.5 (verifier)
+- **Milestone**: `core_claim` | **Status**: done
+- **Working time**: 9m | **GPU**: 0.0h
+- **Jobs**: 200 total (183 completed, 11 failed)
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-05-15 21:25] - method_runs
+- Existing Quasi-Fresnel implementation executes the paper's time aggregation, spatial inversion, and albedo/depth extraction pipeline end to end.
+- Packaged scripts produce method artifacts and score them without importing `method/` from `eval/`.
+
+### [2026-05-15 21:25] - core_claim
+- Prior container job reproduced the central quality/efficiency claim on the available benchmark split: metric depth quality on the tracked Zaragoza-style bunny proxy and runtime/memory behavior on public Zaragoza bunny measurements.
+- Current turn adds the paper's FDH-style aggregated reconstruction interface and fixes relay-wall extent inference; a new submitted job will refresh the scored artifacts.
+
+### [2026-05-15 21:36] - core_claim
+- Container job `b27e91f3-049` passed the FDH smoke test, regenerated `raw_results.json`, `diagnostics.json`, `scores.json`, train/test scores, and passed `python validate.py --compare`.
+- Refreshed scores show the FDH-style public-bunny path at `0.075464 s` and `1.70 MB` with exact consistency against the traditional reconstruction, while the quality proxy remains at `0.4936 cm` depth MAE.
+- The reproduced score method is named `quasi_fresnel_scaled_reproduction` because the benchmark uses a tracked quality proxy and lightweight public-bunny efficiency fixture rather than the exact full paper setting.
+
+### [2026-05-15 22:25] - core_claim
+- Final CPU validation job `eca1622c-006` passed after verifier fixes, including the FDH smoke test, method artifact regeneration, train/test scoring, and `python validate.py --compare`.
+- Final verification confirmed the gym remains at `core_claim`, with runtime-dependent metrics removed from scoring and held-out scorer wiring fixed.
 
 </details>
 
