@@ -21,7 +21,7 @@ import numpy as np
 
 ROOT = Path("/home/user")
 sys.path.insert(0, str(ROOT))
-METHOD_NAME = "quasi_fresnel_scaled_reproduction"
+METHOD_NAME = "quasi_fresnel_proposed"
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
 os.environ.setdefault("MKL_NUM_THREADS", "1")
@@ -77,6 +77,7 @@ def benchmark_qft(
     wall_x: np.ndarray | None = None,
     wall_y: np.ndarray | None = None,
     integration_mode: str = "traditional",
+    use_fdh: bool = False,
     repeats: int = 3,
 ) -> dict[str, object]:
     runtimes: list[float] = []
@@ -99,6 +100,7 @@ def benchmark_qft(
             wall_x=wall_x,
             wall_y=wall_y,
             integration_mode=integration_mode,
+            use_fdh=use_fdh,
         )
         runtimes.append(time.perf_counter() - t0)
         _, peak = tracemalloc.get_traced_memory()
@@ -113,7 +115,7 @@ def benchmark_qft(
     return {
         "albedo": albedo,
         "depth": depth,
-        "integration_mode": integration_mode,
+        "integration_mode": "fdh" if use_fdh else integration_mode,
         "runtime_mean_s": float(np.mean(runtimes)),
         "runtime_std_s": float(np.std(runtimes)),
         "runtime_min_s": float(np.min(runtimes)),
@@ -187,6 +189,8 @@ def load_public_efficiency_scene() -> dict[str, object]:
 
 
 def discover_additional_public_scenes() -> list[Path]:
+    if os.environ.get("NLOS_EXTRA_PUBLIC", "0") != "1":
+        return []
     candidates = [
         ROOT / "data" / "downloads" / "zaragoza" / "usaf_simple_256_conf.hdf5",
         ROOT / "data" / "downloads" / "zaragoza" / "public" / "T_conf64.hdf5",
@@ -227,6 +231,8 @@ def build_diagnostics(
     efficiency_result: dict[str, object],
     loading_result: dict[str, object],
     loading_consistency: dict[str, float],
+    fdh_result: dict[str, object],
+    fdh_consistency: dict[str, float],
     scaling: dict[str, dict[str, object]],
     public_scene_results: list[dict[str, object]],
 ) -> dict[str, object]:
@@ -284,6 +290,20 @@ def build_diagnostics(
                     "ssim": round(loading_consistency["ssim"], 6),
                     "albedo_mae": round(loading_consistency["albedo_mae"], 8),
                     "depth_mae": round(loading_consistency["depth_mae"], 8),
+                },
+            },
+            "fdh": {
+                "runtime_mean_s": round(fdh_result["runtime_mean_s"], 6),
+                "runtime_std_s": round(fdh_result["runtime_std_s"], 6),
+                "runtime_min_s": round(fdh_result["runtime_min_s"], 6),
+                "runtime_max_s": round(fdh_result["runtime_max_s"], 6),
+                "maxrss_mb": round(fdh_result["maxrss_mb"], 2),
+                "algorithm_peak_mb": round(fdh_result["algorithm_peak_mb"], 2),
+                "consistency_vs_traditional": {
+                    "psnr": round(fdh_consistency["psnr"], 4),
+                    "ssim": round(fdh_consistency["ssim"], 6),
+                    "albedo_mae": round(fdh_consistency["albedo_mae"], 8),
+                    "depth_mae": round(fdh_consistency["depth_mae"], 8),
                 },
             },
         },
@@ -430,6 +450,38 @@ def main() -> None:
         f"depth_MAE={loading_consistency['depth_mae']:.8f}"
     )
 
+    print("\n=== Public Scene: FDH-Style Aggregated Variant ===")
+    fdh_result = benchmark_qft(
+        efficiency_scene["tau"],
+        s=efficiency_s,
+        dt=efficiency_scene["dt"],
+        k=efficiency_scene["k"],
+        area=efficiency_scene["area"],
+        wall_x=efficiency_scene["wall_x"],
+        wall_y=efficiency_scene["wall_y"],
+        use_fdh=True,
+        repeats=3,
+    )
+    fdh_consistency = compute_metrics(
+        fdh_result["albedo"],
+        fdh_result["depth"],
+        efficiency_result["albedo"],
+        efficiency_result["depth"],
+    )
+    print(
+        f"scene={efficiency_scene['scene_name']} s={efficiency_s:.3f} "
+        f"mode=fdh runtime={fdh_result['runtime_mean_s']:.6f}s "
+        f"+/- {fdh_result['runtime_std_s']:.6f}s "
+        f"peak_memory={fdh_result['algorithm_peak_mb']:.2f}MB"
+    )
+    print(
+        "consistency_vs_traditional "
+        f"PSNR={fdh_consistency['psnr']:.2f}dB "
+        f"SSIM={fdh_consistency['ssim']:.6f} "
+        f"albedo_MAE={fdh_consistency['albedo_mae']:.8f} "
+        f"depth_MAE={fdh_consistency['depth_mae']:.8f}"
+    )
+
     print("\n=== Complexity Scaling ===")
     scaling = benchmark_complexity_scaling()
     for mode in ("traditional", "loading"):
@@ -499,7 +551,7 @@ def main() -> None:
             )
         public_scene_results.append(scene_diag)
 
-    scores = build_scores(quality_metrics, efficiency_result)
+    scores = build_scores(quality_metrics, fdh_result)
     out_path = ROOT / "scoring" / "raw_results.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(scores, indent=2) + "\n")
@@ -513,6 +565,8 @@ def main() -> None:
         efficiency_result,
         loading_result,
         loading_consistency,
+        fdh_result,
+        fdh_consistency,
         scaling,
         public_scene_results,
     )

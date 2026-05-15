@@ -29,7 +29,7 @@ This is the quality-preservation side of the paper's claim. A faster method that
 Type: Benefit target
 
 What it tests:
-Runtime and memory usage for an available public Zaragoza bunny reconstruction, matching the paper's reported public-dataset efficiency claim. The current job path prefers the 64x64 public bunny copy for repeatable CPU validation and falls back to the downloaded 256x256 public bunny file.
+Runtime and working memory for the paper's FDH-style aggregated Quasi-Fresnel reconstruction on an available public Zaragoza bunny measurement. The current job path prefers the 64x64 public bunny copy for repeatable CPU validation and falls back to the downloaded 256x256 public bunny file.
 
 Primary metric:
 - `runtime_s` — lower is better
@@ -38,7 +38,7 @@ Constraint metric:
 - `memory_mb` — lower is better
 
 Interpretation:
-Scientists should improve runtime without inflating working memory. The score rewards speed, but only when the memory footprint remains controlled on the same public scene.
+Scientists should improve runtime without inflating working memory. The score rewards the low-memory aggregated path emphasized by the paper, while diagnostics also compare it against the full-histogram and sequential-loading paths on the same public scene.
 
 ## Unscored diagnostics
 [`scoring/diagnostics.json`](/home/user/scoring/diagnostics.json) may include additional public-scene results, loading-path consistency, and extra quality metrics, but those diagnostics do not affect the score.

@@ -45,18 +45,11 @@
         "quasi_fresnel_proposed": {
           "type": "proposed",
           "depth_mae_cm": 0.15
-        },
-        "quasi_fresnel_scaled_reproduction": {
-          "type": "proposed",
-          "depth_mae_cm": 0.4936,
-          "albedo_psnr_db": 14.7642,
-          "albedo_ssim": 0.5583,
-          "albedo_mae": 0.16365
         }
       }
     },
     "zaragoza_efficiency_public_bunny": {
-      "description": "Public Zaragoza efficiency claim from the Results section. The paper reports about 0.17 s runtime and less than 50 MB memory for the proposed method, versus more than 6.39 s runtime and more than 13.105 GB memory for prior volumetric methods. The current gym uses the available public bunny HDF5 measurements for this target, preferring the 64x64 public copy for repeatable CPU jobs.",
+      "description": "Public Zaragoza efficiency claim from the Results section. The paper reports about 0.17 s runtime and less than 50 MB memory for the proposed method, versus more than 6.39 s runtime and more than 13.105 GB memory for prior volumetric methods. The current gym scores the FDH-style aggregated Quasi-Fresnel path on the available public bunny HDF5 measurements, preferring the 64x64 public copy for repeatable CPU jobs.",
       "weight": 0.4,
       "primary_metric": "runtime_s",
       "metrics": {
@@ -94,14 +87,6 @@
           "type": "proposed",
           "runtime_s": 0.17,
           "memory_mb": 50.0
-        },
-        "quasi_fresnel_scaled_reproduction": {
-          "type": "proposed",
-          "runtime_s": 0.065222,
-          "memory_mb": 64.42,
-          "traditional_runtime_order": 3.083245,
-          "loading_memory_order": 1.912427,
-          "loading_depth_consistency_cm": 0.0
         }
       }
     }

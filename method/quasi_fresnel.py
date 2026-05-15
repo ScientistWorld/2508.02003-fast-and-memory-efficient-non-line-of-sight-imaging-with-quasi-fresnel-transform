@@ -92,6 +92,20 @@ def quasi_fresnel_time_integral_loading(tau, s_values, dt, k=4):
     return tuple(accumulators)
 
 
+def quasi_fresnel_fdh_aggregate(tau, s_values, dt, k=4):
+    """
+    Paper's FDH-style temporal aggregation path.
+
+    Eq. (6) rewrites the Quasi-Fresnel time integral as a complex weighted
+    histogram that can be accumulated during acquisition. In this software
+    reproduction we emulate that hardware path by streaming over time bins and
+    returning only the aggregated two-dimensional ``phi`` arrays. The downstream
+    reconstruction then starts from ``phi`` and never needs a volumetric hidden
+    scene or a 3D FFT.
+    """
+    return quasi_fresnel_time_integral_loading(tau, s_values, dt, k)
+
+
 def _centered_coordinates(n, spacing):
     return (np.arange(n, dtype=np.float64) - (n - 1) / 2.0) * spacing
 
@@ -211,6 +225,42 @@ def quasi_fresnel_spatial_deconv(phi, s, area=None, wall_x=None, wall_y=None):
     return psi
 
 
+def quasi_fresnel_reconstruct_from_phi(
+    phi,
+    s,
+    area=None,
+    wall_x=None,
+    wall_y=None,
+    phi_prev=None,
+    phi_next=None,
+    ds=None,
+):
+    """
+    Reconstruct albedo/depth from pre-aggregated Quasi-Fresnel measurements.
+
+    This is the software interface for the paper's FDH/hardware acquisition
+    variant: the method receives one or more 2D complex ``phi(x; s)`` arrays,
+    applies the separable spatial inversion in Eq. (5), and extracts albedo and
+    depth using Eq. (4).
+    """
+    if area is None:
+        area = float(phi.shape[0])
+
+    psi_prev = None
+    psi_next = None
+    if ds is not None and ds > 0 and phi_prev is not None:
+        psi_prev = quasi_fresnel_spatial_deconv(
+            phi_prev, s - ds, area=area, wall_x=wall_x, wall_y=wall_y
+        )
+    psi = quasi_fresnel_spatial_deconv(phi, s, area=area, wall_x=wall_x, wall_y=wall_y)
+    if ds is not None and ds > 0 and phi_next is not None:
+        psi_next = quasi_fresnel_spatial_deconv(
+            phi_next, s + ds, area=area, wall_x=wall_x, wall_y=wall_y
+        )
+
+    return extract_albedo_depth(psi, s, psi_prev=psi_prev, psi_next=psi_next, ds=ds)
+
+
 def extract_albedo_depth(psi, s, psi_prev=None, psi_next=None, ds=None):
     """
     Step 3: Extract albedo and depth from psi(x; s).
@@ -302,6 +352,20 @@ def quasi_fresnel_reconstruct(
     # The paper uses very close s values in the regular confocal setting.
     # A coarse finite-difference step noticeably degrades depth estimates.
     ds = 1e-7
+    if use_fdh:
+        phi_prev, phi, phi_next = quasi_fresnel_fdh_aggregate(
+            tau, (s - ds, s, s + ds), dt, k
+        )
+        return quasi_fresnel_reconstruct_from_phi(
+            phi,
+            s,
+            area=area,
+            wall_x=wall_x,
+            wall_y=wall_y,
+            phi_prev=phi_prev,
+            phi_next=phi_next,
+            ds=ds,
+        )
     if integration_mode == "traditional":
         phi_prev = quasi_fresnel_time_integral(tau, s - ds, dt, k)
         phi = quasi_fresnel_time_integral(tau, s, dt, k)

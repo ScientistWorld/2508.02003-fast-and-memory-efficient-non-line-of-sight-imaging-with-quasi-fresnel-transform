@@ -30,8 +30,9 @@ checkpoints/
 data/downloads/
 !data/downloads/
 !data/downloads/.gitkeep
-data/generate_nlos_data.py
-data/bunny/
+data/bunny/*
+!data/bunny/
+!data/bunny/bunny_64x64.npz
 data/dynamic/
 data/kylin/
 data/shapes/

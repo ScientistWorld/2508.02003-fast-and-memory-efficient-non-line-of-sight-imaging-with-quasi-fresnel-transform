@@ -55,12 +55,23 @@ def _read_extent_like(datasets, keywords, default):
     _, dataset = _find_first(datasets, keywords)
     if dataset is None:
         return default
-    value = np.asarray(dataset[()]).reshape(-1)
+    value = np.asarray(dataset[()], dtype=np.float64)
+    if value.ndim >= 2 and value.shape[-1] >= 2:
+        coords = value.reshape(-1, value.shape[-1])[:, :2]
+        spans = np.ptp(coords, axis=0)
+        finite_spans = spans[np.isfinite(spans) & (spans > 0)]
+        if finite_spans.size:
+            return float(np.max(finite_spans))
+    value = value.reshape(-1)
     if value.size == 0:
         return default
     if value.size == 1:
-        return float(value[0])
-    return float(np.max(value[:2]))
+        return float(abs(value[0]))
+    finite = np.abs(value[np.isfinite(value)])
+    positive = finite[finite > 0]
+    if positive.size:
+        return float(np.max(positive[: min(2, positive.size)]))
+    return default
 
 
 def _extract_wall_coordinates(datasets, tau_shape):
@@ -210,6 +221,7 @@ def load_zaragoza_hdf5(hdf5_path, dt=0.003, k=4, area=0.6):
         wall_x, wall_y = _extract_wall_coordinates(datasets, tau.shape)
         if wall_x is not None and wall_y is not None:
             area = float(max(wall_x.max() - wall_x.min(), wall_y.max() - wall_y.min()))
+        area = abs(float(area)) if np.isfinite(area) and area != 0 else 1.0
 
         scene_name = os.path.basename(hdf5_path).split("_")[0]
 
