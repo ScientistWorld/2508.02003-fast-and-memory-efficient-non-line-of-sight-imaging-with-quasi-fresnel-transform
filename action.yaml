@@ -6,4 +6,4 @@ action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Improvements: removed wall-clock runtime from scored train/test schema, added albedo MAE to both slices, fixed metric coefficient/direction metadata. Notes: see DESIGN_NOTES.md."
+notes: "Improvements: removed wall-clock runtime from nonzero scored train/test schema, added albedo MAE to both slices, fixed metric coefficient/direction metadata, retained runtime diagnostics at zero weight for artifact compatibility. Validation: python validate.py passed."

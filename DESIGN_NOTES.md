@@ -15,6 +15,7 @@
 - Fixed `albedo_mae` in `scoring/reference.json`: `higher_is_better` is false and the coefficient is now negative.
 - Added the missing `description` field for `depth_mae_cm`.
 - Removed wall-clock runtime from the train/test split's nonzero scoring schema. The efficiency experiment now uses `memory_mb` as primary and scores `traditional_memory_order`, `loading_memory_order`, and `loading_depth_consistency_cm` as the anti-shortcut checks.
+- Retained `runtime_s` and `traditional_runtime_order` in `scoring/reference.json` with `coefficient: 0.0` so existing artifacts validate without making wall-clock runtime part of the scored objective.
 - Changed the held-out efficiency scorer from `runtime_s` / `traditional_runtime_order` to `memory_mb` / `traditional_memory_order` / `loading_depth_consistency_cm`, using existing diagnostics artifacts.
 
 ## Split design
@@ -26,6 +27,6 @@ Train now exposes depth MAE, albedo PSNR, albedo MAE, low-memory peak memory, an
 ## Runtime concerns for the next iteration
 
 - I did not run the Python evaluators or regenerate score files, per the Designer instructions. The runner should execute both scorers against current artifacts.
-- `scoring/reference.json` still preserves `runtime_s` under paper-reported `results` entries for historical context, but no nonzero scored metric uses wall-clock runtime.
+- `scoring/reference.json` still preserves `runtime_s` and `traditional_runtime_order` as zero-weight compatibility diagnostics, but no nonzero scored metric uses wall-clock runtime.
 - The split still depends on `diagnostics.json` containing `quality_scene.traditional.quality.albedo_mae`, `complexity_scaling.loading.memory_order`, `complexity_scaling.traditional.memory_order`, and `primary_public_scene.loading.consistency_vs_traditional.depth_mae`. The current artifact has these fields; future methods should emit the same diagnostics contract.
 - `loading_depth_consistency_cm` may saturate at zero for faithful implementations because loading and direct paths compute the same reconstruction. It remains useful as a constraint metric for methods that break the low-memory path.

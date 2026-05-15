@@ -57,10 +57,20 @@
       "weight": 0.4,
       "primary_metric": "memory_mb",
       "metrics": {
+        "runtime_s": {
+          "higher_is_better": false,
+          "coefficient": 0.0,
+          "description": "Historical wall-clock runtime retained only for compatibility with existing artifacts; it is not scored because hardware varies across runs."
+        },
         "memory_mb": {
           "higher_is_better": false,
           "coefficient": -1.0,
           "description": "Algorithm peak working memory in megabytes for the low-memory public bunny reconstruction path."
+        },
+        "traditional_runtime_order": {
+          "higher_is_better": false,
+          "coefficient": 0.0,
+          "description": "Historical runtime-scaling diagnostic retained only for compatibility with existing artifacts; it is not scored."
         },
         "traditional_memory_order": {
           "higher_is_better": false,
