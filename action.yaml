@@ -1,5 +1,5 @@
-action: submit
+action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Regenerate full Quasi-Fresnel artifacts after splitting primary train/test metrics across held-out quality and memory axes."
+notes: "Core-claim split artifacts validated; train/test primary metrics now differentiate on held-out depth and memory axes."
