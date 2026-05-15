@@ -69,6 +69,13 @@ def _primary_scene(diagnostics: dict[str, Any]) -> dict[str, Any]:
     return scene
 
 
+def _quality_scene(diagnostics: dict[str, Any]) -> dict[str, Any]:
+    scene = diagnostics.get("quality_scene")
+    if isinstance(scene, dict):
+        return scene
+    return _primary_scene(diagnostics)
+
+
 def _complexity(diagnostics: dict[str, Any]) -> dict[str, Any]:
     complexity = diagnostics.get("complexity_scaling")
     if not isinstance(complexity, dict):
@@ -82,10 +89,11 @@ def build_scores(report: dict[str, Any], diagnostics: dict[str, Any]) -> dict[st
     if efficiency_method_name != method_name:
         raise ValueError("Held-out test experiments report different method names")
     scene = _primary_scene(diagnostics)
+    quality_scene = _quality_scene(diagnostics)
     complexity = _complexity(diagnostics)
 
     try:
-        quality = scene["traditional"]["quality"]
+        quality = quality_scene["traditional"]["quality"]
         loading_consistency = scene["loading"]["consistency_vs_traditional"]
         traditional_scaling = complexity["traditional"]
         loading_scaling = complexity["loading"]

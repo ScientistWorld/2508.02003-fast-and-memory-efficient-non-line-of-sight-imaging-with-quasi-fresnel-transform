@@ -1,5 +1,5 @@
 action: submit
 gpus: 0
-test: false
+test: true
 milestone: method_runs
-notes: "Audit rerun on public Zaragoza HDF5 data via scripts/method.sh; regenerate raw_results, scores.json, train/test scores, and validate before restoring core_claim."
+notes: "Rerun fixed split benchmark: synthetic metric-ground-truth bunny quality plus public Zaragoza HDF5 efficiency/loading/scaling, then regenerate all score artifacts and validate."

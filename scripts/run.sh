@@ -8,8 +8,8 @@ export MKL_NUM_THREADS=1
 export OMP_NUM_THREADS=1
 export NUMEXPR_NUM_THREADS=1
 
-# Audit rerun: use the packaged public Zaragoza HDF5 path rather than the
-# synthetic smoke-test scene, then score all standard artifacts.
+# Audit rerun: score depth quality on the tracked metric-ground-truth proxy and
+# public Zaragoza HDF5 runtime/memory on the same standard artifact interface.
 bash scripts/method.sh
 bash scripts/evaluate_train.sh /home/user/scoring/raw_results.json /home/user/scoring/scores_train.json
 bash scripts/evaluate_test.sh /home/user/scoring/raw_results.json /home/user/scoring/scores_test.json

@@ -17,19 +17,19 @@ bash scripts/method.sh
 Type: Quality target
 
 What it tests:
-Depth accuracy on the public Zaragoza Stanford bunny confocal scene, matching the paper's Fig. 5 comparison.
+Depth accuracy for the Zaragoza Stanford bunny Fig. 5 comparison. The scored gym target uses the tracked synthetic Zaragoza-style bunny proxy in `data/bunny/bunny_64x64.npz`, because the public HDF5 measurement files available here do not contain metric 2D albedo/depth ground truth.
 
 Primary metric:
 - `depth_mae_cm` — lower is better
 
 Interpretation:
-This is the quality-preservation side of the paper's claim. A faster method that loses bunny depth fidelity should score worse here.
+This is the quality-preservation side of the paper's claim. A faster method that loses bunny depth fidelity on the metric-ground-truth proxy should score worse here.
 
 ## `zaragoza_efficiency_public_bunny`
 Type: Benefit target
 
 What it tests:
-Runtime and memory usage for the public Zaragoza bunny reconstruction, matching the paper's reported public-dataset efficiency claim.
+Runtime and memory usage for an available public Zaragoza bunny reconstruction, matching the paper's reported public-dataset efficiency claim. The current job path prefers the 64x64 public bunny copy for repeatable CPU validation and falls back to the downloaded 256x256 public bunny file.
 
 Primary metric:
 - `runtime_s` — lower is better

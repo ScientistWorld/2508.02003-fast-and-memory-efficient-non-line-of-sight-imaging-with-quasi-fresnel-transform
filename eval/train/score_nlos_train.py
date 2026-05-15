@@ -65,9 +65,14 @@ def _diagnostics_path(input_path: Path) -> Path:
 
 def _primary_quality(diagnostics: dict[str, Any]) -> dict[str, Any]:
     try:
-        quality = diagnostics["primary_public_scene"]["traditional"]["quality"]
-    except KeyError as exc:
-        raise ValueError("Diagnostics are missing primary_public_scene.traditional.quality") from exc
+        quality = diagnostics["quality_scene"]["traditional"]["quality"]
+    except KeyError:
+        try:
+            quality = diagnostics["primary_public_scene"]["traditional"]["quality"]
+        except KeyError as exc:
+            raise ValueError(
+                "Diagnostics are missing quality_scene.traditional.quality"
+            ) from exc
     if not isinstance(quality, dict):
         raise ValueError("Diagnostics quality payload must be an object")
     return quality

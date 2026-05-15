@@ -75,10 +75,16 @@ def _normalize_results(report: dict, diagnostics: dict) -> dict:
         )
     }
     quality = (
-        diagnostics.get("primary_public_scene", {})
+        diagnostics.get("quality_scene", {})
         .get("traditional", {})
         .get("quality", {})
     )
+    if not quality:
+        quality = (
+            diagnostics.get("primary_public_scene", {})
+            .get("traditional", {})
+            .get("quality", {})
+        )
     if quality:
         if "psnr" in quality:
             depth_out["albedo_psnr_db"] = round(

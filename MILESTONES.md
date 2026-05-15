@@ -4,6 +4,11 @@
 
 ## Progress Log
 
+### [2026-05-15 21:10] - method_runs
+- Job `17469bab-217` failed before scoring because the public Zaragoza HDF5 measurement files available in this workspace do not include metric 2D albedo/depth ground truth.
+- Kept milestone at `method_runs`; the failure exposed a benchmark-contract issue rather than a method execution failure.
+- Split the next benchmark into a tracked synthetic bunny proxy for depth/albedo quality and public Zaragoza HDF5 data for runtime, memory, loading-path consistency, and scaling.
+
 ### [2026-05-15 21:20] - method_runs
 - Continuing audit reset the milestone to `method_runs` pending fresh validation.
 - Confirmed the method code implements the paper's Quasi-Fresnel time aggregation, separable FFT spatial inversion, and derivative-based depth extraction rather than a surrogate.

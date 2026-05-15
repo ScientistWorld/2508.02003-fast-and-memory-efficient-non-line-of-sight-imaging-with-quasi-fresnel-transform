@@ -1,7 +1,7 @@
 {
   "experiments": {
     "zaragoza_bunny_depth_error": {
-      "description": "Depth MAE on the Zaragoza Stanford bunny scene from Fig. 5. The paper reports that Quasi-Fresnel achieves the lowest bunny depth error among the compared direct methods.",
+      "description": "Depth MAE for the Zaragoza Stanford bunny Fig. 5 target. The paper reports that Quasi-Fresnel achieves the lowest bunny depth error among the compared direct methods. This gym scores the same target on a tracked synthetic Zaragoza-style bunny proxy because the public HDF5 measurements packaged here do not include 2D albedo/depth ground truth.",
       "weight": 0.6,
       "primary_metric": "depth_mae_cm",
       "metrics": {
@@ -12,17 +12,17 @@
         "albedo_psnr_db": {
           "higher_is_better": true,
           "coefficient": 0.3,
-          "description": "Albedo PSNR on the same public bunny scene, included to catch methods that preserve depth while degrading the reconstructed appearance emphasized in Fig. 4."
+          "description": "Albedo PSNR on the same synthetic bunny proxy, included to catch methods that preserve depth while degrading reconstructed appearance."
         },
         "albedo_ssim": {
           "higher_is_better": true,
           "coefficient": 0.2,
-          "description": "Albedo SSIM on the same public bunny scene, a structural image-quality check complementary to depth MAE."
+          "description": "Albedo SSIM on the same synthetic bunny proxy, a structural image-quality check complementary to depth MAE."
         },
         "albedo_mae": {
           "higher_is_better": false,
           "coefficient": 0.15,
-          "description": "Albedo MAE on the same public bunny scene, measuring absolute intensity error that neither PSNR nor SSIM alone captures."
+          "description": "Albedo MAE on the same synthetic bunny proxy, measuring absolute intensity error that neither PSNR nor SSIM alone captures."
         }
       },
       "results": {
@@ -49,7 +49,7 @@
       }
     },
     "zaragoza_efficiency_public_bunny": {
-      "description": "Public Zaragoza efficiency claim from the Results section. The paper reports about 0.17 s runtime and less than 50 MB memory for the proposed method, versus more than 6.39 s runtime and more than 13.105 GB memory for prior volumetric methods.",
+      "description": "Public Zaragoza efficiency claim from the Results section. The paper reports about 0.17 s runtime and less than 50 MB memory for the proposed method, versus more than 6.39 s runtime and more than 13.105 GB memory for prior volumetric methods. The current gym uses the available public bunny HDF5 measurements for this target, preferring the 64x64 public copy for repeatable CPU jobs.",
       "weight": 0.4,
       "primary_metric": "runtime_s",
       "metrics": {
