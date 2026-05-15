@@ -5,8 +5,8 @@
         "quasi_fresnel_scaled_reproduction": {
           "prediction_path": "outputs/quasi_fresnel_scaled_reproduction/quality_bunny_prediction.npz",
           "heldout_prediction_path": "outputs/quasi_fresnel_scaled_reproduction/heldout_shapes_prediction.npz",
-          "ground_truth_path": "data/bunny/bunny_64x64.npz",
-          "heldout_ground_truth_path": "data/shapes/shapes_64x64.npz"
+          "heldout_ground_truth_path": "data/shapes/shapes_64x64.npz",
+          "ground_truth_path": "data/bunny/bunny_64x64.npz"
         }
       }
     },
