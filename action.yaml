@@ -2,4 +2,4 @@ action: done
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Core-claim split artifacts validated; train/test primary metrics now differentiate on held-out depth and memory axes."
+notes: "Made download and method entrypoints fresh-clone relative, validated public URLs, and tracked the missing held-out synthetic asset."
