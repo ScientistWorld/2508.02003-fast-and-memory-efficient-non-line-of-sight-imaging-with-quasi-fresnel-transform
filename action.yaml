@@ -1,4 +1,4 @@
-action: submit
+action: done
 gpus: 0
 test: false
-notes: "Run evaluate_train.sh and evaluate_test.sh against existing raw_results/diagnostics to populate scores_train.json and scores_test.json."
+notes: "Metric-triangulation train/test split; 5 train metrics and 6 test metrics populated for quasi_fresnel_scaled_reproduction; shared calibration metrics match while held-out PSNR-vs-SSIM and loading-vs-direct memory checks make the files non-identical; loading depth consistency is 0.0 as an expected exact-path constraint."
