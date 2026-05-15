@@ -21,7 +21,7 @@ import numpy as np
 
 ROOT = Path("/home/user")
 sys.path.insert(0, str(ROOT))
-METHOD_NAME = "quasi_fresnel_proposed"
+METHOD_NAME = "quasi_fresnel_scaled_reproduction"
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
 os.environ.setdefault("MKL_NUM_THREADS", "1")

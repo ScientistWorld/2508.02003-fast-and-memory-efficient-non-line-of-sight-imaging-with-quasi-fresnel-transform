@@ -45,6 +45,9 @@
         "quasi_fresnel_proposed": {
           "type": "proposed",
           "depth_mae_cm": 0.15
+        },
+        "quasi_fresnel_scaled_reproduction": {
+          "type": "baseline"
         }
       }
     },
@@ -87,6 +90,9 @@
           "type": "proposed",
           "runtime_s": 0.17,
           "memory_mb": 50.0
+        },
+        "quasi_fresnel_scaled_reproduction": {
+          "type": "baseline"
         }
       }
     }

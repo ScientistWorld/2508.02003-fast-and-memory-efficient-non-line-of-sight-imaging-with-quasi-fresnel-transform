@@ -15,6 +15,7 @@
 ### [2026-05-15 21:36] - core_claim
 - Container job `b27e91f3-049` passed the FDH smoke test, regenerated `raw_results.json`, `diagnostics.json`, `scores.json`, train/test scores, and passed `python validate.py --compare`.
 - Refreshed scores show the FDH-style public-bunny path at `0.075464 s` and `1.70 MB` with exact consistency against the traditional reconstruction, while the quality proxy remains at `0.4936 cm` depth MAE.
+- The reproduced score method is named `quasi_fresnel_scaled_reproduction` because the benchmark uses a tracked quality proxy and lightweight public-bunny efficiency fixture rather than the exact full paper setting.
 
 ## Stop Justification
 - Stopping at `core_claim`: the paper's core Quasi-Fresnel quality/efficiency claim is reproduced on the packaged benchmark split, with the method and evaluation environment validated end to end.
