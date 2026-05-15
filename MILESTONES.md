@@ -84,6 +84,4 @@
 - Reproduction is stable and complete. No further work needed.
 
 ## Stop Justification
-- Completed at milestone `core_claim`. Verified across 16 independent container executions.
-- Core claims supported: depth MAE 0.49 cm at 64×64 (scales to ~0.12 cm at 256×256, matching paper's 0.15 cm), O(N^1.7) runtime, O(N^1.9) memory, loading/traditional consistency = 0.
-- All 13 structural and scoring validation checks pass deterministically.
+- Completed at milestone `none`.
