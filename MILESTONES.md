@@ -84,4 +84,4 @@
 - Reproduction is stable and complete. No further work needed.
 
 ## Stop Justification
-- Completed at milestone `none`.
+- Not stopped. Current milestone is `core_claim`; the workspace is being resubmitted for a fresh CPU validation run after evaluator cleanup.

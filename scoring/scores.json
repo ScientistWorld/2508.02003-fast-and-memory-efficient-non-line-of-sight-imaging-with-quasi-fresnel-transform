@@ -4,17 +4,19 @@
       "results": {
         "quasi_fresnel_proposed": {
           "depth_mae_cm": 0.4936,
-          "albedo_ssim": 0.5583
+          "albedo_psnr_db": 14.7642,
+          "albedo_ssim": 0.5583,
+          "albedo_mae": 0.16365
         }
       }
     },
     "zaragoza_efficiency_public_bunny": {
       "results": {
         "quasi_fresnel_proposed": {
-          "runtime_s": 0.027355,
-          "memory_mb": 17.22,
-          "traditional_runtime_order": 1.732778,
-          "loading_memory_order": 1.916172,
+          "runtime_s": 0.037686,
+          "memory_mb": 16.39,
+          "traditional_runtime_order": 1.659923,
+          "loading_memory_order": 1.91499,
           "loading_depth_consistency_cm": 0.0
         }
       }

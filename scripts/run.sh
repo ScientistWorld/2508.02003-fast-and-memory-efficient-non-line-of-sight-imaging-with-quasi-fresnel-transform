@@ -225,6 +225,7 @@ print("Wrote /home/user/scoring/raw_results.json")
 print("Wrote /home/user/scoring/diagnostics.json")
 PY
 # Score the generated method report through both benchmark slices in the same job.
+bash scripts/evaluate.sh /home/user/scoring/raw_results.json /home/user/scoring/scores.json
 bash scripts/evaluate_train.sh /home/user/scoring/raw_results.json /home/user/scoring/scores_train.json
 bash scripts/evaluate_test.sh /home/user/scoring/raw_results.json /home/user/scoring/scores_test.json
-python3 validate.py
+python3 validate.py --compare

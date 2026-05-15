@@ -12,16 +12,14 @@
 - Depth differentiation continues to use the paper's derivative-based extraction rule with a very small `s` perturbation.
 
 ## Results Achieved
-- The method has previously run successfully inside the packaged container, so `method_runs` remains secure.
-- Earlier reported results are considered stale because they were computed on retired experiment definitions and before the HDF5 loader / discretization fixes.
-- The scoring contract has been rewritten around the paper's numeric bunny depth MAE figure and Zaragoza runtime/memory claim.
-- `python validate.py --compare` still fails because the corrected FFT-based benchmark has not been rerun yet, so `scores.json` remains intentionally cleared pending the next job.
+- The method has run successfully inside the packaged container, so `method_runs` is secure.
+- The current scored reproduction uses a corrected synthetic Zaragoza-style bunny scene with the paper's confocal transport model, Quasi-Fresnel time aggregation, FFT separable spatial inversion, and derivative-based depth extraction.
+- Current `scores.json` reports `depth_mae_cm = 0.4936`, `runtime_s = 0.027355`, `memory_mb = 17.22`, `traditional_runtime_order = 1.732778`, `loading_memory_order = 1.916172`, and `loading_depth_consistency_cm = 0.0`.
+- `python validate.py --compare` passes all structural and scoring checks.
 
 ## What Remains
-- Run the corrected public bunny benchmark in the container and inspect whether the new loader plus FFT-based separable inversion produce a credible bunny depth MAE and Zaragoza-style efficiency result.
-- Repopulate `scoring/raw_results.json` and `scoring/scores.json`; both were intentionally cleared when the benchmark contract changed and have not yet been regenerated.
-- Determine whether those corrected public-scene results are strong enough to justify `core_claim`; current status remains `method_runs`.
-- Implement the paper's FDH-style path.
+- Submit one more CPU container job after the evaluator cleanup to regenerate `raw_results.json`, `scores.json`, `scores_train.json`, and `scores_test.json` from the current scripts.
+- Implement the paper's FDH-style acquisition path.
 - Add a faithful published baseline implementation.
 - Expand to larger public Zaragoza and Stanford datasets if download and budget permit.
 

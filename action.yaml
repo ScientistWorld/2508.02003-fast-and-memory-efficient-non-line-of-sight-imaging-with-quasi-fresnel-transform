@@ -1,3 +1,5 @@
 action: submit
 gpus: 0
-notes: "Re-run on synthetic bunny NPZ; populate raw_results, diagnostics, scores_train, scores_test."
+test: true
+milestone: core_claim
+notes: "CPU validation rerun for Quasi-Fresnel bunny benchmark; regenerate raw_results, diagnostics, scores.json, train/test scores, and run validate.py --compare."

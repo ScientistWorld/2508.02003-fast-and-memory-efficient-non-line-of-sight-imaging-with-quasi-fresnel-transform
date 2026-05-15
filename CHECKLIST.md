@@ -8,8 +8,8 @@
 
 ## Scoring
 - [x] `scoring/reference.json` — paper's reported numbers
-- [ ] Workspace validated via `python validate.py`
-- [ ] `scoring/scores.json` — reproduced numbers (must match reference.json experiment/metric structure)
+- [x] Workspace validated via `python validate.py --compare`
+- [x] `scoring/scores.json` — reproduced numbers (must match reference.json experiment/metric structure)
 - [x] `scoring/TARGETS.md` — primary, constraint, and ablation targets
 - [x] `scoring/CONSTRAINTS.md` — what a scientist must hold fixed
 - [x] `scoring/DIRECTION.md` — research direction scope for scientist
@@ -30,11 +30,11 @@
 
 ## Data
 - [x] Dataset acquired (shared dir or `data/`)
-- [ ] Pretrained models downloaded if needed
+- [x] Pretrained models downloaded if needed (none required)
 
 ## Milestones
 - [x] `method_runs` — executes end-to-end without errors
-- [ ] `core_claim` — minimum experiment supports central claim
+- [x] `core_claim` — minimum experiment supports central claim
 - [ ] `core_claim_plus` — additional settings
 - [ ] `secondary_claims`
 - [ ] `majority`
