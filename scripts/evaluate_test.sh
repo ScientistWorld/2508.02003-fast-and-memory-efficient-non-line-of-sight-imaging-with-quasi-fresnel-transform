@@ -5,8 +5,10 @@
 # evaluates the same method keys as the visible train slice.
 set -euo pipefail
 
-cd /home/user
-INPUT_PATH="${1:-/home/user/scoring/raw_results.json}"
-OUTPUT_PATH="${2:-/home/user/scoring/scores_test.json}"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${ROOT}"
+INPUT_PATH="${1:-${ROOT}/scoring/raw_results.json}"
+OUTPUT_PATH="${2:-${ROOT}/scoring/scores_test.json}"
 
 python3 eval/test/score_nlos_test.py --input "${INPUT_PATH}" --output "${OUTPUT_PATH}"

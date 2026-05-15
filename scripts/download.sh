@@ -11,7 +11,9 @@
 # - Larger public files are available from https://graphics.unizar.es/nlos_dataset.html
 set -euo pipefail
 
-cd /home/user
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${ROOT}"
 mkdir -p data/downloads/zaragoza/public
 
 download_if_missing() {

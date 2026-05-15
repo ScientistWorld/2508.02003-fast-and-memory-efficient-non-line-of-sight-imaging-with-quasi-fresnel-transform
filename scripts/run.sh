@@ -1,7 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-cd /home/user
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${ROOT}"
 
 export OPENBLAS_NUM_THREADS=1
 export MKL_NUM_THREADS=1
@@ -28,6 +30,6 @@ print("FDH smoke test passed")
 PY
 
 bash scripts/method.sh
-bash scripts/evaluate_train.sh /home/user/scoring/raw_results.json /home/user/scoring/scores_train.json
-bash scripts/evaluate_test.sh /home/user/scoring/raw_results.json /home/user/scoring/scores_test.json
+bash scripts/evaluate_train.sh "${ROOT}/scoring/raw_results.json" "${ROOT}/scoring/scores_train.json"
+bash scripts/evaluate_test.sh "${ROOT}/scoring/raw_results.json" "${ROOT}/scoring/scores_test.json"
 python3 validate.py --compare

@@ -13,6 +13,8 @@ import json
 import os
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parents[1]
+
 
 def _load_json(path: Path) -> dict:
     with path.open("r", encoding="utf-8") as handle:
@@ -155,12 +157,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--input",
-        default="/home/user/scoring/raw_results.json",
+        default=str(ROOT / "scoring" / "raw_results.json"),
         help="Method-produced benchmark report to score.",
     )
     parser.add_argument(
         "--output",
-        default="/home/user/scoring/scores.json",
+        default=str(ROOT / "scoring" / "scores.json"),
         help="Where to write normalized scores.",
     )
     args = parser.parse_args()

@@ -16,6 +16,8 @@ import os
 from pathlib import Path
 from typing import Any
 
+ROOT = Path(__file__).resolve().parents[2]
+
 
 DEPTH_EXPERIMENT = "zaragoza_bunny_depth_error"
 EFFICIENCY_EXPERIMENT = "zaragoza_efficiency_public_bunny"
@@ -187,12 +189,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--input",
-        default="/home/user/scoring/raw_results.json",
+        default=str(ROOT / "scoring" / "raw_results.json"),
         help="Method-produced benchmark report to score.",
     )
     parser.add_argument(
         "--output",
-        default="/home/user/scoring/scores_train.json",
+        default=str(ROOT / "scoring" / "scores_train.json"),
         help="Where to write normalized train-slice scores.",
     )
     args = parser.parse_args()

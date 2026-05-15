@@ -36,6 +36,9 @@ data/bunny/*
 data/dynamic/
 data/kylin/
 data/shapes/
+!data/shapes/
+data/shapes/*
+!data/shapes/shapes_64x64.npz
 data/zaragoza/
 !data/zaragoza/
 data/zaragoza/*

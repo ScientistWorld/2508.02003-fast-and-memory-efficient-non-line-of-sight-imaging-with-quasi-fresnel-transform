@@ -2,6 +2,8 @@
 # Run only the Quasi-Fresnel method benchmarks.
 set -euo pipefail
 
-cd /home/user
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+cd "${ROOT}"
 python3 scripts/evaluate_nlos.py
-bash scripts/evaluate.sh /home/user/scoring/raw_results.json /home/user/scoring/scores.json
+bash scripts/evaluate.sh "${ROOT}/scoring/raw_results.json" "${ROOT}/scoring/scores.json"

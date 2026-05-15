@@ -335,7 +335,7 @@ def main():
 
     args = parser.parse_args()
 
-    out_dir = args.output or f'/home/user/data/{args.scene}'
+    out_dir = args.output or str(Path(__file__).resolve().parents[1] / 'data' / args.scene)
     os.makedirs(out_dir, exist_ok=True)
 
     print(f"Generating NLOS data for scene '{args.scene}'...")
