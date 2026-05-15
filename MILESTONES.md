@@ -1,8 +1,14 @@
 # Reproduction Milestones
 
-**Current: core_claim**
+**Current: method_runs**
 
 ## Progress Log
+
+### [2026-05-15 21:20] - method_runs
+- Continuing audit reset the milestone to `method_runs` pending fresh validation.
+- Confirmed the method code implements the paper's Quasi-Fresnel time aggregation, separable FFT spatial inversion, and derivative-based depth extraction rather than a surrogate.
+- Found a provenance issue: the last scored `core_claim` artifacts used a synthetic Zaragoza-style bunny NPZ while the scoring descriptions were phrased as public Zaragoza bunny results.
+- Retargeted `scripts/run.sh` to execute the packaged public Zaragoza HDF5 evaluator before restoring `core_claim`.
 
 ### [2026-04-09 00:00] - none
 - Started from an existing partial workspace
@@ -84,4 +90,4 @@
 - Reproduction is stable and complete. No further work needed.
 
 ## Stop Justification
-- Not stopped. Current milestone is `core_claim`; the workspace is being resubmitted for a fresh CPU validation run after evaluator cleanup.
+- Not stopped. Current milestone is temporarily reset to `method_runs` while a public Zaragoza validation job is submitted.

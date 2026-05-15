@@ -16,9 +16,10 @@
 - The current scored reproduction uses a corrected synthetic Zaragoza-style bunny scene with the paper's confocal transport model, Quasi-Fresnel time aggregation, FFT separable spatial inversion, and derivative-based depth extraction.
 - Current `scores.json` reports `depth_mae_cm = 0.4936`, `runtime_s = 0.027355`, `memory_mb = 17.22`, `traditional_runtime_order = 1.732778`, `loading_memory_order = 1.916172`, and `loading_depth_consistency_cm = 0.0`.
 - `python validate.py --compare` passes all structural and scoring checks.
+- Continuing audit on 2026-05-15 found that these numbers are valid synthetic smoke-test results, but they should not be the primary evidence for public Zaragoza claims.
 
 ## What Remains
-- Submit one more CPU container job after the evaluator cleanup to regenerate `raw_results.json`, `scores.json`, `scores_train.json`, and `scores_test.json` from the current scripts.
+- Submit a CPU container job that runs the public Zaragoza HDF5 evaluator and regenerates `raw_results.json`, `scores.json`, `scores_train.json`, and `scores_test.json`.
 - Implement the paper's FDH-style acquisition path.
 - Add a faithful published baseline implementation.
 - Expand to larger public Zaragoza and Stanford datasets if download and budget permit.
@@ -31,6 +32,7 @@
 - Public Zaragoza HDF5 files do not consistently expose 2D ground-truth maps at the root, so the loader has to search nested datasets and fall back to voxel-volume-derived proxies when available.
 - Final verification confirmed that the reusable scoring path is in place, but the workspace still cannot be signed off because `scores.json` is empty until the corrected public-scene benchmark is rerun.
 - The earlier dense implementation of Eq. (5) would have overstated the method's computational cost, so the spatial inversion had to be repaired before another efficiency benchmark was worth submitting.
+- The previous `core_claim` artifact used the synthetic NPZ benchmark while the scoring descriptions were phrased as public Zaragoza. The job entrypoint now runs `scripts/method.sh`, which uses the public Zaragoza HDF5 loader and evaluator.
 
 ## Deviations from Paper
 - Current packaging still uses a minimum public Zaragoza benchmark rather than the full public Zaragoza and Stanford benchmark suites.
