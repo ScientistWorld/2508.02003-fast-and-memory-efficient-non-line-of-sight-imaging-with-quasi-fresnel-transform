@@ -211,21 +211,29 @@ def build_scores(
                 ),
                 6,
             ),
+            "albedo_mae": round(
+                _optional_number(
+                    depth_payload.get("albedo_mae"),
+                    quality.get("albedo_mae"),
+                    name="albedo_mae",
+                ),
+                6,
+            ),
         }
 
         traditional_scaling = complexity.get("traditional") if isinstance(complexity, dict) else None
         if not isinstance(traditional_scaling, dict):
             traditional_scaling = {}
         scores["experiments"][EFFICIENCY_EXPERIMENT]["results"][method_name] = {
-            "runtime_s": round(
-                _optional_number(efficiency_payload.get("runtime_s"), name="runtime_s"),
+            "memory_mb": round(
+                _optional_number(efficiency_payload.get("memory_mb"), name="memory_mb"),
                 6,
             ),
-            "traditional_runtime_order": round(
+            "traditional_memory_order": round(
                 _optional_number(
-                    efficiency_payload.get("traditional_runtime_order"),
-                    traditional_scaling.get("runtime_order"),
-                    name="traditional_runtime_order",
+                    efficiency_payload.get("traditional_memory_order"),
+                    traditional_scaling.get("memory_order"),
+                    name="traditional_memory_order",
                 ),
                 6,
             ),

@@ -152,6 +152,14 @@ def build_scores(report: dict[str, Any], diagnostics: dict[str, Any]) -> dict[st
                 ),
                 6,
             ),
+            "albedo_mae": round(
+                _optional_number(
+                    depth_payload.get("albedo_mae"),
+                    quality.get("albedo_mae"),
+                    name="albedo_mae",
+                ),
+                6,
+            ),
         }
 
         loading_scaling = complexity.get("loading") if isinstance(complexity, dict) else None
