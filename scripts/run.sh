@@ -12,7 +12,8 @@ export NUMEXPR_NUM_THREADS=1
 
 # Verify the FDH-style aggregation path is numerically equivalent to the
 # sequential-loading path on a tiny deterministic tensor, then refresh the
-# scored artifacts through the standard method/eval interface.
+# scored artifacts through the standard method/eval interface. Extra public
+# Zaragoza scenes are enabled for diagnostics when they are present locally.
 python3 - <<'PY'
 import numpy as np
 from method.quasi_fresnel import quasi_fresnel_reconstruct
@@ -29,7 +30,7 @@ np.testing.assert_allclose(depth_loading, depth_fdh, rtol=1e-10, atol=1e-12)
 print("FDH smoke test passed")
 PY
 
-bash scripts/method.sh
+NLOS_EXTRA_PUBLIC=1 bash scripts/method.sh
 bash scripts/evaluate_train.sh "${ROOT}/scoring/raw_results.json" "${ROOT}/scoring/scores_train.json"
 bash scripts/evaluate_test.sh "${ROOT}/scoring/raw_results.json" "${ROOT}/scoring/scores_test.json"
 python3 validate.py --compare

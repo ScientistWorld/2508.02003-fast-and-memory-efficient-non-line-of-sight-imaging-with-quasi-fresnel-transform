@@ -17,6 +17,10 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
+import sys
+
+sys.path.insert(0, str(ROOT))
+from eval.score_nlos import _artifact_path, _load_efficiency, _nested, _score_prediction
 
 
 DEPTH_EXPERIMENT = "zaragoza_bunny_depth_error"
@@ -130,59 +134,14 @@ def _method_names(report: dict[str, Any], train_scores_path: Path) -> list[str]:
     return sorted(available)
 
 
-def _diagnostics_for_method(diagnostics: dict[str, Any], method_name: str) -> dict[str, Any]:
-    for key in ("methods", "by_method"):
-        method_map = diagnostics.get(key)
-        if isinstance(method_map, dict) and isinstance(method_map.get(method_name), dict):
-            return method_map[method_name]
-    return diagnostics
-
-
-def _nested(mapping: dict[str, Any], *keys: str) -> Any:
-    current: Any = mapping
-    for key in keys:
-        if not isinstance(current, dict):
-            return None
-        current = current.get(key)
-    return current
-
-
-def _quality_metrics(method_diagnostics: dict[str, Any]) -> dict[str, Any]:
-    quality = _nested(method_diagnostics, "heldout_quality_scene", "traditional", "quality")
-    if isinstance(quality, dict):
-        return quality
-    quality = _nested(method_diagnostics, "quality_scene", "traditional", "quality")
-    if isinstance(quality, dict):
-        return quality
-    fallback = _nested(method_diagnostics, "primary_public_scene", "traditional", "quality")
-    if isinstance(fallback, dict):
-        return fallback
-    return {}
-
-
-def _complexity(method_diagnostics: dict[str, Any]) -> dict[str, Any]:
-    complexity = method_diagnostics.get("complexity_scaling")
-    return complexity if isinstance(complexity, dict) else {}
-
-
-def _loading_consistency(method_diagnostics: dict[str, Any]) -> dict[str, Any]:
-    consistency = _nested(
-        method_diagnostics,
-        "primary_public_scene",
-        "loading",
-        "consistency_vs_traditional",
-    )
-    return consistency if isinstance(consistency, dict) else {}
-
-
 def _heldout_memory_mb(
-    method_diagnostics: dict[str, Any],
+    efficiency: dict[str, Any],
     efficiency_payload: dict[str, Any],
 ) -> float:
-    loading_memory = _nested(method_diagnostics, "complexity_scaling", "loading", "memory_mb")
+    loading_memory = _nested(efficiency, "complexity_scaling", "loading", "memory_mb")
     if isinstance(loading_memory, list) and loading_memory:
         return _number(loading_memory[-1], "memory_mb")
-    return _optional_number(efficiency_payload.get("memory_mb"), name="memory_mb")
+    return _optional_number(_nested(efficiency, "fdh", "algorithm_peak_mb"), name="memory_mb")
 
 
 def build_scores(
@@ -201,39 +160,30 @@ def build_scores(
     }
 
     for method_name in _method_names(report, train_scores_path):
-        method_diagnostics = _diagnostics_for_method(diagnostics, method_name)
-        quality = _quality_metrics(method_diagnostics)
-        complexity = _complexity(method_diagnostics)
-        consistency = _loading_consistency(method_diagnostics)
-
         depth_payload = depth_results[method_name]
         efficiency_payload = efficiency_results[method_name]
+        prediction_key = (
+            "heldout_prediction_path"
+            if "heldout_prediction_path" in depth_payload
+            else "prediction_path"
+        )
+        ground_truth_key = (
+            "heldout_ground_truth_path"
+            if "heldout_ground_truth_path" in depth_payload
+            else "ground_truth_path"
+        )
+        quality = _score_prediction(
+            _artifact_path(depth_payload, prediction_key),
+            _artifact_path(depth_payload, ground_truth_key),
+        )
+        efficiency = _load_efficiency(_artifact_path(efficiency_payload, "efficiency_path"))
+        complexity = efficiency.get("complexity_scaling", {})
+        consistency = _nested(efficiency, "loading", "consistency_vs_traditional") or {}
 
         scores["experiments"][DEPTH_EXPERIMENT]["results"][method_name] = {
-            "depth_mae_cm": round(
-                _optional_number(
-                    quality.get("depth_mae_cm"),
-                    depth_payload.get("depth_mae_cm"),
-                    name="depth_mae_cm",
-                ),
-                6,
-            ),
-            "albedo_ssim": round(
-                _optional_number(
-                    quality.get("ssim"),
-                    depth_payload.get("albedo_ssim"),
-                    name="albedo_ssim",
-                ),
-                6,
-            ),
-            "albedo_mae": round(
-                _optional_number(
-                    quality.get("albedo_mae"),
-                    depth_payload.get("albedo_mae"),
-                    name="albedo_mae",
-                ),
-                6,
-            ),
+            "depth_mae_cm": round(100.0 * quality["depth_mae"], 6),
+            "albedo_ssim": round(quality["ssim"], 6),
+            "albedo_mae": round(quality["albedo_mae"], 6),
         }
 
         traditional_scaling = complexity.get("traditional") if isinstance(complexity, dict) else None
@@ -241,12 +191,11 @@ def build_scores(
             traditional_scaling = {}
         scores["experiments"][EFFICIENCY_EXPERIMENT]["results"][method_name] = {
             "memory_mb": round(
-                _heldout_memory_mb(method_diagnostics, efficiency_payload),
+                _heldout_memory_mb(efficiency, efficiency_payload),
                 6,
             ),
             "traditional_memory_order": round(
                 _optional_number(
-                    efficiency_payload.get("traditional_memory_order"),
                     traditional_scaling.get("memory_order"),
                     name="traditional_memory_order",
                 ),

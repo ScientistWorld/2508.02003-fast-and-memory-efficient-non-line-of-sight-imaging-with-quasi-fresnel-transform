@@ -29,13 +29,18 @@ This is the quality-preservation side of the paper's claim. A faster method that
 Type: Benefit target
 
 What it tests:
-Working memory for reconstruction on an available public Zaragoza bunny measurement. The current job path prefers the 64x64 public bunny copy for repeatable CPU validation and falls back to the downloaded 256x256 public bunny file.
+Working memory and low-memory path consistency for reconstruction on an available public Zaragoza bunny measurement. The current job path prefers the 64x64 public bunny copy for repeatable CPU validation and falls back to the downloaded 256x256 public bunny file.
 
 Primary metric:
 - `memory_mb` — lower is better
 
+Constraint metrics:
+- `traditional_memory_order` — lower is better; diagnostic scaling check for the direct full-histogram path.
+- `loading_memory_order` — lower is better; checks that the sequential-loading path has near-2D memory growth.
+- `loading_depth_consistency_cm` — lower is better; checks that the memory-saving path preserves the reconstruction.
+
 Interpretation:
-Scientists should improve quality without inflating working memory. Raw diagnostics may include wall-clock timings for local debugging, but those values do not affect the score.
+Scientists should improve quality without inflating working memory or breaking the paper's low-memory reconstruction path. Raw diagnostics may include wall-clock timings for local debugging, but those values do not affect the score.
 
 ## Unscored diagnostics
-[`scoring/diagnostics.json`](/home/user/scoring/diagnostics.json) may include additional public-scene results, loading-path consistency, and extra quality metrics, but those diagnostics do not affect the score.
+[`scoring/diagnostics.json`](/home/user/scoring/diagnostics.json) may include additional public-scene results and extra quality metrics, but those diagnostics do not affect the score unless their metrics are listed above.

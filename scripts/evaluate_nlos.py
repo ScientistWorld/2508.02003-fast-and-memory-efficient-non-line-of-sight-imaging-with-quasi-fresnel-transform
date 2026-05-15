@@ -205,30 +205,51 @@ def discover_additional_public_scenes() -> list[Path]:
     if os.environ.get("NLOS_EXTRA_PUBLIC", "0") != "1":
         return []
     candidates = [
+        ROOT / "data" / "zaragoza_public" / "usaf_simple_256_conf.hdf5",
+        ROOT / "data" / "zaragoza_public" / "bunny_simple_256_conf.hdf5",
+        ROOT / "data" / "zaragoza" / "public" / "usaf_conf256.hdf5",
+        ROOT / "data" / "zaragoza" / "public" / "T_conf64.hdf5",
         ROOT / "data" / "downloads" / "zaragoza" / "usaf_simple_256_conf.hdf5",
+        ROOT / "data" / "downloads" / "zaragoza" / "bunny_simple_256_conf.hdf5",
         ROOT / "data" / "downloads" / "zaragoza" / "public" / "T_conf64.hdf5",
     ]
-    return [path for path in candidates if path.exists()]
+    scenes: list[Path] = []
+    seen: set[str] = set()
+    for path in candidates:
+        if not path.exists():
+            continue
+        key = str(path.resolve())
+        if key in seen:
+            continue
+        seen.add(key)
+        scenes.append(path)
+    return scenes
 
 
-def build_scores(
-    quality_metrics: dict[str, float],
-    efficiency_result: dict[str, object],
+def build_report(
+    quality_prediction_path: Path,
+    heldout_prediction_path: Path,
+    efficiency_metrics_path: Path,
 ) -> dict[str, object]:
+    quality_rel = quality_prediction_path.relative_to(ROOT)
+    heldout_rel = heldout_prediction_path.relative_to(ROOT)
+    efficiency_rel = efficiency_metrics_path.relative_to(ROOT)
     return {
         "experiments": {
             "zaragoza_bunny_depth_error": {
                 "results": {
                     METHOD_NAME: {
-                        "depth_mae_cm": round(quality_metrics["depth_mae"] * 100.0, 4),
+                        "prediction_path": str(quality_rel),
+                        "heldout_prediction_path": str(heldout_rel),
+                        "heldout_ground_truth_path": "data/shapes/shapes_64x64.npz",
+                        "ground_truth_path": "data/bunny/bunny_64x64.npz",
                     }
                 }
             },
             "zaragoza_efficiency_public_bunny": {
                 "results": {
                     METHOD_NAME: {
-                        "runtime_s": round(efficiency_result["runtime_mean_s"], 6),
-                        "memory_mb": round(efficiency_result["algorithm_peak_mb"], 2),
+                        "efficiency_path": str(efficiency_rel),
                     }
                 }
             },
@@ -626,10 +647,56 @@ def main() -> None:
             )
         public_scene_results.append(scene_diag)
 
-    scores = build_scores(quality_metrics, fdh_result)
+    artifact_dir = ROOT / "outputs" / METHOD_NAME
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    quality_prediction_path = artifact_dir / "quality_bunny_prediction.npz"
+    heldout_prediction_path = artifact_dir / "heldout_shapes_prediction.npz"
+    efficiency_metrics_path = artifact_dir / "efficiency_metrics.json"
+    np.savez_compressed(
+        quality_prediction_path,
+        albedo=quality_result["albedo"],
+        depth=quality_result["depth"],
+    )
+    np.savez_compressed(
+        heldout_prediction_path,
+        albedo=heldout_quality_result["albedo"],
+        depth=heldout_quality_result["depth"],
+    )
+    efficiency_payload = {
+        "public_scene": {
+            "scene_name": efficiency_scene["scene_name"],
+            "source_path": efficiency_scene["source_path"],
+        },
+        "traditional": {
+            "runtime_mean_s": efficiency_result["runtime_mean_s"],
+            "algorithm_peak_mb": efficiency_result["algorithm_peak_mb"],
+        },
+        "loading": {
+            "runtime_mean_s": loading_result["runtime_mean_s"],
+            "algorithm_peak_mb": loading_result["algorithm_peak_mb"],
+            "consistency_vs_traditional": loading_consistency,
+        },
+        "fdh": {
+            "runtime_mean_s": fdh_result["runtime_mean_s"],
+            "algorithm_peak_mb": fdh_result["algorithm_peak_mb"],
+            "consistency_vs_traditional": fdh_consistency,
+        },
+        "complexity_scaling": scaling,
+        "additional_public_scenes": public_scene_results,
+    }
+    efficiency_metrics_path.write_text(json.dumps(efficiency_payload, indent=2) + "\n")
+    print(f"Wrote {quality_prediction_path}")
+    print(f"Wrote {heldout_prediction_path}")
+    print(f"Wrote {efficiency_metrics_path}")
+
+    report = build_report(
+        quality_prediction_path,
+        heldout_prediction_path,
+        efficiency_metrics_path,
+    )
     out_path = ROOT / "scoring" / "raw_results.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    out_path.write_text(json.dumps(scores, indent=2) + "\n")
+    out_path.write_text(json.dumps(report, indent=2) + "\n")
     print(f"\nWrote {out_path}")
 
     diagnostics = build_diagnostics(

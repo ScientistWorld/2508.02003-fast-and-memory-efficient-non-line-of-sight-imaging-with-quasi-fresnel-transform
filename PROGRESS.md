@@ -4,6 +4,7 @@
 - The workspace contains a recognizable implementation of the paper's Quasi-Fresnel reconstruction equations.
 - The spatial inversion step now uses an FFT-based separable convolution on uniform relay-wall grids, matching the paper's Eq. (5) implementation strategy instead of the earlier dense matrix quadrature.
 - The method is packaged behind `scripts/method.sh`, while `scripts/evaluate.sh` now scores a method-produced report artifact without importing `method/`.
+- The default evaluator now recomputes quality metrics from prediction artifacts under `outputs/` against fixed benchmark data instead of copying method-reported quality numbers.
 - The scorer accepts arbitrary method identifiers as long as they emit the required experiment and metric structure, so future scientist agents do not need to reuse the paper's method name to be evaluated.
 - Public Zaragoza confocal samples are packaged in `data/zaragoza/`, `data/zaragoza/public/`, and `data/zaragoza_public/`.
 - The evaluation path now separates what can be measured honestly: metric quality on the tracked synthetic Zaragoza-style bunny proxy, and runtime/memory/loading behavior on available public Zaragoza HDF5 measurements.
@@ -24,11 +25,14 @@
 - Job `b27e91f3-049` refreshed the FDH-style aggregate path in the container and passed `python validate.py --compare`.
 
 ## What Remains
+- CPU validation is being submitted with `NLOS_EXTRA_PUBLIC=1` so the Quasi-Fresnel implementation is also exercised on the additional public Zaragoza HDF5 scenes already present in this workspace. If that job passes, the workspace can move from `core_claim` toward `core_claim_plus`.
+- The submitted validation also checks the repaired artifact-based evaluator and restores `traditional_memory_order` in the default score output.
 - Improve the implementation toward the paper's full 256x256 efficiency numbers; the unscored public USAF run currently needs substantially more memory than the paper reports.
 - Add a faithful published baseline implementation.
 - Expand to larger public Zaragoza and Stanford datasets if download and budget permit.
 
 ## Issues Encountered
+- A fresh audit confirmed that `method/quasi_fresnel.py` implements the paper's Eq. 3 time aggregation, Eq. 5 spatial inversion, and derivative-based depth extraction, but that the placeholder FBP/LCT files are not faithful published baselines. `scripts/baseline.sh` therefore remains disabled rather than emitting misleading baseline scores.
 - The previous repo state mislabeled synthetic experiments as Zaragoza/Stanford reproductions.
 - The prior LCT baseline was explicitly simplified and cannot support the paper's comparison claims.
 - The paper's strongest quantitative evidence is efficiency, while direct quality tables are mostly qualitative in the manuscript.

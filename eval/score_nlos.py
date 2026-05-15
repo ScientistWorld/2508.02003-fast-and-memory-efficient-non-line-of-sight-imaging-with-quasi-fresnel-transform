@@ -13,7 +13,13 @@ import json
 import os
 from pathlib import Path
 
+import numpy as np
+
 ROOT = Path(__file__).resolve().parents[1]
+import sys
+
+sys.path.insert(0, str(ROOT))
+from eval.metrics import compute_metrics
 
 
 def _load_json(path: Path) -> dict:
@@ -57,6 +63,66 @@ def _single_method(results: dict, experiment_name: str) -> tuple[str, dict]:
     return method_name, method_payload
 
 
+def _artifact_path(payload: dict, key: str) -> Path:
+    value = payload.get(key)
+    if not isinstance(value, str) or not value:
+        raise ValueError(f"Method payload is missing artifact path {key!r}")
+    path = Path(value)
+    if not path.is_absolute():
+        path = ROOT / path
+    return path
+
+
+def _load_prediction(path: Path) -> tuple[np.ndarray, np.ndarray]:
+    with np.load(path) as data:
+        if "albedo" not in data or "depth" not in data:
+            raise ValueError(f"{path} must contain 'albedo' and 'depth' arrays")
+        return data["albedo"].astype(np.float64), data["depth"].astype(np.float64)
+
+
+def _load_ground_truth(path: Path) -> tuple[np.ndarray, np.ndarray]:
+    with np.load(path) as data:
+        if "albedo" not in data or "depth" not in data:
+            raise ValueError(f"{path} must contain 'albedo' and 'depth' arrays")
+        return data["albedo"].astype(np.float64), data["depth"].astype(np.float64)
+
+
+def _downsample_mean(image: np.ndarray, out_shape: tuple[int, int]) -> np.ndarray:
+    in_h, in_w = image.shape
+    out_h, out_w = out_shape
+    if (in_h, in_w) == (out_h, out_w):
+        return image.astype(np.float64, copy=False)
+    if in_h % out_h != 0 or in_w % out_w != 0:
+        raise ValueError(f"Cannot evenly downsample from {(in_h, in_w)} to {(out_h, out_w)}")
+    sh = in_h // out_h
+    sw = in_w // out_w
+    return image.reshape(out_h, sh, out_w, sw).mean(axis=(1, 3))
+
+
+def _score_prediction(prediction_path: Path, ground_truth_path: Path) -> dict[str, float]:
+    albedo_pred, depth_pred = _load_prediction(prediction_path)
+    albedo_gt, depth_gt = _load_ground_truth(ground_truth_path)
+    albedo_gt = _downsample_mean(albedo_gt, albedo_pred.shape)
+    depth_gt = _downsample_mean(depth_gt, depth_pred.shape)
+    return compute_metrics(albedo_pred, depth_pred, albedo_gt, depth_gt)
+
+
+def _load_efficiency(path: Path) -> dict:
+    payload = _load_json(path)
+    if not isinstance(payload, dict):
+        raise ValueError(f"{path} must contain an object")
+    return payload
+
+
+def _nested(mapping: dict, *keys: str):
+    current = mapping
+    for key in keys:
+        if not isinstance(current, dict):
+            return None
+        current = current.get(key)
+    return current
+
+
 def _normalize_results(report: dict, diagnostics: dict) -> dict:
     experiments = report.get("experiments")
     if not isinstance(experiments, dict):
@@ -71,35 +137,16 @@ def _normalize_results(report: dict, diagnostics: dict) -> dict:
         depth_payload["results"], "zaragoza_bunny_depth_error"
     )
 
-    depth_out = {
-        "depth_mae_cm": round(
-            _require_number(depth_metrics.get("depth_mae_cm"), "depth_mae_cm"), 6
-        )
-    }
-    quality = (
-        diagnostics.get("quality_scene", {})
-        .get("traditional", {})
-        .get("quality", {})
+    quality = _score_prediction(
+        _artifact_path(depth_metrics, "prediction_path"),
+        _artifact_path(depth_metrics, "ground_truth_path"),
     )
-    if not quality:
-        quality = (
-            diagnostics.get("primary_public_scene", {})
-            .get("traditional", {})
-            .get("quality", {})
-        )
-    if quality:
-        if "psnr" in quality:
-            depth_out["albedo_psnr_db"] = round(
-                _require_number(quality.get("psnr"), "albedo_psnr_db"), 6
-            )
-        if "ssim" in quality:
-            depth_out["albedo_ssim"] = round(
-                _require_number(quality.get("ssim"), "albedo_ssim"), 6
-            )
-        if "albedo_mae" in quality:
-            depth_out["albedo_mae"] = round(
-                _require_number(quality.get("albedo_mae"), "albedo_mae"), 6
-            )
+    depth_out = {
+        "depth_mae_cm": round(100.0 * quality["depth_mae"], 6),
+        "albedo_psnr_db": round(quality["psnr"], 6),
+        "albedo_ssim": round(quality["ssim"], 6),
+        "albedo_mae": round(quality["albedo_mae"], 6),
+    }
     scores["experiments"]["zaragoza_bunny_depth_error"] = {
         "results": {method_name: depth_out}
     }
@@ -115,31 +162,32 @@ def _normalize_results(report: dict, diagnostics: dict) -> dict:
     if efficiency_method != method_name:
         raise ValueError("Input report uses different method names across experiments")
 
+    efficiency = _load_efficiency(_artifact_path(efficiency_metrics, "efficiency_path"))
+    complexity = efficiency.get("complexity_scaling", {})
+    traditional = complexity.get("traditional", {}) if isinstance(complexity, dict) else {}
+    loading = complexity.get("loading", {}) if isinstance(complexity, dict) else {}
+    loading_consistency = _nested(efficiency, "loading", "consistency_vs_traditional") or {}
     efficiency_out = {
-        "memory_mb": round(_require_number(efficiency_metrics.get("memory_mb"), "memory_mb"), 6),
-    }
-    complexity = diagnostics.get("complexity_scaling", {})
-    loading_consistency = (
-        diagnostics.get("primary_public_scene", {})
-        .get("loading", {})
-        .get("consistency_vs_traditional", {})
-    )
-    if complexity:
-        traditional = complexity.get("traditional", {})
-        loading = complexity.get("loading", {})
-        if "memory_order" in loading:
-            efficiency_out["loading_memory_order"] = round(
-                _require_number(loading.get("memory_order"), "loading_memory_order"),
-                6,
-            )
-    if "depth_mae" in loading_consistency:
-        efficiency_out["loading_depth_consistency_cm"] = round(
+        "memory_mb": round(
+            _require_number(_nested(efficiency, "fdh", "algorithm_peak_mb"), "memory_mb"),
+            6,
+        ),
+        "traditional_memory_order": round(
+            _require_number(traditional.get("memory_order"), "traditional_memory_order"),
+            6,
+        ),
+        "loading_memory_order": round(
+            _require_number(loading.get("memory_order"), "loading_memory_order"),
+            6,
+        ),
+        "loading_depth_consistency_cm": round(
             100.0
             * _require_number(
                 loading_consistency.get("depth_mae"), "loading_depth_consistency_cm"
             ),
             6,
-        )
+        ),
+    }
     scores["experiments"]["zaragoza_efficiency_public_bunny"] = {
         "results": {method_name: efficiency_out}
     }

@@ -17,6 +17,10 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
+import sys
+
+sys.path.insert(0, str(ROOT))
+from eval.score_nlos import _artifact_path, _load_efficiency, _nested, _score_prediction
 
 
 DEPTH_EXPERIMENT = "zaragoza_bunny_depth_error"
@@ -86,38 +90,6 @@ def _method_names(report: dict[str, Any]) -> list[str]:
     return sorted(common)
 
 
-def _diagnostics_for_method(diagnostics: dict[str, Any], method_name: str) -> dict[str, Any]:
-    for key in ("methods", "by_method"):
-        method_map = diagnostics.get(key)
-        if isinstance(method_map, dict) and isinstance(method_map.get(method_name), dict):
-            return method_map[method_name]
-    return diagnostics
-
-
-def _nested(mapping: dict[str, Any], *keys: str) -> Any:
-    current: Any = mapping
-    for key in keys:
-        if not isinstance(current, dict):
-            return None
-        current = current.get(key)
-    return current
-
-
-def _quality_metrics(method_diagnostics: dict[str, Any]) -> dict[str, Any]:
-    quality = _nested(method_diagnostics, "quality_scene", "traditional", "quality")
-    if isinstance(quality, dict):
-        return quality
-    fallback = _nested(method_diagnostics, "primary_public_scene", "traditional", "quality")
-    if isinstance(fallback, dict):
-        return fallback
-    return {}
-
-
-def _complexity(method_diagnostics: dict[str, Any]) -> dict[str, Any]:
-    complexity = method_diagnostics.get("complexity_scaling")
-    return complexity if isinstance(complexity, dict) else {}
-
-
 def build_scores(report: dict[str, Any], diagnostics: dict[str, Any]) -> dict[str, Any]:
     depth_results = _experiment_results(report, DEPTH_EXPERIMENT)
     efficiency_results = _experiment_results(report, EFFICIENCY_EXPERIMENT)
@@ -130,38 +102,19 @@ def build_scores(report: dict[str, Any], diagnostics: dict[str, Any]) -> dict[st
     }
 
     for method_name in _method_names(report):
-        method_diagnostics = _diagnostics_for_method(diagnostics, method_name)
-        quality = _quality_metrics(method_diagnostics)
-        complexity = _complexity(method_diagnostics)
-
         depth_payload = depth_results[method_name]
         efficiency_payload = efficiency_results[method_name]
+        quality = _score_prediction(
+            _artifact_path(depth_payload, "prediction_path"),
+            _artifact_path(depth_payload, "ground_truth_path"),
+        )
+        efficiency = _load_efficiency(_artifact_path(efficiency_payload, "efficiency_path"))
+        complexity = efficiency.get("complexity_scaling", {})
 
         scores["experiments"][DEPTH_EXPERIMENT]["results"][method_name] = {
-            "depth_mae_cm": round(
-                _optional_number(
-                    depth_payload.get("depth_mae_cm"),
-                    quality.get("depth_mae_cm"),
-                    name="depth_mae_cm",
-                ),
-                6,
-            ),
-            "albedo_psnr_db": round(
-                _optional_number(
-                    depth_payload.get("albedo_psnr_db"),
-                    quality.get("psnr"),
-                    name="albedo_psnr_db",
-                ),
-                6,
-            ),
-            "albedo_mae": round(
-                _optional_number(
-                    depth_payload.get("albedo_mae"),
-                    quality.get("albedo_mae"),
-                    name="albedo_mae",
-                ),
-                6,
-            ),
+            "depth_mae_cm": round(100.0 * quality["depth_mae"], 6),
+            "albedo_psnr_db": round(quality["psnr"], 6),
+            "albedo_mae": round(quality["albedo_mae"], 6),
         }
 
         loading_scaling = complexity.get("loading") if isinstance(complexity, dict) else None
@@ -169,12 +122,11 @@ def build_scores(report: dict[str, Any], diagnostics: dict[str, Any]) -> dict[st
             loading_scaling = {}
         scores["experiments"][EFFICIENCY_EXPERIMENT]["results"][method_name] = {
             "memory_mb": round(
-                _optional_number(efficiency_payload.get("memory_mb"), name="memory_mb"),
+                _optional_number(_nested(efficiency, "fdh", "algorithm_peak_mb"), name="memory_mb"),
                 6,
             ),
             "loading_memory_order": round(
                 _optional_number(
-                    efficiency_payload.get("loading_memory_order"),
                     loading_scaling.get("memory_order"),
                     name="loading_memory_order",
                 ),
