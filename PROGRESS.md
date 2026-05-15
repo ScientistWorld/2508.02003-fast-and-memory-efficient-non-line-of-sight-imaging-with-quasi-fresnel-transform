@@ -16,6 +16,7 @@
 - The current scored reproduction uses a corrected synthetic Zaragoza-style bunny scene with the paper's confocal transport model, Quasi-Fresnel time aggregation, FFT separable spatial inversion, and derivative-based depth extraction.
 - Current `scores.json` from container job `beb56996-ef4` reports `depth_mae_cm = 0.4936`, `albedo_psnr_db = 14.7642`, `albedo_ssim = 0.5583`, `albedo_mae = 0.16365`, `runtime_s = 0.065222`, `memory_mb = 64.42`, `traditional_runtime_order = 3.083245`, `loading_memory_order = 1.912427`, and `loading_depth_consistency_cm = 0.0`.
 - `python validate.py --compare` passed inside the container, including train/test scoring checks and import-separation checks.
+- The score artifacts use method key `quasi_fresnel_scaled_reproduction` to make clear these are scaled/proxy reproduction numbers, not direct paper-scale reruns of `quasi_fresnel_proposed`.
 - Job `17469bab-217` confirmed that the public Zaragoza HDF5 files load correctly, but do not contain metric 2D albedo/depth ground truth. The benchmark contract has been repaired so those files now support the efficiency side of the claim rather than causing the quality target to fail.
 - Public Zaragoza bunny HDF5 efficiency is validated on the available `64x64x1024` file. The job also ran additional unscored public scenes, including a `256x256x4096` USAF file, confirming the implementation executes at larger public scale though without quality labels.
 

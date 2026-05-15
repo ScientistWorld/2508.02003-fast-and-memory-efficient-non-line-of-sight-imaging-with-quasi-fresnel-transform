@@ -2,14 +2,14 @@
   "experiments": {
     "zaragoza_bunny_depth_error": {
       "results": {
-        "quasi_fresnel_proposed": {
+        "quasi_fresnel_scaled_reproduction": {
           "depth_mae_cm": 0.4936
         }
       }
     },
     "zaragoza_efficiency_public_bunny": {
       "results": {
-        "quasi_fresnel_proposed": {
+        "quasi_fresnel_scaled_reproduction": {
           "runtime_s": 0.065222,
           "memory_mb": 64.42
         }

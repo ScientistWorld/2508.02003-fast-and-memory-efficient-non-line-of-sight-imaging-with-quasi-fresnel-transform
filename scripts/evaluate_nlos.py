@@ -21,6 +21,7 @@ import numpy as np
 
 ROOT = Path("/home/user")
 sys.path.insert(0, str(ROOT))
+METHOD_NAME = "quasi_fresnel_scaled_reproduction"
 
 os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
 os.environ.setdefault("MKL_NUM_THREADS", "1")
@@ -201,14 +202,14 @@ def build_scores(
         "experiments": {
             "zaragoza_bunny_depth_error": {
                 "results": {
-                    "quasi_fresnel_proposed": {
+                    METHOD_NAME: {
                         "depth_mae_cm": round(quality_metrics["depth_mae"] * 100.0, 4),
                     }
                 }
             },
             "zaragoza_efficiency_public_bunny": {
                 "results": {
-                    "quasi_fresnel_proposed": {
+                    METHOD_NAME: {
                         "runtime_s": round(efficiency_result["runtime_mean_s"], 6),
                         "memory_mb": round(efficiency_result["algorithm_peak_mb"], 2),
                     }

@@ -1,3 +1,3 @@
 action: done
 milestone: core_claim
-notes: "Container job beb56996-ef4 validated the Quasi-Fresnel reproduction: 0.4936 cm depth MAE on the metric-ground-truth bunny proxy, 0.065222 s and 64.42 MB on public Zaragoza bunny efficiency, exact loading/direct consistency, and all scorer/structure checks passed."
+notes: "Container job beb56996-ef4 validated the scaled Quasi-Fresnel reproduction under method key quasi_fresnel_scaled_reproduction: 0.4936 cm depth MAE on the metric-ground-truth bunny proxy, 0.065222 s and 64.42 MB on public Zaragoza bunny efficiency, exact loading/direct consistency, and all scorer/structure checks passed."

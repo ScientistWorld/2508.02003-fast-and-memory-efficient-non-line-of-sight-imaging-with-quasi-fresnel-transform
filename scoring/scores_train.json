@@ -2,7 +2,7 @@
   "experiments": {
     "zaragoza_bunny_depth_error": {
       "results": {
-        "quasi_fresnel_proposed": {
+        "quasi_fresnel_scaled_reproduction": {
           "albedo_psnr_db": 14.7642,
           "albedo_mae": 0.16365
         }
@@ -10,7 +10,7 @@
     },
     "zaragoza_efficiency_public_bunny": {
       "results": {
-        "quasi_fresnel_proposed": {
+        "quasi_fresnel_scaled_reproduction": {
           "memory_mb": 64.42
         }
       }
