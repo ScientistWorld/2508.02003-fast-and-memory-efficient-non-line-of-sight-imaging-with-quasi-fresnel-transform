@@ -2,4 +2,4 @@ action: submit
 gpus: 0
 test: true
 milestone: core_claim
-notes: "CPU validation after final-verifier fixes: regenerate artifact-based raw outputs, scores.json, train/test scores, and run validate.py --compare."
+notes: "CPU validation after held-out efficiency split fix: regenerate artifact outputs, scores.json, train/test scores, and run validate.py --compare."

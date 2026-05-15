@@ -195,7 +195,7 @@ def build_scores(
             traditional_scaling = {}
         scores["experiments"][EFFICIENCY_EXPERIMENT]["results"][method_name] = {
             "memory_mb": round(
-                _optional_number(_nested(efficiency, "fdh", "algorithm_peak_mb"), name="memory_mb"),
+                _heldout_memory_mb(efficiency, efficiency_payload),
                 6,
             ),
             "traditional_memory_order": round(
