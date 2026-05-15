@@ -4,7 +4,7 @@
 - Title: `Fast and Memory-efficient Non-line-of-sight Imaging with Quasi-Fresnel Transform`
 - Area: computational imaging / NLOS reconstruction
 
-This workspace contains a faithful implementation of the paper's Quasi-Fresnel algorithm and packages it as a runnable benchmark. The current milestone is `core_claim`: the three-step reconstruction pipeline runs end to end on both synthetic and real Zaragoza confocal data, producing depth MAE of 0.49 cm at 64×64 (resolution-scaled to ~0.12 cm at 256×256, consistent with the paper's reported 0.15 cm). The efficiency claims are supported: O(N^1.7) runtime, O(N^1.9) memory, and the loading variant is bitwise-identical to the traditional path.
+This workspace contains a faithful implementation of the paper's Quasi-Fresnel algorithm and packages it as a runnable benchmark. The current milestone is `core_claim`: the three-step reconstruction pipeline runs end to end on both synthetic and real Zaragoza confocal data, producing depth MAE of 0.49 cm on the tracked 64x64 quality proxy. The efficiency target now scores the paper's FDH-style aggregated path on public Zaragoza bunny measurements, with full-histogram and sequential-loading runs kept as diagnostics.
 
 ---
 
@@ -720,12 +720,34 @@ Additional public Zaragoza scenes are treated as diagnostics unless they also ex
 
 </details>
 
+### Iteration 3: gpt-5.5
+- **Milestone**: `core_claim` | **Status**: done
+- **Working time**: 15m | **GPU**: 0.0h
+- **Jobs**: 198 total (181 completed, 11 failed)
+
+<details>
+<summary>Progress Log</summary>
+
+### [2026-05-15 21:25] - method_runs
+- Existing Quasi-Fresnel implementation executes the paper's time aggregation, spatial inversion, and albedo/depth extraction pipeline end to end.
+- Packaged scripts produce method artifacts and score them without importing `method/` from `eval/`.
+
+### [2026-05-15 21:25] - core_claim
+- Prior container job reproduced the central quality/efficiency claim on the available benchmark split: metric depth quality on the tracked Zaragoza-style bunny proxy and runtime/memory behavior on public Zaragoza bunny measurements.
+- Current turn adds the paper's FDH-style aggregated reconstruction interface and fixes relay-wall extent inference; a new submitted job will refresh the scored artifacts.
+
+### [2026-05-15 21:36] - core_claim
+- Container job `b27e91f3-049` passed the FDH smoke test, regenerated `raw_results.json`, `diagnostics.json`, `scores.json`, train/test scores, and passed `python validate.py --compare`.
+- Refreshed scores show the FDH-style public-bunny path at `0.075464 s` and `1.70 MB` with exact consistency against the traditional reconstruction, while the quality proxy remains at `0.4936 cm` depth MAE.
+
+</details>
+
 
 ---
 
 # Reproduction Milestones
 
-**Current: method_runs**
+**Current: core_claim**
 
 ## Stop Justification
-- Completed at milestone `method_runs`.
+- Completed at milestone `core_claim`.

@@ -18,4 +18,4 @@
 - The reproduced score method is named `quasi_fresnel_scaled_reproduction` because the benchmark uses a tracked quality proxy and lightweight public-bunny efficiency fixture rather than the exact full paper setting.
 
 ## Stop Justification
-- Stopping at `core_claim`: the paper's core Quasi-Fresnel quality/efficiency claim is reproduced on the packaged benchmark split, with the method and evaluation environment validated end to end.
+- Completed at milestone `core_claim`.
