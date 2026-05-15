@@ -1,6 +1,8 @@
 #!/bin/bash
 # Held-out test-slice evaluation entrypoint.
 # Score a method-produced report artifact without importing method code.
+# The Python scorer reads scoring/scores_train.json when present so this pass
+# evaluates the same method keys as the visible train slice.
 set -euo pipefail
 
 cd /home/user
