@@ -6,11 +6,11 @@
     "area_m": 0.3,
     "note": "Tracked synthetic proxy with metric albedo/depth ground truth. The public Zaragoza HDF5 files packaged here contain measurements but no 2D albedo/depth targets.",
     "traditional": {
-      "runtime_mean_s": 0.018722,
-      "runtime_std_s": 0.006857,
-      "runtime_min_s": 0.012098,
-      "runtime_max_s": 0.028167,
-      "maxrss_mb": 52.73,
+      "runtime_mean_s": 0.012577,
+      "runtime_std_s": 0.005636,
+      "runtime_min_s": 0.008133,
+      "runtime_max_s": 0.020529,
+      "maxrss_mb": 58.83,
       "algorithm_peak_mb": 16.39,
       "quality": {
         "psnr": 14.7642,
@@ -25,23 +25,37 @@
     "scene_name": "bunny",
     "source_path": "/home/user/data/zaragoza/bunny_conf64.hdf5",
     "dt": 0.0025,
-    "area_m": -0.290477,
+    "area_m": 0.3,
     "has_ground_truth": false,
     "depth_metric_scale": false,
     "traditional": {
-      "runtime_mean_s": 0.065222,
-      "runtime_std_s": 0.013909,
-      "runtime_min_s": 0.0532,
-      "runtime_max_s": 0.084716,
-      "maxrss_mb": 375.51,
+      "runtime_mean_s": 0.046678,
+      "runtime_std_s": 0.000403,
+      "runtime_min_s": 0.046254,
+      "runtime_max_s": 0.047221,
+      "maxrss_mb": 380.7,
       "algorithm_peak_mb": 64.42
     },
     "loading": {
-      "runtime_mean_s": 0.076022,
-      "runtime_std_s": 0.001177,
-      "runtime_min_s": 0.074646,
-      "runtime_max_s": 0.077521,
-      "maxrss_mb": 375.51,
+      "runtime_mean_s": 0.074518,
+      "runtime_std_s": 0.000548,
+      "runtime_min_s": 0.073748,
+      "runtime_max_s": 0.074982,
+      "maxrss_mb": 380.7,
+      "algorithm_peak_mb": 1.7,
+      "consistency_vs_traditional": {
+        "psnr": 100.0,
+        "ssim": 1.0,
+        "albedo_mae": 0.0,
+        "depth_mae": 0.0
+      }
+    },
+    "fdh": {
+      "runtime_mean_s": 0.075464,
+      "runtime_std_s": 0.00064,
+      "runtime_min_s": 0.074611,
+      "runtime_max_s": 0.076151,
+      "maxrss_mb": 380.7,
       "algorithm_peak_mb": 1.7,
       "consistency_vs_traditional": {
         "psnr": 100.0,
@@ -60,10 +74,10 @@
         128
       ],
       "runtime_s": [
-        0.000346,
-        0.002338,
-        0.005949,
-        0.031625
+        0.000345,
+        0.001776,
+        0.004926,
+        0.020809
       ],
       "memory_mb": [
         0.7528,
@@ -71,7 +85,7 @@
         13.7542,
         32.2564
       ],
-      "runtime_order": 3.083245469157815,
+      "runtime_order": 2.8298422525837834,
       "memory_order": 2.703953655075761
     },
     "loading": {
@@ -82,10 +96,10 @@
         128
       ],
       "runtime_s": [
-        0.001988,
-        0.005241,
-        0.010613,
-        0.022766
+        0.00202,
+        0.005279,
+        0.010661,
+        0.023367
       ],
       "memory_mb": [
         0.081,
@@ -93,32 +107,9 @@
         0.6913,
         1.1293
       ],
-      "runtime_order": 1.7100494598423437,
+      "runtime_order": 1.7130996408588588,
       "memory_order": 1.9124274310539349
     }
   },
-  "additional_public_scenes": [
-    {
-      "scene_name": "usaf",
-      "source_path": "/home/user/data/downloads/zaragoza/usaf_simple_256_conf.hdf5",
-      "s": 0.025,
-      "runtime_mean_s": 3.492799,
-      "runtime_std_s": 0.00258,
-      "maxrss_mb": 18576.83,
-      "algorithm_peak_mb": 4099.16,
-      "has_ground_truth": false,
-      "depth_metric_scale": false
-    },
-    {
-      "scene_name": "T",
-      "source_path": "/home/user/data/downloads/zaragoza/public/T_conf64.hdf5",
-      "s": 0.02,
-      "runtime_mean_s": 0.071565,
-      "runtime_std_s": 0.011445,
-      "maxrss_mb": 18576.83,
-      "algorithm_peak_mb": 64.42,
-      "has_ground_truth": false,
-      "depth_metric_scale": false
-    }
-  ]
+  "additional_public_scenes": []
 }
