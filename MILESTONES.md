@@ -102,4 +102,4 @@
 - Reproduction is stable and complete. No further work needed.
 
 ## Stop Justification
-- Stopping at `core_claim`: the paper's actual Quasi-Fresnel computation is implemented and container-validated, the minimum quality-plus-efficiency claim is reproduced on the honest split benchmark, and remaining work would expand coverage rather than repair the core reproduction.
+- Completed at milestone `core_claim`.
