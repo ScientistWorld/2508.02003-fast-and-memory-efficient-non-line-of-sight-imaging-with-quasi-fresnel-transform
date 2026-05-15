@@ -152,10 +152,9 @@ def load_public_scene(path: Path) -> dict[str, object]:
     }
 
 
-def load_synthetic_quality_scene() -> dict[str, object]:
-    path = ROOT / "data" / "bunny" / "bunny_64x64.npz"
+def load_synthetic_scene(path: Path, scene_name: str) -> dict[str, object]:
     if not path.exists():
-        raise FileNotFoundError(f"Missing tracked synthetic quality scene: {path}")
+        raise FileNotFoundError(f"Missing tracked synthetic scene: {path}")
     with np.load(path) as data:
         return {
             "tau": data["tau"].astype(np.float64),
@@ -166,11 +165,25 @@ def load_synthetic_quality_scene() -> dict[str, object]:
             "dt": float(data["dt"]),
             "k": int(data["k"]),
             "area": float(data["area"]),
-            "scene_name": "synthetic_bunny_proxy_64",
+            "scene_name": scene_name,
             "source_path": str(path),
             "wall_x": None,
             "wall_y": None,
         }
+
+
+def load_synthetic_quality_scene() -> dict[str, object]:
+    return load_synthetic_scene(
+        ROOT / "data" / "bunny" / "bunny_64x64.npz",
+        "synthetic_bunny_proxy_64",
+    )
+
+
+def load_heldout_quality_scene() -> dict[str, object]:
+    return load_synthetic_scene(
+        ROOT / "data" / "shapes" / "shapes_64x64.npz",
+        "synthetic_shapes_heldout_64",
+    )
 
 
 def load_public_efficiency_scene() -> dict[str, object]:
@@ -227,6 +240,9 @@ def build_diagnostics(
     quality_scene: dict[str, object],
     quality_result: dict[str, object],
     quality_metrics: dict[str, float],
+    heldout_quality_scene: dict[str, object],
+    heldout_quality_result: dict[str, object],
+    heldout_quality_metrics: dict[str, float],
     efficiency_scene: dict[str, object],
     efficiency_result: dict[str, object],
     loading_result: dict[str, object],
@@ -260,6 +276,32 @@ def build_diagnostics(
                     "albedo_mae": round(quality_metrics["albedo_mae"], 6),
                     "depth_mae_m": round(quality_metrics["depth_mae"], 6),
                     "depth_mae_cm": round(quality_metrics["depth_mae"] * 100.0, 4),
+                },
+            },
+        },
+        "heldout_quality_scene": {
+            "scene_name": heldout_quality_scene["scene_name"],
+            "source_path": heldout_quality_scene["source_path"],
+            "dt": round(float(heldout_quality_scene["dt"]), 8),
+            "area_m": round(float(heldout_quality_scene["area"]), 6),
+            "note": (
+                "Held-out synthetic proxy with metric albedo/depth ground truth, "
+                "used only by eval/test so the primary depth metric is not reused "
+                "from the visible train slice."
+            ),
+            "traditional": {
+                "runtime_mean_s": round(heldout_quality_result["runtime_mean_s"], 6),
+                "runtime_std_s": round(heldout_quality_result["runtime_std_s"], 6),
+                "runtime_min_s": round(heldout_quality_result["runtime_min_s"], 6),
+                "runtime_max_s": round(heldout_quality_result["runtime_max_s"], 6),
+                "maxrss_mb": round(heldout_quality_result["maxrss_mb"], 2),
+                "algorithm_peak_mb": round(heldout_quality_result["algorithm_peak_mb"], 2),
+                "quality": {
+                    "psnr": round(heldout_quality_metrics["psnr"], 4),
+                    "ssim": round(heldout_quality_metrics["ssim"], 4),
+                    "albedo_mae": round(heldout_quality_metrics["albedo_mae"], 6),
+                    "depth_mae_m": round(heldout_quality_metrics["depth_mae"], 6),
+                    "depth_mae_cm": round(heldout_quality_metrics["depth_mae"] * 100.0, 4),
                 },
             },
         },
@@ -396,6 +438,39 @@ def main() -> None:
         f"SSIM={quality_metrics['ssim']:.4f} "
         f"albedo_MAE={quality_metrics['albedo_mae']:.4f} "
         f"depth_MAE={quality_metrics['depth_mae'] * 100.0:.4f}cm"
+    )
+
+    print("\n=== Held-Out Synthetic Quality Proxy Scene ===")
+    heldout_quality_scene = load_heldout_quality_scene()
+    heldout_quality_s = _scene_parameter_s(heldout_quality_scene["scene_name"])
+    heldout_quality_result = benchmark_qft(
+        heldout_quality_scene["tau"],
+        s=heldout_quality_s,
+        dt=heldout_quality_scene["dt"],
+        k=heldout_quality_scene["k"],
+        area=heldout_quality_scene["area"],
+        wall_x=heldout_quality_scene["wall_x"],
+        wall_y=heldout_quality_scene["wall_y"],
+        repeats=3,
+    )
+    heldout_quality_metrics = _scene_quality_metrics(
+        heldout_quality_result["albedo"],
+        heldout_quality_result["depth"],
+        heldout_quality_scene["albedo"],
+        heldout_quality_scene["depth"],
+    )
+    print(
+        f"scene={heldout_quality_scene['scene_name']} s={heldout_quality_s:.3f} "
+        f"runtime={heldout_quality_result['runtime_mean_s']:.6f}s "
+        f"+/- {heldout_quality_result['runtime_std_s']:.6f}s "
+        f"peak_memory={heldout_quality_result['algorithm_peak_mb']:.2f}MB"
+    )
+    print(
+        "heldout_quality "
+        f"PSNR={heldout_quality_metrics['psnr']:.2f}dB "
+        f"SSIM={heldout_quality_metrics['ssim']:.4f} "
+        f"albedo_MAE={heldout_quality_metrics['albedo_mae']:.4f} "
+        f"depth_MAE={heldout_quality_metrics['depth_mae'] * 100.0:.4f}cm"
     )
 
     print("\n=== Public Zaragoza Efficiency Scene ===")
@@ -561,6 +636,9 @@ def main() -> None:
         quality_scene,
         quality_result,
         quality_metrics,
+        heldout_quality_scene,
+        heldout_quality_result,
+        heldout_quality_metrics,
         efficiency_scene,
         efficiency_result,
         loading_result,

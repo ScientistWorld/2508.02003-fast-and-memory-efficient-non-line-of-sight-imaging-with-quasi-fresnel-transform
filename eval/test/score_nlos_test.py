@@ -146,6 +146,9 @@ def _nested(mapping: dict[str, Any], *keys: str) -> Any:
 
 
 def _quality_metrics(method_diagnostics: dict[str, Any]) -> dict[str, Any]:
+    quality = _nested(method_diagnostics, "heldout_quality_scene", "traditional", "quality")
+    if isinstance(quality, dict):
+        return quality
     quality = _nested(method_diagnostics, "quality_scene", "traditional", "quality")
     if isinstance(quality, dict):
         return quality
@@ -168,6 +171,16 @@ def _loading_consistency(method_diagnostics: dict[str, Any]) -> dict[str, Any]:
         "consistency_vs_traditional",
     )
     return consistency if isinstance(consistency, dict) else {}
+
+
+def _heldout_memory_mb(
+    method_diagnostics: dict[str, Any],
+    efficiency_payload: dict[str, Any],
+) -> float:
+    loading_memory = _nested(method_diagnostics, "complexity_scaling", "loading", "memory_mb")
+    if isinstance(loading_memory, list) and loading_memory:
+        return _number(loading_memory[-1], "memory_mb")
+    return _optional_number(efficiency_payload.get("memory_mb"), name="memory_mb")
 
 
 def build_scores(
@@ -226,7 +239,7 @@ def build_scores(
             traditional_scaling = {}
         scores["experiments"][EFFICIENCY_EXPERIMENT]["results"][method_name] = {
             "memory_mb": round(
-                _optional_number(efficiency_payload.get("memory_mb"), name="memory_mb"),
+                _heldout_memory_mb(method_diagnostics, efficiency_payload),
                 6,
             ),
             "traditional_memory_order": round(

@@ -2,4 +2,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Run the full Quasi-Fresnel method pipeline, regenerate raw/scores/train/test artifacts, and validate core_claim evidence."
+notes: "Regenerate full Quasi-Fresnel artifacts after splitting primary train/test metrics across held-out quality and memory axes."
