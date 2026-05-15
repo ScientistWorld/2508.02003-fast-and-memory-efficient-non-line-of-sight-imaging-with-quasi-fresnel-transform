@@ -1,5 +1,5 @@
 action: submit
 gpus: 0
-test: false
+test: true
 milestone: core_claim
-notes: "CPU validation for artifact-based scoring plus extra public Zaragoza diagnostics; if it passes, update scores and consider core_claim_plus."
+notes: "CPU validation after final-verifier fixes: regenerate artifact-based raw outputs, scores.json, train/test scores, and run validate.py --compare."

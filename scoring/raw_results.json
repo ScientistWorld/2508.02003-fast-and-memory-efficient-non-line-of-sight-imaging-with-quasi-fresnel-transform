@@ -3,15 +3,17 @@
     "zaragoza_bunny_depth_error": {
       "results": {
         "quasi_fresnel_scaled_reproduction": {
-          "depth_mae_cm": 0.4936
+          "prediction_path": "outputs/quasi_fresnel_scaled_reproduction/quality_bunny_prediction.npz",
+          "heldout_prediction_path": "outputs/quasi_fresnel_scaled_reproduction/heldout_shapes_prediction.npz",
+          "ground_truth_path": "data/bunny/bunny_64x64.npz",
+          "heldout_ground_truth_path": "data/shapes/shapes_64x64.npz"
         }
       }
     },
     "zaragoza_efficiency_public_bunny": {
       "results": {
         "quasi_fresnel_scaled_reproduction": {
-          "runtime_s": 0.134111,
-          "memory_mb": 1.7
+          "efficiency_path": "outputs/quasi_fresnel_scaled_reproduction/efficiency_metrics.json"
         }
       }
     }

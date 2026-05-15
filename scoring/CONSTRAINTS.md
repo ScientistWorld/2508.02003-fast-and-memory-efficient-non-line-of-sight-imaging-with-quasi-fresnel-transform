@@ -14,6 +14,9 @@
   - `zaragoza_efficiency_public_bunny`
 - Keep metric definitions fixed:
   - `depth_mae_cm`
+  - `albedo_psnr_db`
+  - `albedo_ssim`
+  - `albedo_mae`
   - `memory_mb`
   - `traditional_memory_order`
   - `loading_memory_order`
@@ -21,6 +24,6 @@
 - Keep the scoring entrypoint fixed to [`scripts/evaluate.sh`](/home/user/scripts/evaluate.sh), which expects a method-produced report matching the structure of [`scoring/raw_results.json`](/home/user/scoring/raw_results.json).
 
 ## Fairness rules
-- Do not oracle-tune `s` or other scene-specific parameters against test ground truth.
+- Do not tune scene-specific parameters against hidden or held-out ground truth.
 - Do not change the scored scene, metric units, or evaluation interface to make the benchmark easier.
 - Do not substitute a generic learned predictor or add external supervision unavailable in this workspace.

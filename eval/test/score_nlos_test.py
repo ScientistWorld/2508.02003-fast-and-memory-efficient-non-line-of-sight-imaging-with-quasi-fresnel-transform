@@ -182,16 +182,20 @@ def build_scores(
 
         scores["experiments"][DEPTH_EXPERIMENT]["results"][method_name] = {
             "depth_mae_cm": round(100.0 * quality["depth_mae"], 6),
+            "albedo_psnr_db": round(quality["psnr"], 6),
             "albedo_ssim": round(quality["ssim"], 6),
             "albedo_mae": round(quality["albedo_mae"], 6),
         }
 
+        loading_scaling = complexity.get("loading") if isinstance(complexity, dict) else None
+        if not isinstance(loading_scaling, dict):
+            loading_scaling = {}
         traditional_scaling = complexity.get("traditional") if isinstance(complexity, dict) else None
         if not isinstance(traditional_scaling, dict):
             traditional_scaling = {}
         scores["experiments"][EFFICIENCY_EXPERIMENT]["results"][method_name] = {
             "memory_mb": round(
-                _heldout_memory_mb(efficiency, efficiency_payload),
+                _optional_number(_nested(efficiency, "fdh", "algorithm_peak_mb"), name="memory_mb"),
                 6,
             ),
             "traditional_memory_order": round(
@@ -201,11 +205,18 @@ def build_scores(
                 ),
                 6,
             ),
-            "loading_depth_consistency_cm": round(
+            "loading_memory_order": round(
                 _optional_number(
-                    efficiency_payload.get("loading_depth_consistency_cm"),
+                    loading_scaling.get("memory_order"),
+                    name="loading_memory_order",
+                ),
+                6,
+            ),
+            "loading_depth_consistency_cm": round(
+                100.0
+                * _optional_number(
                     (
-                        100.0 * _number(consistency["depth_mae"], "loading_depth_consistency_cm")
+                        _number(consistency["depth_mae"], "loading_depth_consistency_cm")
                         if "depth_mae" in consistency
                         else None
                     ),

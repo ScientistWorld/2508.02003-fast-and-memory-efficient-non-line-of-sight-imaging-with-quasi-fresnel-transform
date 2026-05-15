@@ -114,21 +114,47 @@ def build_scores(report: dict[str, Any], diagnostics: dict[str, Any]) -> dict[st
         scores["experiments"][DEPTH_EXPERIMENT]["results"][method_name] = {
             "depth_mae_cm": round(100.0 * quality["depth_mae"], 6),
             "albedo_psnr_db": round(quality["psnr"], 6),
+            "albedo_ssim": round(quality["ssim"], 6),
             "albedo_mae": round(quality["albedo_mae"], 6),
         }
 
+        traditional_scaling = (
+            complexity.get("traditional") if isinstance(complexity, dict) else None
+        )
+        if not isinstance(traditional_scaling, dict):
+            traditional_scaling = {}
         loading_scaling = complexity.get("loading") if isinstance(complexity, dict) else None
         if not isinstance(loading_scaling, dict):
             loading_scaling = {}
+        loading_consistency = _nested(efficiency, "loading", "consistency_vs_traditional") or {}
         scores["experiments"][EFFICIENCY_EXPERIMENT]["results"][method_name] = {
             "memory_mb": round(
                 _optional_number(_nested(efficiency, "fdh", "algorithm_peak_mb"), name="memory_mb"),
+                6,
+            ),
+            "traditional_memory_order": round(
+                _optional_number(
+                    traditional_scaling.get("memory_order"),
+                    name="traditional_memory_order",
+                ),
                 6,
             ),
             "loading_memory_order": round(
                 _optional_number(
                     loading_scaling.get("memory_order"),
                     name="loading_memory_order",
+                ),
+                6,
+            ),
+            "loading_depth_consistency_cm": round(
+                100.0
+                * _optional_number(
+                    (
+                        _number(loading_consistency["depth_mae"], "loading_depth_consistency_cm")
+                        if "depth_mae" in loading_consistency
+                        else None
+                    ),
+                    name="loading_depth_consistency_cm",
                 ),
                 6,
             ),

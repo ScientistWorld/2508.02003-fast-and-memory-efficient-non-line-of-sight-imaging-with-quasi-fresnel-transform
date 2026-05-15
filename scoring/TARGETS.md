@@ -22,8 +22,13 @@ Depth accuracy for the Zaragoza Stanford bunny target. The scored gym target use
 Primary metric:
 - `depth_mae_cm` — lower is better
 
+Auxiliary scored metrics:
+- `albedo_psnr_db` — higher is better
+- `albedo_ssim` — higher is better
+- `albedo_mae` — lower is better
+
 Interpretation:
-This is the quality-preservation side of the paper's claim. A faster method that loses bunny depth fidelity on the metric-ground-truth proxy should score worse here.
+This is the quality-preservation side of the paper's claim. A faster method that loses bunny depth fidelity or visibly degrades the reconstructed intensity image on the metric-ground-truth proxy should score worse here.
 
 ## `zaragoza_efficiency_public_bunny`
 Type: Benefit target
