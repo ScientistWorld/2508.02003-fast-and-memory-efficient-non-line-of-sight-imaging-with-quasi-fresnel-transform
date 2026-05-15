@@ -1,5 +1,3 @@
-action: submit
-gpus: 0
-test: true
+action: done
 milestone: core_claim
-notes: "CPU validation job for final verification fixes: rerun FDH smoke test, method artifacts, train/test scorers, and validate.py after removing runtime metrics and fixing held-out scorer."
+notes: "Final verification passed after CPU validation job eca1622c-006; workspace is ready at core_claim."

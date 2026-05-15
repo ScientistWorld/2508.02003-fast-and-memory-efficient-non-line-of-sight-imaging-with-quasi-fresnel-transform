@@ -17,5 +17,9 @@
 - Refreshed scores show the FDH-style public-bunny path at `0.075464 s` and `1.70 MB` with exact consistency against the traditional reconstruction, while the quality proxy remains at `0.4936 cm` depth MAE.
 - The reproduced score method is named `quasi_fresnel_scaled_reproduction` because the benchmark uses a tracked quality proxy and lightweight public-bunny efficiency fixture rather than the exact full paper setting.
 
+### [2026-05-15 22:25] - core_claim
+- Final CPU validation job `eca1622c-006` passed after verifier fixes, including the FDH smoke test, method artifact regeneration, train/test scoring, and `python validate.py --compare`.
+- Final verification confirmed the gym remains at `core_claim`, with runtime-dependent metrics removed from scoring and held-out scorer wiring fixed.
+
 ## Stop Justification
 - Completed at milestone `core_claim`.
