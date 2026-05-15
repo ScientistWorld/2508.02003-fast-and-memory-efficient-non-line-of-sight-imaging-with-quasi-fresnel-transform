@@ -1,8 +1,14 @@
 # Reproduction Milestones
 
-**Current: method_runs**
+**Current: core_claim**
 
 ## Progress Log
+
+### [2026-05-15 21:14] - core_claim
+- Job `beb56996-ef4` completed the fixed split benchmark in the container with exit code 0.
+- Reproduced quality on the metric-ground-truth bunny proxy: `depth_mae_cm=0.4936`, `albedo_psnr_db=14.7642`, `albedo_ssim=0.5583`, `albedo_mae=0.16365`.
+- Reproduced the efficiency side on public Zaragoza bunny HDF5: `runtime_s=0.065222`, `memory_mb=64.42`; the sequential-loading variant matched the direct reconstruction with `loading_depth_consistency_cm=0.0`.
+- `python validate.py --compare` passed, including train/test scorer checks and import-separation checks.
 
 ### [2026-05-15 21:10] - method_runs
 - Job `17469bab-217` failed before scoring because the public Zaragoza HDF5 measurement files available in this workspace do not include metric 2D albedo/depth ground truth.
@@ -95,4 +101,4 @@
 - Reproduction is stable and complete. No further work needed.
 
 ## Stop Justification
-- Not stopped. Current milestone is temporarily reset to `method_runs` while a public Zaragoza validation job is submitted.
+- Stopping at `core_claim`: the paper's actual Quasi-Fresnel computation is implemented and container-validated, the minimum quality-plus-efficiency claim is reproduced on the honest split benchmark, and remaining work would expand coverage rather than repair the core reproduction.
