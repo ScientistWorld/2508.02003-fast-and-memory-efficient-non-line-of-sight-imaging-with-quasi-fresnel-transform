@@ -1,5 +1,5 @@
-action: done
+action: submit
 gpus: 0
-test: false
+test: true
 milestone: core_claim
-notes: "Made download and method entrypoints fresh-clone relative, validated public URLs, and tracked the missing held-out synthetic asset."
+notes: "CPU validation job: rerun FDH smoke test, Quasi-Fresnel method artifacts, train/test scorers, and validate.py after scoring target cleanup."

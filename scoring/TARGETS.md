@@ -32,10 +32,10 @@ What it tests:
 Runtime and working memory for the paper's FDH-style aggregated Quasi-Fresnel reconstruction on an available public Zaragoza bunny measurement. The current job path prefers the 64x64 public bunny copy for repeatable CPU validation and falls back to the downloaded 256x256 public bunny file.
 
 Primary metric:
-- `runtime_s` — lower is better
-
-Constraint metric:
 - `memory_mb` — lower is better
+
+Compatibility metric:
+- `runtime_s` — lower is better, retained for comparison with paper artifacts but not included in the composite score because wall-clock measurements depend on hardware
 
 Interpretation:
 Scientists should improve runtime without inflating working memory. The score rewards the low-memory aggregated path emphasized by the paper, while diagnostics also compare it against the full-histogram and sequential-loading paths on the same public scene.
