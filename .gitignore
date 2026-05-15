@@ -37,6 +37,9 @@ data/dynamic/
 data/kylin/
 data/shapes/
 data/zaragoza/
+!data/zaragoza/
+data/zaragoza/*
+!data/zaragoza/bunny_conf64.hdf5
 data/zaragoza_public/
 
 # Container artifacts (multi-GB)

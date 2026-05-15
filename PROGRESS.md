@@ -11,20 +11,20 @@
 - The method code now includes an FDH-style pre-aggregated reconstruction interface, matching the paper's lowest-memory acquisition variant in software.
 - The Zaragoza loader now reads `deltaT`, grid size, and nested HDF5 datasets from the source files, and can derive 2D albedo/depth proxies from stored voxel volumes when available.
 - Depth differentiation continues to use the paper's derivative-based extraction rule with a very small `s` perturbation.
+- The lightweight public bunny HDF5 used by the standard CPU efficiency score is now explicitly tracked as a fixed benchmark fixture.
 
 ## Results Achieved
 - The method has run successfully inside the packaged container, so `method_runs` is secure.
 - The current scored reproduction uses a corrected synthetic Zaragoza-style bunny scene with the paper's confocal transport model, Quasi-Fresnel time aggregation, FFT separable spatial inversion, and derivative-based depth extraction.
-- Previous `scores.json` from container job `beb56996-ef4` reports `depth_mae_cm = 0.4936`, `albedo_psnr_db = 14.7642`, `albedo_ssim = 0.5583`, `albedo_mae = 0.16365`, `runtime_s = 0.065222`, `memory_mb = 64.42`, `traditional_runtime_order = 3.083245`, `loading_memory_order = 1.912427`, and `loading_depth_consistency_cm = 0.0`.
-- A new verification job is pending to rescore efficiency with the FDH-style aggregated path and the corrected relay-wall extent loader.
+- Current `scores.json` from container job `b27e91f3-049` reports `depth_mae_cm = 0.4936`, `albedo_psnr_db = 14.7642`, `albedo_ssim = 0.5583`, `albedo_mae = 0.16365`, `runtime_s = 0.075464`, `memory_mb = 1.70`, `traditional_runtime_order = 2.829842`, `loading_memory_order = 1.912427`, and `loading_depth_consistency_cm = 0.0`.
 - `python validate.py --compare` passed inside the container, including train/test scoring checks and import-separation checks.
 - The refreshed score artifacts will use method key `quasi_fresnel_proposed` so automated comparison aligns with the paper's proposed-method row; deviations in scale and proxy data are documented here and in the target descriptions.
 - Job `17469bab-217` confirmed that the public Zaragoza HDF5 files load correctly, but do not contain metric 2D albedo/depth ground truth. The benchmark contract has been repaired so those files now support the efficiency side of the claim rather than causing the quality target to fail.
 - Public Zaragoza bunny HDF5 efficiency is validated on the available `64x64x1024` file. Additional unscored public scenes can be enabled with `NLOS_EXTRA_PUBLIC=1`; they are skipped by default to keep standard verification lightweight.
+- Job `b27e91f3-049` refreshed the FDH-style aggregate path in the container and passed `python validate.py --compare`.
 
 ## What Remains
 - Improve the implementation toward the paper's full 256x256 efficiency numbers; the unscored public USAF run currently needs substantially more memory than the paper reports.
-- Re-run the packaged container benchmark after the FDH path and loader fixes.
 - Add a faithful published baseline implementation.
 - Expand to larger public Zaragoza and Stanford datasets if download and budget permit.
 
