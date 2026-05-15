@@ -725,7 +725,7 @@ Additional public Zaragoza scenes are treated as diagnostics unless they also ex
 
 # Reproduction Milestones
 
-**Current: core_claim**
+**Current: method_runs**
 
 ## Stop Justification
-- Completed at milestone `core_claim`.
+- Completed at milestone `method_runs`.
