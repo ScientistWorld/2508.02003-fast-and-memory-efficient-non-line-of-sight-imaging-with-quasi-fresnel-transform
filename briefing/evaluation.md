@@ -1,12 +1,12 @@
 # Evaluation
 
-The paper evaluates on public NLOS datasets, especially Zaragoza simulated confocal data and Stanford captured data. The strongest explicit quantitative claim in the paper is efficiency:
-- around `0.17 s` runtime and under `50 MB` memory for the Zaragoza evaluation
-- under `0.3 s` runtime and under `50 MB` memory on the Stanford evaluation
-- about `0.003 s` per frame on the dynamic Stanford sequence
+The packaged benchmark has two complementary targets:
 
-The packaged minimum benchmark in this workspace is built around the public Zaragoza Stanford bunny confocal scene. It measures both:
-- depth quality via `depth_mae_cm`, matching the numeric bunny comparison in Fig. 5
-- efficiency via `runtime_s` and `memory_mb`, matching the public Zaragoza efficiency claim in the Results section
+- `zaragoza_bunny_depth_error`: depth reconstruction quality on a tracked Zaragoza-style bunny proxy with metric ground truth.
+- `zaragoza_efficiency_public_bunny`: working-memory behavior on the packaged public Zaragoza bunny confocal measurement.
+
+`depth_mae_cm` is the primary quality metric. Lower values mean the recovered surface geometry is closer to the reference depth map.
+
+`memory_mb` is the primary efficiency metric. Lower values mean the reconstruction can run with less peak working memory on the fixed public-scene input. Wall-clock runtime is kept only in raw diagnostics because it depends on hardware and is not part of the scored objective.
 
 Additional public Zaragoza scenes are treated as diagnostics unless they also expose trustworthy ground truth through the HDF5 metadata.

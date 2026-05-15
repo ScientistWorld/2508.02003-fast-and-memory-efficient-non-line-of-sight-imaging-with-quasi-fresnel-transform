@@ -13,9 +13,7 @@
     "zaragoza_efficiency_public_bunny": {
       "results": {
         "quasi_fresnel_scaled_reproduction": {
-          "runtime_s": 0.075464,
           "memory_mb": 1.7,
-          "traditional_runtime_order": 2.829842,
           "loading_memory_order": 1.912427,
           "loading_depth_consistency_cm": 0.0
         }

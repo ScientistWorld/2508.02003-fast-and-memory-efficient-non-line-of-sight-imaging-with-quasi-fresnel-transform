@@ -2,4 +2,4 @@ action: submit
 gpus: 0
 test: true
 milestone: core_claim
-notes: "CPU validation job: rerun FDH smoke test, Quasi-Fresnel method artifacts, train/test scorers, and validate.py after scoring target cleanup."
+notes: "CPU validation job for final verification fixes: rerun FDH smoke test, method artifacts, train/test scorers, and validate.py after removing runtime metrics and fixing held-out scorer."

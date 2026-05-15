@@ -1,22 +1,26 @@
 # Verification Report
 
 ## Initial Assessment
-The workspace already had a real implementation of the paper's three-step Quasi-Fresnel pipeline and a cleaner method/evaluation split than earlier revisions. The remaining question was whether it was actually ready to serve as a gym. Structurally it was close, but the packaged scoring state did not yet support the claimed `core_claim`.
+The workspace starts from a claimed `core_claim` reproduction. The method code implements the paper's Quasi-Fresnel computation rather than a surrogate, and the main validator passes on the currently packaged score artifacts. The gym is close to usable, but final verification found several rubric and documentation issues that should be fixed before signaling done.
 
 ## Issues Found
-- Critical: [`scoring/scores.json`](/home/user/scoring/scores.json) is empty, so `python validate.py --compare` fails and the gym currently has no baseline scores for scientist agents to beat.
-- Minor: [`eval/score_nlos.py`](/home/user/eval/score_nlos.py) hardcoded the paper's method name, which would have forced future scientist agents to emit `quasi_fresnel_proposed` instead of any valid method identifier.
-- Minor: [`scoring/CONSTRAINTS.md`](/home/user/scoring/CONSTRAINTS.md) still referred to the experiments "already present" in `scores.json`, which is incorrect while the file is intentionally empty pending rerun.
+- Critical: strict method-agnostic documentation leaked the paper method name and acquisition variant in `scoring/EXPERIMENTS.md`.
+- Critical: normalized scoring still carried wall-clock runtime fields in `reference.json` and `scores.json`. Their coefficients were zero, but final scoring should not expose runtime as a scored metric.
+- Critical: the held-out test scorer preferred the visible raw depth metric before held-out diagnostics, so a future rerun could silently collapse the test slice onto the train slice.
+- Minor: `briefing/problem.md`, `briefing/evaluation.md`, `scoring/TARGETS.md`, `scoring/CONSTRAINTS.md`, and `scoring/DIRECTION.md` needed clearer method-agnostic wording.
+- Minor: `scripts/download.sh` URLs needed verification; all three configured Zaragoza URLs resolve to downloadable HDF5 attachments.
+- Residual risk: the held-out synthetic test depth score is much harder than the visible proxy score, so train/test calibration is imperfect.
 
 ## Fixes Applied
-- Generalized [`eval/score_nlos.py`](/home/user/eval/score_nlos.py) so `scripts/evaluate.sh` now accepts any method names that provide the required metric fields for each scored experiment.
-- Corrected [`scoring/CONSTRAINTS.md`](/home/user/scoring/CONSTRAINTS.md) so it describes the fixed benchmark contract directly instead of implying that `scores.json` is already populated.
-- Rewrote this verification report to match the current workspace state and the actual remaining blocker.
+- Rewrote strict and high-level scientist-facing docs to describe the task and metrics without naming the paper's specific algorithm.
+- Removed wall-clock runtime and runtime-order metrics from normalized `reference.json` and regenerated `scores.json` through `scripts/evaluate.sh`.
+- Fixed `eval/test/score_nlos_test.py` so held-out quality diagnostics take precedence over visible raw-report metrics.
+- Verified the configured public Zaragoza download URLs with `curl -I -L --max-time 15`.
 
 ## Final Judgment
-This workspace is not ready to be marked done yet. The folder structure, evaluation entrypoint, and scientist-facing problem definition are now largely appropriate for gym use, and the scorer is now method-agnostic enough for future scientist agents. The hard blocker is still the missing packaged baseline scores: future scientists cannot be ranked until the corrected public-bunny benchmark is rerun and writes a non-empty [`scores.json`](/home/user/scoring/scores.json). A short CPU validation job is the right next step.
+Final judgment is pending a CPU container validation job because the login-node Python does not have NumPy, and the edited method/test scoring path should be rerun inside the packaged environment. If that job passes, the workspace remains a usable `core_claim` gym with a scaled/proxy quality target and a public-data memory target.
 
-- Milestone: method_runs
-- Ready for gym use: partial
-- Confidence: high
-- Key limitation: the corrected public Zaragoza bunny benchmark has not yet regenerated `scores.json`
+- Milestone: core_claim
+- Ready for gym use: partial pending validation
+- Confidence: medium
+- Key limitation: metric quality is scored on a tracked synthetic proxy because the available public HDF5 files lack 2D ground truth

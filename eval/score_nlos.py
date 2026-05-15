@@ -116,7 +116,6 @@ def _normalize_results(report: dict, diagnostics: dict) -> dict:
         raise ValueError("Input report uses different method names across experiments")
 
     efficiency_out = {
-        "runtime_s": round(_require_number(efficiency_metrics.get("runtime_s"), "runtime_s"), 6),
         "memory_mb": round(_require_number(efficiency_metrics.get("memory_mb"), "memory_mb"), 6),
     }
     complexity = diagnostics.get("complexity_scaling", {})
@@ -128,11 +127,6 @@ def _normalize_results(report: dict, diagnostics: dict) -> dict:
     if complexity:
         traditional = complexity.get("traditional", {})
         loading = complexity.get("loading", {})
-        if "runtime_order" in traditional:
-            efficiency_out["traditional_runtime_order"] = round(
-                _require_number(traditional.get("runtime_order"), "traditional_runtime_order"),
-                6,
-            )
         if "memory_order" in loading:
             efficiency_out["loading_memory_order"] = round(
                 _require_number(loading.get("memory_order"), "loading_memory_order"),

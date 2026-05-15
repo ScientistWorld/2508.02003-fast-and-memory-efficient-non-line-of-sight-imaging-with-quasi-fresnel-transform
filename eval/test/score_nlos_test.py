@@ -212,24 +212,24 @@ def build_scores(
         scores["experiments"][DEPTH_EXPERIMENT]["results"][method_name] = {
             "depth_mae_cm": round(
                 _optional_number(
-                    depth_payload.get("depth_mae_cm"),
                     quality.get("depth_mae_cm"),
+                    depth_payload.get("depth_mae_cm"),
                     name="depth_mae_cm",
                 ),
                 6,
             ),
             "albedo_ssim": round(
                 _optional_number(
-                    depth_payload.get("albedo_ssim"),
                     quality.get("ssim"),
+                    depth_payload.get("albedo_ssim"),
                     name="albedo_ssim",
                 ),
                 6,
             ),
             "albedo_mae": round(
                 _optional_number(
-                    depth_payload.get("albedo_mae"),
                     quality.get("albedo_mae"),
+                    depth_payload.get("albedo_mae"),
                     name="albedo_mae",
                 ),
                 6,

@@ -14,9 +14,8 @@
   - `zaragoza_efficiency_public_bunny`
 - Keep metric definitions fixed:
   - `depth_mae_cm`
-  - `runtime_s`
   - `memory_mb`
-  - `traditional_runtime_order`
+  - `traditional_memory_order`
   - `loading_memory_order`
   - `loading_depth_consistency_cm`
 - Keep the scoring entrypoint fixed to [`scripts/evaluate.sh`](/home/user/scripts/evaluate.sh), which expects a method-produced report matching the structure of [`scoring/raw_results.json`](/home/user/scoring/raw_results.json).
