@@ -1,0 +1,94 @@
+{
+  "_scene_stats": {
+    "train_256_a": {
+      "oracle_constant_depth_mae_cm": 4.597488105731136,
+      "zero_image_psnr_db": 16.570402294697345,
+      "object_pixels": 2812
+    },
+    "train_256_b": {
+      "oracle_constant_depth_mae_cm": 3.2005739166959963,
+      "zero_image_psnr_db": 15.912873560788395,
+      "object_pixels": 1871
+    }
+  },
+  "quasi_fresnel": {
+    "train_256_a": {
+      "exit_code": 0,
+      "peak_rss_mb": 141.10546875,
+      "killed": null,
+      "wall_time_s": 1.7498044720850885,
+      "depth_mae_cm": 1.7444837989830937,
+      "albedo_ncc": 0.8765281645456756,
+      "albedo_psnr_db": 19.997894139716223
+    },
+    "train_256_b": {
+      "exit_code": 0,
+      "peak_rss_mb": 152.4375,
+      "killed": null,
+      "wall_time_s": 1.9207638900261372,
+      "depth_mae_cm": 1.3851858158573183,
+      "albedo_ncc": 0.9148094078133466,
+      "albedo_psnr_db": 20.13968890325193
+    }
+  },
+  "qf_traditional": {
+    "train_256_a": {
+      "exit_code": 0,
+      "peak_rss_mb": 804.3046875,
+      "killed": null,
+      "wall_time_s": 2.732348098186776,
+      "depth_mae_cm": 1.7444837989769983,
+      "albedo_ncc": 0.8765281645456757,
+      "albedo_psnr_db": 19.997894139716227
+    },
+    "train_256_b": {
+      "exit_code": 0,
+      "peak_rss_mb": 804.09375,
+      "killed": null,
+      "wall_time_s": 2.5697145590092987,
+      "depth_mae_cm": 1.3851858158522388,
+      "albedo_ncc": 0.9148094078133467,
+      "albedo_psnr_db": 20.13968890325193
+    }
+  },
+  "lct_volumetric": {
+    "train_256_a": {
+      "exit_code": 0,
+      "peak_rss_mb": 3272.6171875,
+      "killed": null,
+      "wall_time_s": 17.765528690069914,
+      "depth_mae_cm": 0.06861846234859949,
+      "albedo_ncc": 0.9542316454205947,
+      "albedo_psnr_db": 26.518750938762878
+    },
+    "train_256_b": {
+      "exit_code": 0,
+      "peak_rss_mb": 3272.49609375,
+      "killed": null,
+      "wall_time_s": 14.753583217971027,
+      "depth_mae_cm": 0.0795156035015985,
+      "albedo_ncc": 0.9691578508953907,
+      "albedo_psnr_db": 27.38470109938794
+    }
+  },
+  "peak_energy_baseline": {
+    "train_256_a": {
+      "exit_code": 0,
+      "peak_rss_mb": 141.10546875,
+      "killed": null,
+      "wall_time_s": 1.3026791820302606,
+      "depth_mae_cm": 1.6292806935445017,
+      "albedo_ncc": 0.416678871727168,
+      "albedo_psnr_db": 17.464221564384314
+    },
+    "train_256_b": {
+      "exit_code": 0,
+      "peak_rss_mb": 152.4375,
+      "killed": null,
+      "wall_time_s": 1.294618665939197,
+      "depth_mae_cm": 0.4436632988919943,
+      "albedo_ncc": 0.44321573224579247,
+      "albedo_psnr_db": 16.87776791259638
+    }
+  }
+}

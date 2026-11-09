@@ -1,0 +1,87 @@
+{
+  "experiments": {
+    "surface_reconstruction": {
+      "results": {
+        "peak_energy_baseline": {
+          "depth_mae_cm": 0.980729,
+          "albedo_ncc": 0.422112,
+          "albedo_psnr_db": 17.007213
+        }
+      }
+    },
+    "working_memory": {
+      "results": {
+        "peak_energy_baseline": {
+          "peak_memory_mb": 168.699
+        }
+      }
+    }
+  },
+  "_status": {
+    "peak_energy_baseline": {
+      "valid": true,
+      "failures": [],
+      "scenes_completed": 6
+    }
+  },
+  "_details": {
+    "peak_energy_baseline": {
+      "train_384_a": {
+        "depth_mae_cm": 0.840931,
+        "albedo_ncc": 0.430394,
+        "albedo_psnr_db": 17.085327,
+        "peak_rss_mb": 168.699219
+      },
+      "train_256_a": {
+        "depth_mae_cm": 1.629281,
+        "albedo_ncc": 0.416679,
+        "albedo_psnr_db": 17.464222,
+        "peak_rss_mb": 168.699219
+      },
+      "train_256_b": {
+        "depth_mae_cm": 0.443663,
+        "albedo_ncc": 0.443216,
+        "albedo_psnr_db": 16.877768,
+        "peak_rss_mb": 168.699219
+      },
+      "train_256_c": {
+        "depth_mae_cm": 1.300856,
+        "albedo_ncc": 0.399108,
+        "albedo_psnr_db": 15.206749,
+        "peak_rss_mb": 168.699219
+      },
+      "train_256_d": {
+        "depth_mae_cm": 0.654231,
+        "albedo_ncc": 0.502197,
+        "albedo_psnr_db": 16.611254,
+        "peak_rss_mb": 168.699219
+      },
+      "train_256_e": {
+        "depth_mae_cm": 1.01541,
+        "albedo_ncc": 0.341079,
+        "albedo_psnr_db": 18.797961,
+        "peak_rss_mb": 168.699219
+      }
+    }
+  },
+  "_protocol": {
+    "scenes": [
+      "train_384_a",
+      "train_256_a",
+      "train_256_b",
+      "train_256_c",
+      "train_256_d",
+      "train_256_e"
+    ],
+    "memory_budget_mb": 256.0,
+    "timeout_s_per_scene": 300.0,
+    "depth_gate": "mean depth_mae_cm <= 0.5 x mean oracle-constant depth MAE (1.3785 cm)",
+    "albedo_gate": "mean albedo_ncc >= 0.2",
+    "failed_run_values": {
+      "depth_mae_cm": 2.7570545939596816,
+      "albedo_ncc": 0.0,
+      "albedo_psnr_db": 16.121228706013266,
+      "peak_memory_mb": 256.0
+    }
+  }
+}

@@ -19,6 +19,22 @@
           "loading_depth_consistency_cm": 0.0
         }
       }
+    },
+    "surface_reconstruction": {
+      "results": {
+        "sc_write_scores": {
+          "depth_mae_cm": 0.0,
+          "albedo_ncc": 1.0,
+          "albedo_psnr_db": 100.0
+        }
+      }
+    },
+    "working_memory": {
+      "results": {
+        "sc_write_scores": {
+          "peak_memory_mb": 0.0
+        }
+      }
     }
   }
 }

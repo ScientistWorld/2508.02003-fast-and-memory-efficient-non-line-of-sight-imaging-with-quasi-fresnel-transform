@@ -1,24 +1,87 @@
 {
   "experiments": {
-    "zaragoza_bunny_depth_error": {
+    "surface_reconstruction": {
       "results": {
-        "quasi_fresnel_scaled_reproduction": {
-          "depth_mae_cm": 0.4936,
-          "albedo_psnr_db": 14.764197,
-          "albedo_ssim": 0.558319,
-          "albedo_mae": 0.16365
+        "quasi_fresnel": {
+          "depth_mae_cm": 1.251777,
+          "albedo_ncc": 0.912538,
+          "albedo_psnr_db": 20.930206
         }
       }
     },
-    "zaragoza_efficiency_public_bunny": {
+    "working_memory": {
       "results": {
-        "quasi_fresnel_scaled_reproduction": {
-          "memory_mb": 1.701744,
-          "traditional_memory_order": 2.703954,
-          "loading_memory_order": 1.912427,
-          "loading_depth_consistency_cm": 0.0
+        "quasi_fresnel": {
+          "peak_memory_mb": 168.746
         }
       }
+    }
+  },
+  "_status": {
+    "quasi_fresnel": {
+      "valid": true,
+      "failures": [],
+      "scenes_completed": 6
+    }
+  },
+  "_details": {
+    "quasi_fresnel": {
+      "train_384_a": {
+        "depth_mae_cm": 0.211156,
+        "albedo_ncc": 0.976267,
+        "albedo_psnr_db": 25.056117,
+        "peak_rss_mb": 168.746094
+      },
+      "train_256_a": {
+        "depth_mae_cm": 1.744484,
+        "albedo_ncc": 0.876528,
+        "albedo_psnr_db": 19.997894,
+        "peak_rss_mb": 168.746094
+      },
+      "train_256_b": {
+        "depth_mae_cm": 1.385186,
+        "albedo_ncc": 0.914809,
+        "albedo_psnr_db": 20.139689,
+        "peak_rss_mb": 168.746094
+      },
+      "train_256_c": {
+        "depth_mae_cm": 1.950786,
+        "albedo_ncc": 0.915153,
+        "albedo_psnr_db": 19.009495,
+        "peak_rss_mb": 168.746094
+      },
+      "train_256_d": {
+        "depth_mae_cm": 0.437885,
+        "albedo_ncc": 0.929979,
+        "albedo_psnr_db": 20.173138,
+        "peak_rss_mb": 168.746094
+      },
+      "train_256_e": {
+        "depth_mae_cm": 1.781163,
+        "albedo_ncc": 0.86249,
+        "albedo_psnr_db": 21.204901,
+        "peak_rss_mb": 168.746094
+      }
+    }
+  },
+  "_protocol": {
+    "scenes": [
+      "train_384_a",
+      "train_256_a",
+      "train_256_b",
+      "train_256_c",
+      "train_256_d",
+      "train_256_e"
+    ],
+    "memory_budget_mb": 256.0,
+    "timeout_s_per_scene": 300.0,
+    "depth_gate": "mean depth_mae_cm <= 0.5 x mean oracle-constant depth MAE (1.3785 cm)",
+    "albedo_gate": "mean albedo_ncc >= 0.2",
+    "failed_run_values": {
+      "depth_mae_cm": 2.7570545939596816,
+      "albedo_ncc": 0.0,
+      "albedo_psnr_db": 16.121228706013266,
+      "peak_memory_mb": 256.0
     }
   }
 }
