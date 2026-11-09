@@ -12,7 +12,7 @@
     "working_memory": {
       "results": {
         "peak_energy_baseline": {
-          "peak_memory_mb": 42.383
+          "peak_memory_mb": 44.0
         }
       }
     }
@@ -21,7 +21,8 @@
     "peak_energy_baseline": {
       "valid": true,
       "failures": [],
-      "scenes_completed": 6
+      "scenes_completed": 6,
+      "peak_memory_raw_mb": 42.293
     }
   },
   "_details": {
@@ -30,37 +31,37 @@
         "depth_mae_cm": 0.840931,
         "albedo_ncc": 0.430394,
         "albedo_psnr_db": 17.085327,
-        "peak_rss_mb": 42.382812
+        "peak_rss_mb": 42.292969
       },
       "train_256_a": {
         "depth_mae_cm": 1.629281,
         "albedo_ncc": 0.416679,
         "albedo_psnr_db": 17.464222,
-        "peak_rss_mb": 39.3125
+        "peak_rss_mb": 39.5
       },
       "train_256_b": {
         "depth_mae_cm": 0.443663,
         "albedo_ncc": 0.443216,
         "albedo_psnr_db": 16.877768,
-        "peak_rss_mb": 39.171875
+        "peak_rss_mb": 39.398438
       },
       "train_256_c": {
         "depth_mae_cm": 1.300856,
         "albedo_ncc": 0.399108,
         "albedo_psnr_db": 15.206749,
-        "peak_rss_mb": 39.539062
+        "peak_rss_mb": 39.449219
       },
       "train_256_d": {
         "depth_mae_cm": 0.654231,
         "albedo_ncc": 0.502197,
         "albedo_psnr_db": 16.611254,
-        "peak_rss_mb": 39.550781
+        "peak_rss_mb": 39.148438
       },
       "train_256_e": {
         "depth_mae_cm": 1.01541,
         "albedo_ncc": 0.341079,
         "albedo_psnr_db": 18.797961,
-        "peak_rss_mb": 39.113281
+        "peak_rss_mb": 41.03125
       }
     }
   },
@@ -74,6 +75,7 @@
       "train_256_e"
     ],
     "memory_budget_mb": 256.0,
+    "memory_resolution_mb": 4.0,
     "timeout_s_per_scene": 300.0,
     "depth_gate": "mean depth_mae_cm <= 0.5 x mean oracle-constant depth MAE (1.3785 cm)",
     "albedo_gate": "mean albedo_ncc >= 0.2",

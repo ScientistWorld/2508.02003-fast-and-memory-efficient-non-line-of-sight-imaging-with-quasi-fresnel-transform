@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Rerun hardening audit after fixes: VmHWM-based memory (no inherited ru_maxrss), workspace scratch (container /tmp too small), s selected on visible train scenes, then reference-only + cohort (variants, baselines, shortcuts) through no-arg train/test evaluators, uncapped diagnostics, analysis, validate."
+notes: "Final hardening audit: quality-only train selection of s (memory jitter excluded; expected 0.03), memory reported at 4 MB resolution, reference-only scoring, cohort incl. depth-only smoothing variant through no-arg train/test evaluators, uncapped diagnostics, analysis, validate."

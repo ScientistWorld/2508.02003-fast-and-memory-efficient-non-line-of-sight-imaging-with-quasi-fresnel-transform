@@ -1,0 +1,1954 @@
+{
+  "test": {
+    "rows": [
+      {
+        "method": "bruteforce_backprojection",
+        "valid": false,
+        "failures": [
+          "hidden_512_0: peak memory exceeded the 256 MB budget"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_honest": -3.1859252543144407,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "lct_volumetric",
+        "valid": false,
+        "failures": [
+          "hidden_512_0: peak memory exceeded the 256 MB budget"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_honest": -3.1859252543144407,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "peak_energy_baseline",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "47.2",
+        "depth_mae_cm": 0.823969,
+        "albedo_ncc": 0.470047,
+        "albedo_psnr_db": 17.547,
+        "peak_memory_mb": 48.0,
+        "dR_honest": -0.4021772279815524,
+        "dR_all": -0.33800887341701324,
+        "dR_valid": -2.3076201125882414
+      },
+      {
+        "method": "qf_lean",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "66.1",
+        "depth_mae_cm": 0.399413,
+        "albedo_ncc": 0.955749,
+        "albedo_psnr_db": 26.292309,
+        "peak_memory_mb": 68.0,
+        "dR_honest": 0.4875868240827836,
+        "dR_all": 0.4765601552319829,
+        "dR_valid": 0.8090017575013817
+      },
+      {
+        "method": "qf_lean_smooth",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "65.9",
+        "depth_mae_cm": 0.256525,
+        "albedo_ncc": 0.95501,
+        "albedo_psnr_db": 26.132892,
+        "peak_memory_mb": 64.0,
+        "dR_honest": 0.5851401229748838,
+        "dR_all": 0.5664848608270991,
+        "dR_valid": 1.268837147771147
+      },
+      {
+        "method": "qf_multi_s",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "181.9",
+        "depth_mae_cm": 0.237746,
+        "albedo_ncc": 0.958746,
+        "albedo_psnr_db": 26.391871,
+        "peak_memory_mb": 180.0,
+        "dR_honest": -0.0974999079766268,
+        "dR_all": -0.10201048465217957,
+        "dR_valid": 0.1830557707309458
+      },
+      {
+        "method": "qf_no_deconv",
+        "valid": false,
+        "failures": [
+          "task failed: depth error 3.395 cm is not below 0.5 x the best constant-depth error (2.724 cm)"
+        ],
+        "raw_memory": "63.5",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_honest": -3.1859252543144407,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "qf_s0p020_paper",
+        "valid": false,
+        "failures": [
+          "task failed: depth error 1.929 cm is not below 0.5 x the best constant-depth error (2.724 cm)"
+        ],
+        "raw_memory": "148.0",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_honest": -3.1859252543144407,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "qf_s0p025",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "147.6",
+        "depth_mae_cm": 0.77121,
+        "albedo_ncc": 0.955323,
+        "albedo_psnr_db": 25.110975,
+        "peak_memory_mb": 148.0,
+        "dR_honest": -0.25781959919964625,
+        "dR_all": -0.23564070786083158,
+        "dR_valid": -1.2198997203406254
+      },
+      {
+        "method": "qf_s0p030",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "147.5",
+        "depth_mae_cm": 0.399413,
+        "albedo_ncc": 0.955749,
+        "albedo_psnr_db": 26.292309,
+        "peak_memory_mb": 148.0,
+        "dR_honest": 0.0,
+        "dR_all": 0.0,
+        "dR_valid": 0.0
+      },
+      {
+        "method": "qf_s0p035",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "147.5",
+        "depth_mae_cm": 0.248861,
+        "albedo_ncc": 0.942068,
+        "albedo_psnr_db": 25.841008,
+        "peak_memory_mb": 148.0,
+        "dR_honest": 0.0544747017024214,
+        "dR_all": 0.04861208968691676,
+        "dR_valid": 0.38404168791041554
+      },
+      {
+        "method": "qf_s0p040",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "147.7",
+        "depth_mae_cm": 0.184335,
+        "albedo_ncc": 0.925303,
+        "albedo_psnr_db": 24.963874,
+        "peak_memory_mb": 148.0,
+        "dR_honest": 0.0404974915970415,
+        "dR_all": 0.034468394540886925,
+        "dR_valid": 0.46579264424377076
+      },
+      {
+        "method": "qf_s0p050",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "147.7",
+        "depth_mae_cm": 0.190157,
+        "albedo_ncc": 0.885071,
+        "albedo_psnr_db": 23.226488,
+        "peak_memory_mb": 148.0,
+        "dR_honest": -0.06831746643588424,
+        "dR_all": -0.06714989135365904,
+        "dR_valid": 0.20247066304170702
+      },
+      {
+        "method": "qf_smooth",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "148.1",
+        "depth_mae_cm": 0.256525,
+        "albedo_ncc": 0.95501,
+        "albedo_psnr_db": 26.132892,
+        "peak_memory_mb": 148.0,
+        "dR_honest": 0.0731739576879611,
+        "dR_all": 0.06609669783351706,
+        "dR_valid": 0.41938530239469624
+      },
+      {
+        "method": "qf_smooth_depth",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "148.2",
+        "depth_mae_cm": 0.256525,
+        "albedo_ncc": 0.955749,
+        "albedo_psnr_db": 26.292309,
+        "peak_memory_mb": 148.0,
+        "dR_honest": 0.08033811422026452,
+        "dR_all": 0.07284752943410802,
+        "dR_valid": 0.43364863195967807
+      },
+      {
+        "method": "qf_traditional",
+        "valid": false,
+        "failures": [
+          "hidden_512_0: peak memory exceeded the 256 MB budget"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_honest": -3.1859252543144407,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "quasi_fresnel",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "148.1",
+        "depth_mae_cm": 0.399413,
+        "albedo_ncc": 0.955749,
+        "albedo_psnr_db": 26.292309,
+        "peak_memory_mb": 148.0,
+        "dR_honest": 0.0,
+        "dR_all": 0.0,
+        "dR_valid": 0.0
+      },
+      {
+        "method": "reference_rerun",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "147.4",
+        "depth_mae_cm": 0.399413,
+        "albedo_ncc": 0.955749,
+        "albedo_psnr_db": 26.292309,
+        "peak_memory_mb": 148.0,
+        "dR_honest": 0.0,
+        "dR_all": 0.0,
+        "dR_valid": 0.0
+      },
+      {
+        "method": "sc_blank",
+        "valid": false,
+        "failures": [
+          "hidden_512_0: albedo map is constant"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "sc_constant_depth",
+        "valid": false,
+        "failures": [
+          "task failed: depth error 6.552 cm is not below 0.5 x the best constant-depth error (2.724 cm)"
+        ],
+        "raw_memory": "147.6",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "sc_copy_train_answer",
+        "valid": false,
+        "failures": [
+          "task failed: depth error 28.669 cm is not below 0.5 x the best constant-depth error (2.724 cm)",
+          "task failed: albedo correlation 0.164 < 0.2"
+        ],
+        "raw_memory": "240.9",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "sc_empty",
+        "valid": false,
+        "failures": [
+          "hidden_512_0: albedo has shape (0, 0), expected (512, 512)"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "sc_forge_memory",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "148.2",
+        "depth_mae_cm": 0.399413,
+        "albedo_ncc": 0.955749,
+        "albedo_psnr_db": 26.292309,
+        "peak_memory_mb": 148.0,
+        "dR_all": 0.0
+      },
+      {
+        "method": "sc_gt_redirect",
+        "valid": false,
+        "failures": [
+          "task failed: depth error 6.552 cm is not below 0.5 x the best constant-depth error (2.724 cm)",
+          "task failed: albedo correlation -0.001 < 0.2"
+        ],
+        "raw_memory": "41.3",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "sc_nan",
+        "valid": false,
+        "failures": [
+          "hidden_512_0: non-finite values in prediction"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "sc_no_output",
+        "valid": false,
+        "failures": [
+          "hidden_512_0: no prediction file written"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "sc_one_pixel",
+        "valid": false,
+        "failures": [
+          "hidden_512_0: albedo has shape (1, 1), expected (512, 512)"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "sc_overwrite_truth",
+        "valid": false,
+        "failures": [
+          "task failed: depth error 6.552 cm is not below 0.5 x the best constant-depth error (2.724 cm)",
+          "task failed: albedo correlation -0.001 < 0.2"
+        ],
+        "raw_memory": "42.1",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "sc_spike",
+        "valid": false,
+        "failures": [
+          "task failed: albedo correlation 0.001 < 0.2"
+        ],
+        "raw_memory": "147.9",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "sc_write_scores",
+        "valid": false,
+        "failures": [
+          "hidden_512_0: albedo map is constant"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      },
+      {
+        "method": "sc_zero",
+        "valid": false,
+        "failures": [
+          "hidden_512_0: albedo map is constant"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.72387,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.409264,
+        "peak_memory_mb": 256.0,
+        "dR_all": -2.956063869258413
+      }
+    ],
+    "paired_vs_reference": {
+      "peak_energy_baseline": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": -0.42455575000000007,
+          "se": 0.15881170932509817,
+          "t": -2.673327752747161,
+          "scenes_improved": 2
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.48570175,
+          "se": 0.016353337468710483,
+          "t": -29.70046639894231,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -8.745308916666668,
+          "se": 0.4709084157518166,
+          "t": -18.571145947146796,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 34.15397141666667,
+          "se": 8.996265731187451,
+          "t": 3.7964609358152606,
+          "scenes_improved": 12
+        },
+        "quality_rank_per_scene": {
+          "mean": -1.011660400734185,
+          "se": 0.08751114679135959,
+          "t": -11.560360454950308
+        }
+      },
+      "qf_lean": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 29.26236975,
+          "se": 7.102709870786614,
+          "t": 4.11988808248467,
+          "scenes_improved": 12
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.0,
+          "se": 0.0,
+          "t": 0.0
+        }
+      },
+      "qf_lean_smooth": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": 0.14288758333333332,
+          "se": 0.0366087371026285,
+          "t": 3.903100588604408,
+          "scenes_improved": 12
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.0007389999999999897,
+          "se": 0.0011068186665421135,
+          "t": -0.6676793790519898,
+          "scenes_improved": 3
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -0.1594171666666666,
+          "se": 0.04894423318041372,
+          "t": -3.2571184858293263,
+          "scenes_improved": 3
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 29.048828166666667,
+          "se": 7.161139286469421,
+          "t": 4.05645345029845,
+          "scenes_improved": 12
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.07317371658852638,
+          "se": 0.022642371903206632,
+          "t": 3.2317160455333505
+        }
+      },
+      "qf_multi_s": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": 0.16166683333333332,
+          "se": 0.03974668809698856,
+          "t": 4.067429038083355,
+          "scenes_improved": 12
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0029972499999999977,
+          "se": 0.001128214989485602,
+          "t": 2.656630188335437,
+          "scenes_improved": 12
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.09956224999999996,
+          "se": 0.02823254198887196,
+          "t": 3.526506753775238,
+          "scenes_improved": 11
+        },
+        "peak_memory_mb": {
+          "mean_improvement": -14.10644525,
+          "se": 2.6646065064867717,
+          "t": -5.294006907083273,
+          "scenes_improved": 0
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.09753495156897297,
+          "se": 0.024100980345147602,
+          "t": 4.046928804230583
+        }
+      },
+      "qf_s0p025": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": -0.3717968333333334,
+          "se": 0.10052475985997962,
+          "t": -3.6985597762303253,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.00042574999999999325,
+          "se": 0.006807258789642616,
+          "t": -0.06254353083326002,
+          "scenes_improved": 9
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -1.1813339166666663,
+          "se": 0.45479119030228327,
+          "t": -2.5975303432801247,
+          "scenes_improved": 3
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.4078776666666665,
+          "se": 0.1303228959959753,
+          "t": 3.129746799666444,
+          "scenes_improved": 9
+        },
+        "quality_rank_per_scene": {
+          "mean": -0.2578192887025788,
+          "se": 0.07608297185166732,
+          "t": -3.3886595440202805
+        }
+      },
+      "qf_s0p030": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.3160805000000006,
+          "se": 0.10602673488062801,
+          "t": 2.9811396187562047,
+          "scenes_improved": 9
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.0,
+          "se": 0.0,
+          "t": 0.0
+        }
+      },
+      "qf_s0p035": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": 0.15055216666666665,
+          "se": 0.04530923204304844,
+          "t": 3.322770214326886,
+          "scenes_improved": 11
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.013681499999999985,
+          "se": 0.0021825361377132407,
+          "t": -6.268624726798256,
+          "scenes_improved": 1
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -0.45130049999999944,
+          "se": 0.25478491635820816,
+          "t": -1.7712999122974193,
+          "scenes_improved": 3
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.2828776666666665,
+          "se": 0.06893184125997147,
+          "t": 4.1037300251390905,
+          "scenes_improved": 11
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.054474389153111515,
+          "se": 0.0358355956500788,
+          "t": 1.5201195393829523
+        }
+      },
+      "qf_s0p040": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": 0.21507766666666664,
+          "se": 0.071521734958188,
+          "t": 3.007165119699658,
+          "scenes_improved": 10
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.03044566666666666,
+          "se": 0.003066368304820557,
+          "t": -9.928900784293859,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -1.3284345,
+          "se": 0.3427350006449566,
+          "t": -3.8759814360954095,
+          "scenes_improved": 2
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.40983074999999997,
+          "se": 0.14462755624021673,
+          "t": 2.833697537689833,
+          "scenes_improved": 10
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.040497609172520765,
+          "se": 0.05389353082401874,
+          "t": 0.7514372978226208
+        }
+      },
+      "qf_s0p050": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": 0.20925566666666665,
+          "se": 0.09292659132162637,
+          "t": 2.251838399435271,
+          "scenes_improved": 8
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.07067799999999999,
+          "se": 0.004792997009526852,
+          "t": -14.74609724552636,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -3.065820749999999,
+          "se": 0.40097491656881185,
+          "t": -7.645916548183555,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.5019530833333334,
+          "se": 0.1153406217955703,
+          "t": 4.351919345666396,
+          "scenes_improved": 10
+        },
+        "quality_rank_per_scene": {
+          "mean": -0.06831764360519701,
+          "se": 0.06846495368112983,
+          "t": -0.9978483871234486
+        }
+      },
+      "qf_smooth": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": 0.14288758333333332,
+          "se": 0.0366087371026285,
+          "t": 3.903100588604408,
+          "scenes_improved": 12
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.0007389999999999897,
+          "se": 0.0011068186665421135,
+          "t": -0.6676793790519898,
+          "scenes_improved": 3
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -0.1594171666666666,
+          "se": 0.04894423318041372,
+          "t": -3.2571184858293263,
+          "scenes_improved": 3
+        },
+        "peak_memory_mb": {
+          "mean_improvement": -0.2701822500000001,
+          "se": 0.10448966332921839,
+          "t": -2.5857318455389184,
+          "scenes_improved": 3
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.07317371658852638,
+          "se": 0.022642371903206632,
+          "t": 3.2317160455333505
+        }
+      },
+      "qf_smooth_depth": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": 0.14288758333333332,
+          "se": 0.0366087371026285,
+          "t": 3.903100588604408,
+          "scenes_improved": 12
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": -0.3658854999999998,
+          "se": 0.11423477414667084,
+          "t": -3.2029257529780204,
+          "scenes_improved": 1
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.08033787995136678,
+          "se": 0.020583092371721935,
+          "t": 3.9031005886044077
+        }
+      },
+      "reference_rerun": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.36523441666666656,
+          "se": 0.11388218842051799,
+          "t": 3.2071250274714846,
+          "scenes_improved": 8
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.0,
+          "se": 0.0,
+          "t": 0.0
+        }
+      },
+      "sc_forge_memory": {
+        "scenes": 12,
+        "depth_mae_cm": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": -0.03092449999999995,
+          "se": 0.08813748673611638,
+          "t": -0.35086659655485636,
+          "scenes_improved": 5
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.0,
+          "se": 0.0,
+          "t": 0.0
+        }
+      }
+    },
+    "populations": {
+      "honest": [
+        "bruteforce_backprojection",
+        "lct_volumetric",
+        "peak_energy_baseline",
+        "qf_lean",
+        "qf_lean_smooth",
+        "qf_multi_s",
+        "qf_no_deconv",
+        "qf_s0p020_paper",
+        "qf_s0p025",
+        "qf_s0p030",
+        "qf_s0p035",
+        "qf_s0p040",
+        "qf_s0p050",
+        "qf_smooth",
+        "qf_smooth_depth",
+        "qf_traditional",
+        "quasi_fresnel",
+        "reference_rerun"
+      ],
+      "all": [
+        "bruteforce_backprojection",
+        "lct_volumetric",
+        "peak_energy_baseline",
+        "qf_lean",
+        "qf_lean_smooth",
+        "qf_multi_s",
+        "qf_no_deconv",
+        "qf_s0p020_paper",
+        "qf_s0p025",
+        "qf_s0p030",
+        "qf_s0p035",
+        "qf_s0p040",
+        "qf_s0p050",
+        "qf_smooth",
+        "qf_smooth_depth",
+        "qf_traditional",
+        "quasi_fresnel",
+        "reference_rerun",
+        "sc_blank",
+        "sc_constant_depth",
+        "sc_copy_train_answer",
+        "sc_empty",
+        "sc_forge_memory",
+        "sc_gt_redirect",
+        "sc_nan",
+        "sc_no_output",
+        "sc_one_pixel",
+        "sc_overwrite_truth",
+        "sc_spike",
+        "sc_write_scores",
+        "sc_zero"
+      ],
+      "valid": [
+        "peak_energy_baseline",
+        "qf_lean",
+        "qf_lean_smooth",
+        "qf_multi_s",
+        "qf_s0p025",
+        "qf_s0p030",
+        "qf_s0p035",
+        "qf_s0p040",
+        "qf_s0p050",
+        "qf_smooth",
+        "qf_smooth_depth",
+        "quasi_fresnel",
+        "reference_rerun"
+      ]
+    }
+  },
+  "train": {
+    "rows": [
+      {
+        "method": "lct_volumetric",
+        "valid": false,
+        "failures": [
+          "train_384_a: peak memory exceeded the 256 MB budget"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_honest": -3.8159105469449175,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "peak_energy_baseline",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "42.4",
+        "depth_mae_cm": 0.980729,
+        "albedo_ncc": 0.422112,
+        "albedo_psnr_db": 17.007213,
+        "peak_memory_mb": 44.0,
+        "dR_honest": -0.9357933050405196,
+        "dR_all": -0.758105838806328,
+        "dR_valid": -2.34190450562427
+      },
+      {
+        "method": "qf_lean",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "51.7",
+        "depth_mae_cm": 0.262259,
+        "albedo_ncc": 0.966156,
+        "albedo_psnr_db": 27.154408,
+        "peak_memory_mb": 52.0,
+        "dR_honest": 0.4012820893938023,
+        "dR_all": 0.32608951494172966,
+        "dR_valid": 0.8947036189483634
+      },
+      {
+        "method": "qf_lean_smooth",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "51.5",
+        "depth_mae_cm": 0.15662,
+        "albedo_ncc": 0.964358,
+        "albedo_psnr_db": 26.932981,
+        "peak_memory_mb": 52.0,
+        "dR_honest": 0.4562779900830304,
+        "dR_all": 0.36863025970011104,
+        "dR_valid": 1.0687739963267062
+      },
+      {
+        "method": "qf_multi_s",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "135.2",
+        "depth_mae_cm": 0.158806,
+        "albedo_ncc": 0.968061,
+        "albedo_psnr_db": 27.249922,
+        "peak_memory_mb": 136.0,
+        "dR_honest": -0.05529202214535431,
+        "dR_all": -0.04646859542627178,
+        "dR_valid": -0.08030838796601067
+      },
+      {
+        "method": "qf_no_deconv",
+        "valid": false,
+        "failures": [
+          "task failed: depth error 2.990 cm is not below 0.5 x the best constant-depth error (2.757 cm)"
+        ],
+        "raw_memory": "51.2",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_honest": -3.8159105469449175,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "qf_s0p020_paper",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "116.8",
+        "depth_mae_cm": 1.251777,
+        "albedo_ncc": 0.912538,
+        "albedo_psnr_db": 20.930206,
+        "peak_memory_mb": 116.0,
+        "dR_honest": -0.9207520826967728,
+        "dR_all": -0.743750660938817,
+        "dR_valid": -2.3261835707966236
+      },
+      {
+        "method": "qf_s0p025",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "116.8",
+        "depth_mae_cm": 0.519431,
+        "albedo_ncc": 0.968861,
+        "albedo_psnr_db": 25.568653,
+        "peak_memory_mb": 116.0,
+        "dR_honest": -0.22186276395791438,
+        "dR_all": -0.17941580925730205,
+        "dR_valid": -0.5593828555586327
+      },
+      {
+        "method": "qf_s0p030",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "116.8",
+        "depth_mae_cm": 0.262259,
+        "albedo_ncc": 0.966156,
+        "albedo_psnr_db": 27.154408,
+        "peak_memory_mb": 116.0,
+        "dR_honest": 0.0,
+        "dR_all": 0.0,
+        "dR_valid": 0.0
+      },
+      {
+        "method": "qf_s0p035",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "116.9",
+        "depth_mae_cm": 0.163852,
+        "albedo_ncc": 0.954592,
+        "albedo_psnr_db": 26.633761,
+        "peak_memory_mb": 116.0,
+        "dR_honest": 0.028861384925701207,
+        "dR_all": 0.021010345533182356,
+        "dR_valid": 0.11704919583670498
+      },
+      {
+        "method": "qf_s0p040",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "117.0",
+        "depth_mae_cm": 0.147237,
+        "albedo_ncc": 0.938946,
+        "albedo_psnr_db": 25.585319,
+        "peak_memory_mb": 116.0,
+        "dR_honest": -0.01858670136786577,
+        "dR_all": -0.019655329298704657,
+        "dR_valid": 0.04190612303803688
+      },
+      {
+        "method": "qf_s0p050",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "116.6",
+        "depth_mae_cm": 0.194648,
+        "albedo_ncc": 0.897958,
+        "albedo_psnr_db": 23.571578,
+        "peak_memory_mb": 116.0,
+        "dR_honest": -0.1696919490073384,
+        "dR_all": -0.14496448541396129,
+        "dR_valid": -0.2753094994791316
+      },
+      {
+        "method": "qf_smooth",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "117.0",
+        "depth_mae_cm": 0.15662,
+        "albedo_ncc": 0.964358,
+        "albedo_psnr_db": 26.932981,
+        "peak_memory_mb": 116.0,
+        "dR_honest": 0.05499590068922813,
+        "dR_all": 0.04254074475838136,
+        "dR_valid": 0.17407037737834297
+      },
+      {
+        "method": "qf_smooth_depth",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "117.3",
+        "depth_mae_cm": 0.15662,
+        "albedo_ncc": 0.966156,
+        "albedo_psnr_db": 27.154408,
+        "peak_memory_mb": 116.0,
+        "dR_honest": 0.06573922561870799,
+        "dR_all": 0.051690814743270745,
+        "dR_valid": 0.1924200069086369
+      },
+      {
+        "method": "qf_traditional",
+        "valid": false,
+        "failures": [
+          "train_384_a: peak memory exceeded the 256 MB budget"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_honest": -3.8159105469449175,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "quasi_fresnel",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "117.5",
+        "depth_mae_cm": 0.262259,
+        "albedo_ncc": 0.966156,
+        "albedo_psnr_db": 27.154408,
+        "peak_memory_mb": 116.0,
+        "dR_honest": 0.0,
+        "dR_all": 0.0,
+        "dR_valid": 0.0
+      },
+      {
+        "method": "reference_rerun",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "117.7",
+        "depth_mae_cm": 0.262259,
+        "albedo_ncc": 0.966156,
+        "albedo_psnr_db": 27.154408,
+        "peak_memory_mb": 116.0,
+        "dR_honest": 0.0,
+        "dR_all": 0.0,
+        "dR_valid": 0.0
+      },
+      {
+        "method": "sc_blank",
+        "valid": false,
+        "failures": [
+          "train_384_a: albedo map is constant"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "sc_constant_depth",
+        "valid": false,
+        "failures": [
+          "task failed: depth error 12.831 cm is not below 0.5 x the best constant-depth error (2.757 cm)"
+        ],
+        "raw_memory": "116.9",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "sc_copy_train_answer",
+        "valid": false,
+        "failures": [
+          "task failed: depth error 31.873 cm is not below 0.5 x the best constant-depth error (2.757 cm)",
+          "task failed: albedo correlation 0.195 < 0.2"
+        ],
+        "raw_memory": "180.0",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "sc_empty",
+        "valid": false,
+        "failures": [
+          "train_384_a: albedo has shape (0, 0), expected (384, 384)"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "sc_forge_memory",
+        "valid": true,
+        "failures": [],
+        "raw_memory": "116.9",
+        "depth_mae_cm": 0.262259,
+        "albedo_ncc": 0.966156,
+        "albedo_psnr_db": 27.154408,
+        "peak_memory_mb": 116.0,
+        "dR_all": 0.0
+      },
+      {
+        "method": "sc_gt_redirect",
+        "valid": false,
+        "failures": [
+          "task failed: depth error 12.831 cm is not below 0.5 x the best constant-depth error (2.757 cm)",
+          "task failed: albedo correlation -0.001 < 0.2"
+        ],
+        "raw_memory": "36.8",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "sc_nan",
+        "valid": false,
+        "failures": [
+          "train_384_a: non-finite values in prediction"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "sc_no_output",
+        "valid": false,
+        "failures": [
+          "train_384_a: no prediction file written"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "sc_one_pixel",
+        "valid": false,
+        "failures": [
+          "train_384_a: albedo has shape (1, 1), expected (384, 384)"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "sc_overwrite_truth",
+        "valid": false,
+        "failures": [
+          "task failed: depth error 12.831 cm is not below 0.5 x the best constant-depth error (2.757 cm)",
+          "task failed: albedo correlation -0.001 < 0.2"
+        ],
+        "raw_memory": "37.2",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "sc_spike",
+        "valid": false,
+        "failures": [
+          "task failed: albedo correlation 0.008 < 0.2"
+        ],
+        "raw_memory": "117.1",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "sc_write_scores",
+        "valid": false,
+        "failures": [
+          "train_384_a: albedo map is constant"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      },
+      {
+        "method": "sc_zero",
+        "valid": false,
+        "failures": [
+          "train_384_a: albedo map is constant"
+        ],
+        "raw_memory": "\u2014",
+        "depth_mae_cm": 2.757055,
+        "albedo_ncc": 0.0,
+        "albedo_psnr_db": 16.121229,
+        "peak_memory_mb": 256.0,
+        "dR_all": -3.0623144309407797
+      }
+    ],
+    "paired_vs_reference": {
+      "peak_energy_baseline": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": -0.7184693333333333,
+          "se": 0.1538661742297868,
+          "t": -4.669443020402632,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.5440435,
+          "se": 0.016721953336357964,
+          "t": -32.53468593391569,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -10.147195,
+          "se": 0.6164698831901418,
+          "t": -16.46016338623023,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 30.128255166666666,
+          "se": 8.992582683074446,
+          "t": 3.3503450819944214,
+          "scenes_improved": 6
+        },
+        "quality_rank_per_scene": {
+          "mean": -1.3872347557360298,
+          "se": 0.09749047625261438,
+          "t": -14.229438700673377
+        }
+      },
+      "qf_lean": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 26.509765833333333,
+          "se": 7.857800440582192,
+          "t": 3.3736878448098127,
+          "scenes_improved": 6
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.0,
+          "se": 0.0,
+          "t": 0.0
+        }
+      },
+      "qf_lean_smooth": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": 0.10563883333333333,
+          "se": 0.029504253092751075,
+          "t": 3.5804611966024598,
+          "scenes_improved": 6
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.0017981666666666563,
+          "se": 0.000505910362064695,
+          "t": -3.5543187123664994,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -0.22142733333333217,
+          "se": 0.04095686681430177,
+          "t": -5.406354307747284,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 26.544922,
+          "se": 7.889919322463968,
+          "t": 3.3644098139789596,
+          "scenes_improved": 6
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.05499562175663688,
+          "se": 0.018126414303804333,
+          "t": 3.034004455315496
+        }
+      },
+      "qf_multi_s": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": 0.10345300000000002,
+          "se": 0.024868914733055806,
+          "t": 4.159932233089774,
+          "scenes_improved": 6
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.00190516666666668,
+          "se": 0.0004314619656212907,
+          "t": 4.415607442763359,
+          "scenes_improved": 6
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.09551333333333407,
+          "se": 0.017156196304672418,
+          "t": 5.567279112289093,
+          "scenes_improved": 6
+        },
+        "peak_memory_mb": {
+          "mean_improvement": -11.226562333333334,
+          "se": 1.2952573421609743,
+          "t": -8.667437711337906,
+          "scenes_improved": 0
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.0701087653639709,
+          "se": 0.015974430300082974,
+          "t": 4.388811622509427
+        }
+      },
+      "qf_s0p020_paper": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": -0.9895173333333332,
+          "se": 0.24360493086069593,
+          "t": -4.061975797604783,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.053618,
+          "se": 0.012883300821864976,
+          "t": -4.161821627963687,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -6.224202833333332,
+          "se": 0.5546143100647761,
+          "t": -11.222578863149739,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.4661458333333333,
+          "se": 0.12392380173784674,
+          "t": 3.7615520730992134,
+          "scenes_improved": 5
+        },
+        "quality_rank_per_scene": {
+          "mean": -0.9207517016979959,
+          "se": 0.16533100821596325,
+          "t": -5.5691410318823324
+        }
+      },
+      "qf_s0p025": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": -0.257172,
+          "se": 0.06613468251429554,
+          "t": -3.8886101848967103,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0027055000000000087,
+          "se": 0.0016951333035093946,
+          "t": 1.5960396709797842,
+          "scenes_improved": 4
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -1.5857549999999996,
+          "se": 0.3877569344275695,
+          "t": -4.089559358470244,
+          "scenes_improved": 1
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.4739586666666658,
+          "se": 0.15779067650269415,
+          "t": 3.00371781889517,
+          "scenes_improved": 5
+        },
+        "quality_rank_per_scene": {
+          "mean": -0.22186227895254287,
+          "se": 0.04850085107410835,
+          "t": -4.574399707203935
+        }
+      },
+      "qf_s0p030": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.5553388333333326,
+          "se": 0.13183004818639715,
+          "t": 4.2125360718076035,
+          "scenes_improved": 5
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.0,
+          "se": 0.0,
+          "t": 0.0
+        }
+      },
+      "qf_s0p035": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": 0.09840733333333335,
+          "se": 0.028667451848936824,
+          "t": 3.4327199310176195,
+          "scenes_improved": 5
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.011563166666666643,
+          "se": 0.0016310051995965817,
+          "t": -7.089595219884472,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -0.5206473333333334,
+          "se": 0.1766997423132755,
+          "t": -2.946508730104792,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.44856799999999925,
+          "se": 0.1268396006095887,
+          "t": 3.536498048276642,
+          "scenes_improved": 5
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.028862387154212372,
+          "se": 0.020381097983103585,
+          "t": 1.4161350471961804
+        }
+      },
+      "qf_s0p040": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": 0.11502266666666668,
+          "se": 0.03714198303238235,
+          "t": 3.0968369827314772,
+          "scenes_improved": 5
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.027209166666666656,
+          "se": 0.004157406254037613,
+          "t": -6.544745690956112,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -1.5690894999999994,
+          "se": 0.2527082319295981,
+          "t": -6.209095319210382,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.6067711666666659,
+          "se": 0.09981288907531513,
+          "t": 6.079086301257332,
+          "scenes_improved": 6
+        },
+        "quality_rank_per_scene": {
+          "mean": -0.018585498479455398,
+          "se": 0.027174212348975695,
+          "t": -0.6839388108393861
+        }
+      },
+      "qf_s0p050": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": 0.067612,
+          "se": 0.041949726576780776,
+          "t": 1.611738752963013,
+          "scenes_improved": 4
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.0681978333333333,
+          "se": 0.011901108098034862,
+          "t": -5.730376765890757,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -3.5828301666666658,
+          "se": 0.3498701761782905,
+          "t": -10.240456062310637,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.5996094999999997,
+          "se": 0.17101682674320887,
+          "t": 3.506143292556505,
+          "scenes_improved": 5
+        },
+        "quality_rank_per_scene": {
+          "mean": -0.16969117181183632,
+          "se": 0.027602255806732496,
+          "t": -6.147728395823604
+        }
+      },
+      "qf_smooth": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": 0.10563883333333333,
+          "se": 0.029504253092751075,
+          "t": 3.5804611966024598,
+          "scenes_improved": 6
+        },
+        "albedo_ncc": {
+          "mean_improvement": -0.0017981666666666563,
+          "se": 0.000505910362064695,
+          "t": -3.5543187123664994,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": -0.22142733333333217,
+          "se": 0.04095686681430177,
+          "t": -5.406354307747284,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.2584638333333326,
+          "se": 0.0964319510077502,
+          "t": 2.680271742221206,
+          "scenes_improved": 5
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.05499562175663688,
+          "se": 0.018126414303804333,
+          "t": 3.034004455315496
+        }
+      },
+      "qf_smooth_depth": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": 0.10563883333333333,
+          "se": 0.029504253092751075,
+          "t": 3.5804611966024598,
+          "scenes_improved": 6
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.005859499999999684,
+          "se": 0.0732859838781151,
+          "t": 0.07995389691083164,
+          "scenes_improved": 2
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.06573912190192154,
+          "se": 0.018360517903196975,
+          "t": 3.58046119660246
+        }
+      },
+      "reference_rerun": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": -0.1796871666666675,
+          "se": 0.13151567778264198,
+          "t": -1.366279440567073,
+          "scenes_improved": 1
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.0,
+          "se": 0.0,
+          "t": 0.0
+        }
+      },
+      "sc_forge_memory": {
+        "scenes": 6,
+        "depth_mae_cm": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_ncc": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "albedo_psnr_db": {
+          "mean_improvement": 0.0,
+          "se": 0.0,
+          "t": 0.0,
+          "scenes_improved": 0
+        },
+        "peak_memory_mb": {
+          "mean_improvement": 0.5670574999999994,
+          "se": 0.12936485784110752,
+          "t": 4.383396769905535,
+          "scenes_improved": 6
+        },
+        "quality_rank_per_scene": {
+          "mean": 0.0,
+          "se": 0.0,
+          "t": 0.0
+        }
+      }
+    },
+    "populations": {
+      "honest": [
+        "lct_volumetric",
+        "peak_energy_baseline",
+        "qf_lean",
+        "qf_lean_smooth",
+        "qf_multi_s",
+        "qf_no_deconv",
+        "qf_s0p020_paper",
+        "qf_s0p025",
+        "qf_s0p030",
+        "qf_s0p035",
+        "qf_s0p040",
+        "qf_s0p050",
+        "qf_smooth",
+        "qf_smooth_depth",
+        "qf_traditional",
+        "quasi_fresnel",
+        "reference_rerun"
+      ],
+      "all": [
+        "lct_volumetric",
+        "peak_energy_baseline",
+        "qf_lean",
+        "qf_lean_smooth",
+        "qf_multi_s",
+        "qf_no_deconv",
+        "qf_s0p020_paper",
+        "qf_s0p025",
+        "qf_s0p030",
+        "qf_s0p035",
+        "qf_s0p040",
+        "qf_s0p050",
+        "qf_smooth",
+        "qf_smooth_depth",
+        "qf_traditional",
+        "quasi_fresnel",
+        "reference_rerun",
+        "sc_blank",
+        "sc_constant_depth",
+        "sc_copy_train_answer",
+        "sc_empty",
+        "sc_forge_memory",
+        "sc_gt_redirect",
+        "sc_nan",
+        "sc_no_output",
+        "sc_one_pixel",
+        "sc_overwrite_truth",
+        "sc_spike",
+        "sc_write_scores",
+        "sc_zero"
+      ],
+      "valid": [
+        "peak_energy_baseline",
+        "qf_lean",
+        "qf_lean_smooth",
+        "qf_multi_s",
+        "qf_s0p020_paper",
+        "qf_s0p025",
+        "qf_s0p030",
+        "qf_s0p035",
+        "qf_s0p040",
+        "qf_s0p050",
+        "qf_smooth",
+        "qf_smooth_depth",
+        "quasi_fresnel",
+        "reference_rerun"
+      ]
+    }
+  },
+  "uncapped": {
+    "_scene_stats": {
+      "train_256_a": {
+        "oracle_constant_depth_mae_cm": 4.597488105731136,
+        "zero_image_psnr_db": 16.570402294697345,
+        "object_pixels": 2812
+      },
+      "train_256_b": {
+        "oracle_constant_depth_mae_cm": 3.2005739166959963,
+        "zero_image_psnr_db": 15.912873560788395,
+        "object_pixels": 1871
+      }
+    },
+    "quasi_fresnel": {
+      "train_256_a": {
+        "exit_code": 0,
+        "peak_rss_mb": 60.46484375,
+        "killed": null,
+        "wall_time_s": 1.0488398470915854,
+        "depth_mae_cm": 0.34510876622725645,
+        "albedo_ncc": 0.9658120914994957,
+        "albedo_psnr_db": 26.970013955165445
+      },
+      "train_256_b": {
+        "exit_code": 0,
+        "peak_rss_mb": 60.4296875,
+        "killed": null,
+        "wall_time_s": 1.0783409629948437,
+        "depth_mae_cm": 0.30137941180984984,
+        "albedo_ncc": 0.9704320494220015,
+        "albedo_psnr_db": 27.093158949342676
+      }
+    },
+    "qf_s0p020_paper": {
+      "train_256_a": {
+        "exit_code": 0,
+        "peak_rss_mb": 60.5,
+        "killed": null,
+        "wall_time_s": 1.0708694839850068,
+        "depth_mae_cm": 1.7444837989830937,
+        "albedo_ncc": 0.8765281645456756,
+        "albedo_psnr_db": 19.997894139716223
+      },
+      "train_256_b": {
+        "exit_code": 0,
+        "peak_rss_mb": 60.55859375,
+        "killed": null,
+        "wall_time_s": 0.9724019269924611,
+        "depth_mae_cm": 1.3851858158573183,
+        "albedo_ncc": 0.9148094078133466,
+        "albedo_psnr_db": 20.13968890325193
+      }
+    },
+    "qf_lean": {
+      "train_256_a": {
+        "exit_code": 0,
+        "peak_rss_mb": 41.91796875,
+        "killed": null,
+        "wall_time_s": 0.8519706178922206,
+        "depth_mae_cm": 0.34510876622725645,
+        "albedo_ncc": 0.9658120914994957,
+        "albedo_psnr_db": 26.970013955165445
+      },
+      "train_256_b": {
+        "exit_code": 0,
+        "peak_rss_mb": 41.98828125,
+        "killed": null,
+        "wall_time_s": 0.8461497379466891,
+        "depth_mae_cm": 0.30137941180984984,
+        "albedo_ncc": 0.9704320494220015,
+        "albedo_psnr_db": 27.093158949342676
+      }
+    },
+    "qf_traditional": {
+      "train_256_a": {
+        "exit_code": 0,
+        "peak_rss_mb": 803.90625,
+        "killed": null,
+        "wall_time_s": 1.3312538829632103,
+        "depth_mae_cm": 0.3451087662260901,
+        "albedo_ncc": 0.9658120914994954,
+        "albedo_psnr_db": 26.970013955165445
+      },
+      "train_256_b": {
+        "exit_code": 0,
+        "peak_rss_mb": 803.71875,
+        "killed": null,
+        "wall_time_s": 1.378349345177412,
+        "depth_mae_cm": 0.30137941180132755,
+        "albedo_ncc": 0.9704320494220013,
+        "albedo_psnr_db": 27.093158949342676
+      }
+    },
+    "lct_volumetric": {
+      "train_256_a": {
+        "exit_code": 0,
+        "peak_rss_mb": 3272.7734375,
+        "killed": null,
+        "wall_time_s": 12.914333296008408,
+        "depth_mae_cm": 0.06861846234859949,
+        "albedo_ncc": 0.9542316454205947,
+        "albedo_psnr_db": 26.518750938762878
+      },
+      "train_256_b": {
+        "exit_code": 0,
+        "peak_rss_mb": 3272.76953125,
+        "killed": null,
+        "wall_time_s": 12.980471062008291,
+        "depth_mae_cm": 0.0795156035015985,
+        "albedo_ncc": 0.9691578508953907,
+        "albedo_psnr_db": 27.38470109938794
+      }
+    },
+    "peak_energy_baseline": {
+      "train_256_a": {
+        "exit_code": 0,
+        "peak_rss_mb": 39.45703125,
+        "killed": null,
+        "wall_time_s": 0.8588523860089481,
+        "depth_mae_cm": 1.6292806935445017,
+        "albedo_ncc": 0.416678871727168,
+        "albedo_psnr_db": 17.464221564384314
+      },
+      "train_256_b": {
+        "exit_code": 0,
+        "peak_rss_mb": 39.52734375,
+        "killed": null,
+        "wall_time_s": 0.6546344910748303,
+        "depth_mae_cm": 0.4436632988919943,
+        "albedo_ncc": 0.44321573224579247,
+        "albedo_psnr_db": 16.87776791259638
+      }
+    }
+  }
+}

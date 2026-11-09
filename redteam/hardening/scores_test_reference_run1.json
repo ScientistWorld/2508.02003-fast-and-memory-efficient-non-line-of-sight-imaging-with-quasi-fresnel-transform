@@ -1,0 +1,131 @@
+{
+  "experiments": {
+    "surface_reconstruction": {
+      "results": {
+        "quasi_fresnel": {
+          "depth_mae_cm": 0.399413,
+          "albedo_ncc": 0.955749,
+          "albedo_psnr_db": 26.292309
+        }
+      }
+    },
+    "working_memory": {
+      "results": {
+        "quasi_fresnel": {
+          "peak_memory_mb": 148.0
+        }
+      }
+    }
+  },
+  "_status": {
+    "quasi_fresnel": {
+      "valid": true,
+      "failures": [],
+      "scenes_completed": 12,
+      "peak_memory_raw_mb": 147.941
+    }
+  },
+  "_details": {
+    "quasi_fresnel": {
+      "hidden_512_0": {
+        "depth_mae_cm": 0.120859,
+        "albedo_ncc": 0.963248,
+        "albedo_psnr_db": 27.640178,
+        "peak_rss_mb": 147.898438
+      },
+      "hidden_512_1": {
+        "depth_mae_cm": 0.272238,
+        "albedo_ncc": 0.916503,
+        "albedo_psnr_db": 24.740622,
+        "peak_rss_mb": 147.941406
+      },
+      "hidden_256_0": {
+        "depth_mae_cm": 0.146314,
+        "albedo_ncc": 0.930725,
+        "albedo_psnr_db": 27.576441,
+        "peak_rss_mb": 60.867188
+      },
+      "hidden_256_1": {
+        "depth_mae_cm": 0.450083,
+        "albedo_ncc": 0.955796,
+        "albedo_psnr_db": 26.857704,
+        "peak_rss_mb": 60.363281
+      },
+      "hidden_256_2": {
+        "depth_mae_cm": 0.131432,
+        "albedo_ncc": 0.970646,
+        "albedo_psnr_db": 28.156574,
+        "peak_rss_mb": 60.683594
+      },
+      "hidden_256_3": {
+        "depth_mae_cm": 0.541228,
+        "albedo_ncc": 0.957952,
+        "albedo_psnr_db": 26.221705,
+        "peak_rss_mb": 61.015625
+      },
+      "hidden_256_4": {
+        "depth_mae_cm": 0.174581,
+        "albedo_ncc": 0.960086,
+        "albedo_psnr_db": 27.992761,
+        "peak_rss_mb": 60.46875
+      },
+      "hidden_256_5": {
+        "depth_mae_cm": 0.631219,
+        "albedo_ncc": 0.962425,
+        "albedo_psnr_db": 24.462386,
+        "peak_rss_mb": 60.917969
+      },
+      "hidden_256_6": {
+        "depth_mae_cm": 0.311499,
+        "albedo_ncc": 0.968257,
+        "albedo_psnr_db": 26.330562,
+        "peak_rss_mb": 60.726562
+      },
+      "hidden_256_7": {
+        "depth_mae_cm": 0.084221,
+        "albedo_ncc": 0.971976,
+        "albedo_psnr_db": 28.425755,
+        "peak_rss_mb": 60.851562
+      },
+      "hidden_256_8": {
+        "depth_mae_cm": 1.248962,
+        "albedo_ncc": 0.942546,
+        "albedo_psnr_db": 21.476088,
+        "peak_rss_mb": 60.734375
+      },
+      "hidden_256_9": {
+        "depth_mae_cm": 0.680317,
+        "albedo_ncc": 0.96883,
+        "albedo_psnr_db": 25.62693,
+        "peak_rss_mb": 60.144531
+      }
+    }
+  },
+  "_protocol": {
+    "scenes": [
+      "hidden_512_0",
+      "hidden_512_1",
+      "hidden_256_0",
+      "hidden_256_1",
+      "hidden_256_2",
+      "hidden_256_3",
+      "hidden_256_4",
+      "hidden_256_5",
+      "hidden_256_6",
+      "hidden_256_7",
+      "hidden_256_8",
+      "hidden_256_9"
+    ],
+    "memory_budget_mb": 256.0,
+    "memory_resolution_mb": 4.0,
+    "timeout_s_per_scene": 300.0,
+    "depth_gate": "mean depth_mae_cm <= 0.5 x mean oracle-constant depth MAE (1.3619 cm)",
+    "albedo_gate": "mean albedo_ncc >= 0.2",
+    "failed_run_values": {
+      "depth_mae_cm": 2.723869950649974,
+      "albedo_ncc": 0.0,
+      "albedo_psnr_db": 16.40926359984256,
+      "peak_memory_mb": 256.0
+    }
+  }
+}

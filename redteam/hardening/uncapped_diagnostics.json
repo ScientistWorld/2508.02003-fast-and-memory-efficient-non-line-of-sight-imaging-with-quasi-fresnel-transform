@@ -1,0 +1,134 @@
+{
+  "_scene_stats": {
+    "train_256_a": {
+      "oracle_constant_depth_mae_cm": 4.597488105731136,
+      "zero_image_psnr_db": 16.570402294697345,
+      "object_pixels": 2812
+    },
+    "train_256_b": {
+      "oracle_constant_depth_mae_cm": 3.2005739166959963,
+      "zero_image_psnr_db": 15.912873560788395,
+      "object_pixels": 1871
+    }
+  },
+  "quasi_fresnel": {
+    "train_256_a": {
+      "exit_code": 0,
+      "peak_rss_mb": 60.46484375,
+      "killed": null,
+      "wall_time_s": 1.0488398470915854,
+      "depth_mae_cm": 0.34510876622725645,
+      "albedo_ncc": 0.9658120914994957,
+      "albedo_psnr_db": 26.970013955165445
+    },
+    "train_256_b": {
+      "exit_code": 0,
+      "peak_rss_mb": 60.4296875,
+      "killed": null,
+      "wall_time_s": 1.0783409629948437,
+      "depth_mae_cm": 0.30137941180984984,
+      "albedo_ncc": 0.9704320494220015,
+      "albedo_psnr_db": 27.093158949342676
+    }
+  },
+  "qf_s0p020_paper": {
+    "train_256_a": {
+      "exit_code": 0,
+      "peak_rss_mb": 60.5,
+      "killed": null,
+      "wall_time_s": 1.0708694839850068,
+      "depth_mae_cm": 1.7444837989830937,
+      "albedo_ncc": 0.8765281645456756,
+      "albedo_psnr_db": 19.997894139716223
+    },
+    "train_256_b": {
+      "exit_code": 0,
+      "peak_rss_mb": 60.55859375,
+      "killed": null,
+      "wall_time_s": 0.9724019269924611,
+      "depth_mae_cm": 1.3851858158573183,
+      "albedo_ncc": 0.9148094078133466,
+      "albedo_psnr_db": 20.13968890325193
+    }
+  },
+  "qf_lean": {
+    "train_256_a": {
+      "exit_code": 0,
+      "peak_rss_mb": 41.91796875,
+      "killed": null,
+      "wall_time_s": 0.8519706178922206,
+      "depth_mae_cm": 0.34510876622725645,
+      "albedo_ncc": 0.9658120914994957,
+      "albedo_psnr_db": 26.970013955165445
+    },
+    "train_256_b": {
+      "exit_code": 0,
+      "peak_rss_mb": 41.98828125,
+      "killed": null,
+      "wall_time_s": 0.8461497379466891,
+      "depth_mae_cm": 0.30137941180984984,
+      "albedo_ncc": 0.9704320494220015,
+      "albedo_psnr_db": 27.093158949342676
+    }
+  },
+  "qf_traditional": {
+    "train_256_a": {
+      "exit_code": 0,
+      "peak_rss_mb": 803.90625,
+      "killed": null,
+      "wall_time_s": 1.3312538829632103,
+      "depth_mae_cm": 0.3451087662260901,
+      "albedo_ncc": 0.9658120914994954,
+      "albedo_psnr_db": 26.970013955165445
+    },
+    "train_256_b": {
+      "exit_code": 0,
+      "peak_rss_mb": 803.71875,
+      "killed": null,
+      "wall_time_s": 1.378349345177412,
+      "depth_mae_cm": 0.30137941180132755,
+      "albedo_ncc": 0.9704320494220013,
+      "albedo_psnr_db": 27.093158949342676
+    }
+  },
+  "lct_volumetric": {
+    "train_256_a": {
+      "exit_code": 0,
+      "peak_rss_mb": 3272.7734375,
+      "killed": null,
+      "wall_time_s": 12.914333296008408,
+      "depth_mae_cm": 0.06861846234859949,
+      "albedo_ncc": 0.9542316454205947,
+      "albedo_psnr_db": 26.518750938762878
+    },
+    "train_256_b": {
+      "exit_code": 0,
+      "peak_rss_mb": 3272.76953125,
+      "killed": null,
+      "wall_time_s": 12.980471062008291,
+      "depth_mae_cm": 0.0795156035015985,
+      "albedo_ncc": 0.9691578508953907,
+      "albedo_psnr_db": 27.38470109938794
+    }
+  },
+  "peak_energy_baseline": {
+    "train_256_a": {
+      "exit_code": 0,
+      "peak_rss_mb": 39.45703125,
+      "killed": null,
+      "wall_time_s": 0.8588523860089481,
+      "depth_mae_cm": 1.6292806935445017,
+      "albedo_ncc": 0.416678871727168,
+      "albedo_psnr_db": 17.464221564384314
+    },
+    "train_256_b": {
+      "exit_code": 0,
+      "peak_rss_mb": 39.52734375,
+      "killed": null,
+      "wall_time_s": 0.6546344910748303,
+      "depth_mae_cm": 0.4436632988919943,
+      "albedo_ncc": 0.44321573224579247,
+      "albedo_psnr_db": 16.87776791259638
+    }
+  }
+}
