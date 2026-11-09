@@ -1,2 +1,8 @@
-action: done
-notes: "Audit committed e51d5bc: 22 runs; honest sensitivity checks pass, reference depth baseline fails, 11 winning shortcuts plus one tie; original gym sources and artifacts restored."
+# Once you set action to 'submit' or 'done', STOP immediately.
+# Do NOT sleep, poll, or wait for jobs. The system reads this file
+# only after your turn ends.
+action: pending
+gpus: 0
+test: false
+milestone: core_claim
+notes: ""
