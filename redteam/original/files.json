@@ -1,0 +1,14 @@
+[
+  "scripts/run.sh",
+  "action.yaml",
+  "method/quasi_fresnel.py",
+  "scoring/raw_results.json",
+  "scoring/diagnostics.json",
+  "scoring/scores.json",
+  "scoring/scores_train.json",
+  "scoring/scores_test.json",
+  "scoring/reference.json",
+  "outputs/quasi_fresnel_scaled_reproduction/efficiency_metrics.json",
+  "outputs/quasi_fresnel_scaled_reproduction/quality_bunny_prediction.npz",
+  "outputs/quasi_fresnel_scaled_reproduction/heldout_shapes_prediction.npz"
+]

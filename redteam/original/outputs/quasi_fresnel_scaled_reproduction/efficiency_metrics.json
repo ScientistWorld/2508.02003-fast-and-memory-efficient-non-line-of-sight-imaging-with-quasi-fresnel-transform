@@ -1,0 +1,77 @@
+{
+  "public_scene": {
+    "scene_name": "bunny",
+    "source_path": "/home/user/data/zaragoza/bunny_conf64.hdf5"
+  },
+  "traditional": {
+    "runtime_mean_s": 0.09120203199563548,
+    "algorithm_peak_mb": 64.41592407226562
+  },
+  "loading": {
+    "runtime_mean_s": 0.13677912704103315,
+    "algorithm_peak_mb": 1.7017936706542969,
+    "consistency_vs_traditional": {
+      "psnr": 100.0,
+      "albedo_mae": 3.308345435847288e-14,
+      "depth_mae": 5.600826284780589e-12,
+      "ssim": 1.0000000000000022
+    }
+  },
+  "fdh": {
+    "runtime_mean_s": 0.13688042998546734,
+    "algorithm_peak_mb": 1.7017440795898438,
+    "consistency_vs_traditional": {
+      "psnr": 100.0,
+      "albedo_mae": 3.308345435847288e-14,
+      "depth_mae": 5.600826284780589e-12,
+      "ssim": 1.0000000000000022
+    }
+  },
+  "complexity_scaling": {
+    "traditional": {
+      "sizes": [
+        32,
+        64,
+        96,
+        128
+      ],
+      "runtime_s": [
+        0.000655,
+        0.002633,
+        0.011388,
+        0.041495
+      ],
+      "memory_mb": [
+        0.7528,
+        4.254,
+        13.7542,
+        32.2564
+      ],
+      "runtime_order": 2.9352558524549686,
+      "memory_order": 2.703953655075761
+    },
+    "loading": {
+      "sizes": [
+        32,
+        64,
+        96,
+        128
+      ],
+      "runtime_s": [
+        0.003752,
+        0.0111,
+        0.024819,
+        0.056418
+      ],
+      "memory_mb": [
+        0.081,
+        0.3159,
+        0.6913,
+        1.1293
+      ],
+      "runtime_order": 1.9079307163658747,
+      "memory_order": 1.9124274310539349
+    }
+  },
+  "additional_public_scenes": []
+}

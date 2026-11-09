@@ -1,0 +1,96 @@
+{
+  "experiments": {
+    "zaragoza_bunny_depth_error": {
+      "description": "Depth MAE for the Zaragoza Stanford bunny Fig. 5 target. The paper reports that Quasi-Fresnel achieves the lowest bunny depth error among the compared direct methods. This gym scores the same target on a tracked synthetic Zaragoza-style bunny proxy because the public HDF5 measurements packaged here do not include 2D albedo/depth ground truth.",
+      "weight": 0.6,
+      "primary_metric": "depth_mae_cm",
+      "metrics": {
+        "depth_mae_cm": {
+          "higher_is_better": false,
+          "coefficient": -1.0,
+          "description": "Centimeter-scale depth mean absolute error on the synthetic Zaragoza-style bunny proxy, the headline reconstruction-quality target."
+        },
+        "albedo_psnr_db": {
+          "higher_is_better": true,
+          "coefficient": 0.3,
+          "description": "Albedo PSNR on the same synthetic bunny proxy, included to catch methods that preserve depth while degrading reconstructed appearance."
+        },
+        "albedo_ssim": {
+          "higher_is_better": true,
+          "coefficient": 0.2,
+          "description": "Albedo SSIM on the same synthetic bunny proxy, a structural image-quality check complementary to depth MAE."
+        },
+        "albedo_mae": {
+          "higher_is_better": false,
+          "coefficient": -0.15,
+          "description": "Albedo MAE on the same synthetic bunny proxy, measuring absolute intensity error that neither PSNR nor SSIM alone captures."
+        }
+      },
+      "results": {
+        "fbp": {
+          "type": "baseline",
+          "depth_mae_cm": 4.69
+        },
+        "lct": {
+          "type": "baseline",
+          "depth_mae_cm": 0.16
+        },
+        "fk": {
+          "type": "baseline",
+          "depth_mae_cm": 0.31
+        },
+        "phasor": {
+          "type": "baseline",
+          "depth_mae_cm": 0.31
+        },
+        "quasi_fresnel_proposed": {
+          "type": "proposed",
+          "depth_mae_cm": 0.15
+        },
+        "quasi_fresnel_scaled_reproduction": {
+          "type": "baseline"
+        }
+      }
+    },
+    "zaragoza_efficiency_public_bunny": {
+      "description": "Public Zaragoza efficiency claim from the Results section. The current gym scores machine-independent memory and scaling proxies for the FDH-style aggregated Quasi-Fresnel path on the available public bunny HDF5 measurements, preferring the 64x64 public copy for repeatable CPU jobs.",
+      "weight": 0.4,
+      "primary_metric": "memory_mb",
+      "metrics": {
+        "memory_mb": {
+          "higher_is_better": false,
+          "coefficient": -1.0,
+          "description": "Algorithm peak working memory in megabytes for the low-memory public bunny reconstruction path."
+        },
+        "traditional_memory_order": {
+          "higher_is_better": false,
+          "coefficient": -0.2,
+          "description": "Empirical log-log memory scaling slope for the direct reconstruction path, checking that methods do not hide volumetric memory growth outside the primary low-memory path."
+        },
+        "loading_memory_order": {
+          "higher_is_better": false,
+          "coefficient": -0.2,
+          "description": "Empirical log-log memory scaling slope for the sequential-loading variant, checking the paper's low-memory complexity claim."
+        },
+        "loading_depth_consistency_cm": {
+          "higher_is_better": false,
+          "coefficient": -0.2,
+          "description": "Depth disagreement between the sequential-loading and direct reconstruction paths on the public bunny scene, catching methods whose memory-saving path changes the result."
+        }
+      },
+      "results": {
+        "prior_methods_lower_bound": {
+          "type": "baseline",
+          "memory_mb": 13105.0
+        },
+        "quasi_fresnel_proposed": {
+          "type": "proposed",
+          "memory_mb": 50.0
+        },
+        "quasi_fresnel_scaled_reproduction": {
+          "type": "baseline"
+        }
+      }
+    }
+  }
+}
