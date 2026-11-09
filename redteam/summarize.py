@@ -56,16 +56,17 @@ def main():
             'stored_reference':original.tolist(),'cohorts':stats,'cases':rows,
             'seed_range':(np.max(seeds,axis=0)-np.min(seeds,axis=0)).tolist() if len(seeds) else None}
     (ROOT/'summary.json').write_text(json.dumps(output,indent=2,allow_nan=True)+'\n')
-    lines=['| Case | Depth cm | PSNR | SSIM | Albedo MAE | Memory MB | Direct order | Loading order | Disagreement cm | Audit Δrank | Pareto |',
-           '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|',
-           '| stored_reference | '+' | '.join(f'{x:.6g}' for x in original)+' | 0 | reference |']
+    lines=['| Case | Depth cm | PSNR | SSIM | Albedo MAE | Memory MB | Direct order | Loading order | Disagreement cm | All-finite Δrank | Base-cohort Δrank | Pareto |',
+           '|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---|',
+           '| stored_reference | '+' | '.join(f'{x:.6g}' for x in original)+' | 0 | 0 | reference |']
     for name,row in rows.items():
         vals=row.get('metrics')
         if vals is None:
-            lines.append('| '+name+' | test rejected |'+ ' |'*9)
+            lines.append('| '+name+' | test rejected |'+ ' |'*10)
         else:
             lines.append('| '+name+' | '+' | '.join(f'{x:.6g}' for x in vals)+' | '+
                 (f"{row['rank_delta']['all_finite_audit_attempts']:+.6f}" if row.get('finite') else 'nonfinite')+' | '+
+                (f"{row['rank_delta']['base_checks']:+.6f}" if row.get('finite') else 'nonfinite')+' | '+
                 row.get('pareto_vs_stored_reference','undefined')+' |')
     (ROOT/'scores_table.md').write_text('\n'.join(lines)+'\n')
     print('\n'.join(lines),flush=True)

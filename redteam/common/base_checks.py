@@ -35,6 +35,24 @@ def main(case):
                  integration_mode='traditional', use_fdh=False):
             return np.sum(tau,axis=2), (np.argmax(tau,axis=2)+0.5)*dt
         driver.quasi_fresnel_reconstruct = peak
+        # A different method must measure its own allocations and scaling.
+        # Reusing the reference integration benchmark misstates this baseline.
+        def peak_scaling(sizes=(32,64,96,128),s=.02,dt=.003,k=4):
+            import tracemalloc
+            times=[];peaks=[]
+            for n in sizes:
+                tau=np.random.default_rng(250802003).random((n,n,n))
+                tracemalloc.start();start=time.perf_counter()
+                peak(tau,s,dt,k,area=1.)
+                times.append(time.perf_counter()-start)
+                peaks.append(tracemalloc.get_traced_memory()[1]/2**20)
+                tracemalloc.stop()
+                print('peak baseline scaling',n,times[-1],peaks[-1],flush=True)
+            d={'sizes':list(sizes),'runtime_s':times,'memory_mb':peaks,
+               'runtime_order':driver._fit_scaling_order(list(sizes),times),
+               'memory_order':driver._fit_scaling_order(list(sizes),peaks)}
+            return {'traditional':d,'loading':d.copy()}
+        driver.benchmark_complexity_scaling=peak_scaling
     elif case == 'bruteforce_all_voxels':
         import bruteforce
         # JIT warmup is recorded separately, not hidden in method timing.
