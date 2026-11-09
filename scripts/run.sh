@@ -1,4 +1,4 @@
 #!/bin/bash
 set -euo pipefail
 cd /home/user
-bash redteam/finalize_baseline.sh
+bash redteam/finalize_visible_contract.sh

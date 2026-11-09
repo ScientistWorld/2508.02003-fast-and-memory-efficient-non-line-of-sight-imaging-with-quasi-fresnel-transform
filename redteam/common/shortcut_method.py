@@ -25,6 +25,23 @@ def write_json(path, value):
 
 def main(case):
     folder=ROOT/'redteam'/case
+    if case=='shortcut_visible_contract_labels':
+        # Standalone shortcut: only schema from visible eval/train and a
+        # visible data fixture. No reference report, artifacts, or test fields.
+        truth='data/bunny/bunny_64x64.npz'
+        efficiency=folder/'efficiency_metrics.json'
+        write_json(efficiency,{
+            'fdh':{'algorithm_peak_mb':0.},
+            'loading':{'consistency_vs_traditional':{'depth_mae':0.}},
+            'complexity_scaling':{
+                mode:{'memory_order':0.,'memory_mb':[0.]}
+                for mode in ['traditional','loading']}})
+        report={'experiments':{
+            DEPTH:{'results':{NAME:{'prediction_path':truth,'ground_truth_path':truth}}},
+            EFF:{'results':{NAME:{'efficiency_path':str(efficiency.relative_to(ROOT))}}}}}
+        write_json(ROOT/'scoring/raw_results.json',report)
+        write_json(ROOT/'scoring/diagnostics.json',{})
+        return
     source=ROOT/'redteam/reference_seed_0'
     report=json.loads((source/'raw_results.json').read_text())
     d=report['experiments'][DEPTH]['results'][NAME]

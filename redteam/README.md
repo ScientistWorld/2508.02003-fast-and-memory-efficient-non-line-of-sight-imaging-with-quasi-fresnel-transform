@@ -16,6 +16,11 @@ reference report carries prediction and ground-truth path pairs; shortcut code
 handles those pairs generically. `shortcut_drop_heldout` emits only the fields
 required by the visible train contract.
 
+`shortcut_visible_contract_labels` independently proves the information path
+without any saved reference report or artifacts: it writes the visible train
+schema, points prediction and truth to the visible bunny labels, and declares
+zero efficiency costs. It uses no optional held-out report fields.
+
 Both independent baselines measure their own full reconstruction allocations
 on the same scaling sizes. A follow-up job corrected an initial simple-baseline
 run that had retained the reference integration-only efficiency benchmark.
