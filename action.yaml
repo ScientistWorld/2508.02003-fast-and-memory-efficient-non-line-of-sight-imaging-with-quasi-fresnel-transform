@@ -1,4 +1,4 @@
 action: submit
 gpus: 0
 test: false
-notes: "Run bundled scoring audit: three reference seeds, genuine variants, exhaustive baseline, and artifact/degenerate shortcuts; all test commands unmodified and no-argument."
+notes: "Correct simple peak baseline efficiency using its own full reconstruction, rerun unmodified no-argument hidden test, and refresh rank cohorts."
