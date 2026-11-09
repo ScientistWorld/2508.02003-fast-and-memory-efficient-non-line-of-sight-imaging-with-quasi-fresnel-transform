@@ -34,7 +34,7 @@ MEMORY_BUDGET_MB = 256.0
 TIMEOUT_S_PER_SCENE = 300.0
 DEPTH_GATE_FRACTION = 0.5
 NCC_GATE = 0.2
-POLL_INTERVAL_S = 0.005
+POLL_INTERVAL_S = 0.003
 METHOD_NAME_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_.\-]{0,63}$")
 THREAD_VARS = (
     "OMP_NUM_THREADS",
@@ -44,7 +44,6 @@ THREAD_VARS = (
     "NUMBA_NUM_THREADS",
     "VECLIB_MAXIMUM_THREADS",
 )
-_PAGE_BYTES = os.sysconf("SC_PAGE_SIZE")
 
 
 # ── registry ────────────────────────────────────────────────────────────────
@@ -96,7 +95,31 @@ def _children(pid: int) -> list[int]:
     return kids
 
 
-def _tree_rss_bytes(root_pid: int) -> int:
+def _proc_memory(pid: int) -> tuple[int, int] | None:
+    """(VmRSS, VmHWM) in bytes for one live process, from /proc/<pid>/status.
+
+    VmHWM is the high-water mark of the process's own address space; it is
+    reset when the process execs, so it never includes the evaluator's memory
+    (unlike getrusage's ru_maxrss, which inherits the parent's high-water
+    mark across fork + exec).
+    """
+    rss = hwm = None
+    try:
+        with open(f"/proc/{pid}/status") as handle:
+            for line in handle:
+                if line.startswith("VmRSS:"):
+                    rss = int(line.split()[1]) * 1024
+                elif line.startswith("VmHWM:"):
+                    hwm = int(line.split()[1]) * 1024
+    except (OSError, ValueError, IndexError):
+        return None
+    if rss is None or hwm is None:  # zombie / kernel thread: no address space
+        return None
+    return rss, hwm
+
+
+def _sample_tree(root_pid: int, hwm_by_pid: dict[int, int]) -> int:
+    """Sum of current RSS over the process tree; updates per-process high-water marks."""
     total = 0
     stack = [root_pid]
     seen: set[int] = set()
@@ -105,11 +128,11 @@ def _tree_rss_bytes(root_pid: int) -> int:
         if pid in seen:
             continue
         seen.add(pid)
-        try:
-            with open(f"/proc/{pid}/statm") as handle:
-                total += int(handle.read().split()[1]) * _PAGE_BYTES
-        except (OSError, ValueError, IndexError):
-            continue
+        mem = _proc_memory(pid)
+        if mem is not None:
+            total += mem[0]
+            if mem[1] > hwm_by_pid.get(pid, 0):
+                hwm_by_pid[pid] = mem[1]
         stack.extend(_children(pid))
     return total
 
@@ -121,11 +144,20 @@ def _kill_group(pgid: int) -> None:
         pass
 
 
+def scratch_root() -> Path:
+    """Scratch space for scene inputs and predictions (the container /tmp is tiny)."""
+    root = Path(os.environ.get("NLOS_SCRATCH_DIR", str(ROOT / "outputs" / ".scratch")))
+    root.mkdir(parents=True, exist_ok=True)
+    return root
+
+
 def run_method(command: list[str], scene_dir: Path, output_path: Path, log_path: Path,
                budget_mb: float = MEMORY_BUDGET_MB, timeout_s: float = TIMEOUT_S_PER_SCENE) -> dict:
+    """Run one method on one scene; peak memory = max(per-process VmHWM, summed tree RSS)."""
     cmd = list(command) + ["--scene", str(scene_dir), "--output", str(output_path)]
     budget_bytes = budget_mb * 1024.0 * 1024.0
-    sampled_peak = 0
+    tree_peak = 0
+    hwm_by_pid: dict[int, int] = {}
     killed: str | None = None
     start = time.monotonic()
     with open(log_path, "wb") as log:
@@ -139,15 +171,16 @@ def run_method(command: list[str], scene_dir: Path, output_path: Path, log_path:
                     "peak_rss_mb": 0.0, "killed": None, "wall_time_s": 0.0}
         pid = proc.pid
         while True:
-            wpid, status, rusage = os.wait4(pid, os.WNOHANG)
+            wpid, status, _ = os.wait4(pid, os.WNOHANG)
             if wpid == pid:
                 break
-            rss = _tree_rss_bytes(pid)
-            if rss > sampled_peak:
-                sampled_peak = rss
+            total = _sample_tree(pid, hwm_by_pid)
+            if total > tree_peak:
+                tree_peak = total
+            current_peak = max(tree_peak, max(hwm_by_pid.values(), default=0))
             elapsed = time.monotonic() - start
             if killed is None:
-                if rss > budget_bytes:
+                if current_peak > budget_bytes:
                     killed = "memory_budget_exceeded"
                     _kill_group(pid)
                 elif elapsed > timeout_s:
@@ -156,14 +189,15 @@ def run_method(command: list[str], scene_dir: Path, output_path: Path, log_path:
             time.sleep(POLL_INTERVAL_S)
         proc.returncode = os.waitstatus_to_exitcode(status)
     _kill_group(pid)  # nothing the method started may outlive it
-    ru_peak = float(rusage.ru_maxrss) * 1024.0
-    peak = max(ru_peak, float(sampled_peak))
+    hwm_peak = max(hwm_by_pid.values(), default=0)
+    peak = max(tree_peak, hwm_peak)
     return {
         "launched": True,
         "exit_code": proc.returncode,
         "peak_rss_mb": peak / 2.0 ** 20,
-        "ru_maxrss_mb": ru_peak / 2.0 ** 20,
-        "sampled_peak_mb": sampled_peak / 2.0 ** 20,
+        "hwm_peak_mb": hwm_peak / 2.0 ** 20,
+        "tree_rss_peak_mb": tree_peak / 2.0 ** 20,
+        "processes_seen": len(hwm_by_pid),
         "killed": killed,
         "wall_time_s": time.monotonic() - start,  # diagnostic only, never scored
     }
@@ -356,7 +390,7 @@ def evaluate(provider: SceneProvider, registry_path: Path, output_path: Path,
     names = sorted(commands)
     records: dict[str, dict] = {name: {"failures": [], "scenes": {}} for name in names}
     raw_runs: dict[str, dict] = {name: {"failures": [], "scenes": {}} for name in names}
-    work = Path(tempfile.mkdtemp(prefix="nlos_eval_"))
+    work = Path(tempfile.mkdtemp(prefix="nlos_eval_", dir=str(scratch_root())))
     try:
         for sid in scene_ids:
             active = [name for name in names if not records[name]["failures"]]

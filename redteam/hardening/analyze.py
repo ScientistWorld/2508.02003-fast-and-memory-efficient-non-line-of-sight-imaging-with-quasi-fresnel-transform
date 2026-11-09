@@ -118,6 +118,9 @@ def main() -> None:
             md.append(f"`{path.name}` missing.")
             continue
         scores = json.loads(path.read_text())
+        if "_status" not in scores or "surface_reconstruction" not in scores.get("experiments", {}):
+            md.append(f"`{path.name}` is not a hardened-evaluator score file; skipped.")
+            continue
         names = sorted(scores["experiments"]["surface_reconstruction"]["results"])
         honest = [n for n in names if not n.startswith("sc_")]
         valid_honest = [n for n in honest if scores["_status"][n]["valid"]]

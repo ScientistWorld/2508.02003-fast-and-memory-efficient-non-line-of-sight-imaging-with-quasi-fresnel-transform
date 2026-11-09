@@ -1,18 +1,25 @@
 {
   "methods": {
-    "quasi_fresnel": {
+    "bruteforce_backprojection": {
       "command": [
         "python3",
-        "method/run_qf.py"
+        "redteam/hardening/bruteforce.py"
       ],
-      "role": "reference"
+      "role": "brute force (exhaustive voxels)"
     },
-    "reference_rerun": {
+    "lct_volumetric": {
       "command": [
         "python3",
-        "method/run_qf.py"
+        "baseline/lct.py"
       ],
-      "role": "reference rerun (noise check)"
+      "role": "volumetric baseline (paper's comparison class)"
+    },
+    "peak_energy_baseline": {
+      "command": [
+        "python3",
+        "baseline/peak_energy.py"
+      ],
+      "role": "simple baseline"
     },
     "qf_lean": {
       "command": [
@@ -22,15 +29,6 @@
         "lean"
       ],
       "role": "better candidate (memory)"
-    },
-    "qf_smooth": {
-      "command": [
-        "python3",
-        "redteam/hardening/variants.py",
-        "--variant",
-        "smooth"
-      ],
-      "role": "better candidate (quality)"
     },
     "qf_lean_smooth": {
       "command": [
@@ -50,14 +48,23 @@
       ],
       "role": "better candidate (quality)"
     },
-    "qf_s0p015": {
+    "qf_no_deconv": {
+      "command": [
+        "python3",
+        "redteam/hardening/variants.py",
+        "--variant",
+        "no_deconv"
+      ],
+      "role": "weaker ablation (no spatial step)"
+    },
+    "qf_s0p020_paper": {
       "command": [
         "python3",
         "method/run_qf.py",
         "--s",
-        "0.015"
+        "0.02"
       ],
-      "role": "parameter variant"
+      "role": "parameter variant (paper's Zaragoza value)"
     },
     "qf_s0p025": {
       "command": [
@@ -77,14 +84,41 @@
       ],
       "role": "parameter variant"
     },
-    "qf_no_deconv": {
+    "qf_s0p035": {
+      "command": [
+        "python3",
+        "method/run_qf.py",
+        "--s",
+        "0.035"
+      ],
+      "role": "parameter variant"
+    },
+    "qf_s0p040": {
+      "command": [
+        "python3",
+        "method/run_qf.py",
+        "--s",
+        "0.04"
+      ],
+      "role": "parameter variant"
+    },
+    "qf_s0p050": {
+      "command": [
+        "python3",
+        "method/run_qf.py",
+        "--s",
+        "0.05"
+      ],
+      "role": "parameter variant"
+    },
+    "qf_smooth": {
       "command": [
         "python3",
         "redteam/hardening/variants.py",
         "--variant",
-        "no_deconv"
+        "smooth"
       ],
-      "role": "weaker ablation (no spatial step)"
+      "role": "better candidate (quality)"
     },
     "qf_traditional": {
       "command": [
@@ -95,19 +129,37 @@
       ],
       "role": "weaker (paper's full-histogram variant)"
     },
-    "peak_energy_baseline": {
+    "quasi_fresnel": {
       "command": [
         "python3",
-        "baseline/peak_energy.py"
+        "method/run_qf.py"
       ],
-      "role": "simple baseline"
+      "role": "reference"
     },
-    "lct_volumetric": {
+    "reference_rerun": {
       "command": [
         "python3",
-        "baseline/lct.py"
+        "method/run_qf.py"
       ],
-      "role": "volumetric baseline (paper's comparison class)"
+      "role": "reference rerun (noise check)"
+    },
+    "sc_blank": {
+      "command": [
+        "python3",
+        "redteam/hardening/shortcuts.py",
+        "--case",
+        "blank"
+      ],
+      "role": "shortcut"
+    },
+    "sc_constant_depth": {
+      "command": [
+        "python3",
+        "redteam/hardening/shortcuts.py",
+        "--case",
+        "constant_depth"
+      ],
+      "role": "shortcut"
     },
     "sc_copy_train_answer": {
       "command": [
@@ -118,23 +170,12 @@
       ],
       "role": "shortcut"
     },
-    "sc_gt_redirect": {
+    "sc_empty": {
       "command": [
         "python3",
         "redteam/hardening/shortcuts.py",
         "--case",
-        "gt_redirect"
-      ],
-      "role": "shortcut",
-      "ground_truth_path": "outputs/sc_gt_redirect/prediction.npz",
-      "heldout_ground_truth_path": "outputs/sc_gt_redirect/prediction.npz"
-    },
-    "sc_overwrite_truth": {
-      "command": [
-        "python3",
-        "redteam/hardening/shortcuts.py",
-        "--case",
-        "overwrite_truth"
+        "empty"
       ],
       "role": "shortcut"
     },
@@ -149,50 +190,16 @@
       "peak_memory_mb": -1000000.0,
       "memory_mb": 0.0
     },
-    "sc_constant_depth": {
+    "sc_gt_redirect": {
       "command": [
         "python3",
         "redteam/hardening/shortcuts.py",
         "--case",
-        "constant_depth"
+        "gt_redirect"
       ],
-      "role": "shortcut"
-    },
-    "sc_blank": {
-      "command": [
-        "python3",
-        "redteam/hardening/shortcuts.py",
-        "--case",
-        "blank"
-      ],
-      "role": "shortcut"
-    },
-    "sc_zero": {
-      "command": [
-        "python3",
-        "redteam/hardening/shortcuts.py",
-        "--case",
-        "zero"
-      ],
-      "role": "shortcut"
-    },
-    "sc_spike": {
-      "command": [
-        "python3",
-        "redteam/hardening/shortcuts.py",
-        "--case",
-        "spike"
-      ],
-      "role": "shortcut"
-    },
-    "sc_one_pixel": {
-      "command": [
-        "python3",
-        "redteam/hardening/shortcuts.py",
-        "--case",
-        "one_pixel"
-      ],
-      "role": "shortcut"
+      "role": "shortcut",
+      "ground_truth_path": "outputs/sc_gt_redirect/prediction.npz",
+      "heldout_ground_truth_path": "outputs/sc_gt_redirect/prediction.npz"
     },
     "sc_nan": {
       "command": [
@@ -200,15 +207,6 @@
         "redteam/hardening/shortcuts.py",
         "--case",
         "nan"
-      ],
-      "role": "shortcut"
-    },
-    "sc_empty": {
-      "command": [
-        "python3",
-        "redteam/hardening/shortcuts.py",
-        "--case",
-        "empty"
       ],
       "role": "shortcut"
     },
@@ -221,6 +219,33 @@
       ],
       "role": "shortcut"
     },
+    "sc_one_pixel": {
+      "command": [
+        "python3",
+        "redteam/hardening/shortcuts.py",
+        "--case",
+        "one_pixel"
+      ],
+      "role": "shortcut"
+    },
+    "sc_overwrite_truth": {
+      "command": [
+        "python3",
+        "redteam/hardening/shortcuts.py",
+        "--case",
+        "overwrite_truth"
+      ],
+      "role": "shortcut"
+    },
+    "sc_spike": {
+      "command": [
+        "python3",
+        "redteam/hardening/shortcuts.py",
+        "--case",
+        "spike"
+      ],
+      "role": "shortcut"
+    },
     "sc_write_scores": {
       "command": [
         "python3",
@@ -230,12 +255,14 @@
       ],
       "role": "shortcut"
     },
-    "bruteforce_backprojection": {
+    "sc_zero": {
       "command": [
         "python3",
-        "redteam/hardening/bruteforce.py"
+        "redteam/hardening/shortcuts.py",
+        "--case",
+        "zero"
       ],
-      "role": "brute force (exhaustive voxels)"
+      "role": "shortcut"
     }
   }
 }

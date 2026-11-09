@@ -10,8 +10,12 @@ phi by the separable FFT deconvolution of Eq. (5); albedo = |psi| and depth =
 (-2 i s^3 psi^-1 dpsi/ds)^(1/2) (Eq. 4, Alg. 1).  ``--mode traditional`` loads
 the full histogram first (the paper's "Traditional" variant, O(N^3) memory).
 
-s = 0.02 m is the paper's setting for 256 x 256 scans of a 1 m x 1 m wall with
-3 mm of photon path per time bin (Zaragoza experiments).
+The paper treats s as a per-dataset parameter "selected during implementation"
+whose admissible range is set by sampling density and signal-to-noise ratio
+(0.02 m for its noise-free Zaragoza simulations, 0.025 m for USAF, 0.05-0.10 m
+for the noisy Stanford captures).  The default here is read from
+method/qf_params.json, written by method/select_s.py, which picks s from a
+fixed grid on the visible train scenes only.
 """
 
 from __future__ import annotations
@@ -31,8 +35,19 @@ from quasi_fresnel import (  # noqa: E402
     quasi_fresnel_time_integral_stream,
 )
 
-DEFAULT_S = 0.02
+PAPER_ZARAGOZA_S = 0.02
 DS = 1e-7
+
+
+def _default_s() -> float:
+    params = Path(__file__).resolve().parent / "qf_params.json"
+    try:
+        return float(json.loads(params.read_text())["s"])
+    except (OSError, KeyError, ValueError, TypeError):
+        return PAPER_ZARAGOZA_S
+
+
+DEFAULT_S = _default_s()
 
 
 def read_meta(scene_dir: Path) -> dict:

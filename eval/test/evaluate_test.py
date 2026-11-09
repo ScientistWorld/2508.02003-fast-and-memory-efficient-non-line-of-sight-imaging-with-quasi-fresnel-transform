@@ -5,7 +5,7 @@ Usage (no arguments scores every method registered in scoring/methods.json):
     python3 eval/test/evaluate_test.py [--methods scoring/methods.json] [--output scoring/scores_test.json]
 
 Hidden measurements are rendered at test time into a temporary directory that
-is deleted after each scene; ground truth stays in this process.  Each method
+is deleted after each scene (under outputs/.scratch/ unless NLOS_SCRATCH_DIR is set); ground truth stays in this process.  Each method
 runs as a fresh process per scene through the same command-line contract as
 the train evaluation.  No prediction or metric written by a method is trusted:
 the evaluator validates the prediction arrays, recomputes every metric, and
@@ -34,7 +34,7 @@ class HiddenScenes(harness.SceneProvider):
         self.spec = {sid: (seed, n) for sid, seed, n in scenes.HIDDEN_SCENES}
         self.scenes = [(sid, n) for sid, _, n in scenes.HIDDEN_SCENES]
         self.depth_max_m = scenes.max_observable_depth_m()
-        self._scratch = Path(tempfile.mkdtemp(prefix="nlos_hidden_"))
+        self._scratch = Path(tempfile.mkdtemp(prefix="nlos_hidden_", dir=str(harness.scratch_root())))
         self._cache: dict[str, dict] = {}
 
     def _scene(self, scene_id):

@@ -21,7 +21,6 @@ step() { echo "=== $(date -u +%FT%TZ) $*"; }
 step "environment"
 python3 -c "import sys, numpy, scipy, numba; print(sys.version); print('numpy', numpy.__version__, 'scipy', scipy.__version__, 'numba', numba.__version__)"
 nproc || true
-free -m || true
 
 step "smoke tests"
 python3 - <<'PY' 2>&1 | tee "$H/logs/smoke.log"
@@ -67,15 +66,21 @@ with tempfile.TemporaryDirectory() as tmp:
     r = h.run_method(["python3", "-c", "import numpy as np, time; a = np.ones(400 * 2**20 // 8); time.sleep(5)"], tmp, tmp / "o.npz", tmp / "l.log")
     print("400 MB allocation:", r)
     assert r["killed"] == "memory_budget_exceeded"
-    r = h.run_method(["python3", "-c", "pass"], tmp, tmp / "o.npz", tmp / "l.log")
-    print("bare interpreter:", round(r["peak_rss_mb"], 1), "MB")
-    r = h.run_method(["python3", "-c", "import numpy"], tmp, tmp / "o.npz", tmp / "l.log")
-    print("interpreter + numpy:", round(r["peak_rss_mb"], 1), "MB")
+    ballast = np.ones(300 * 2**20 // 8)  # evaluator's own memory must not leak into the measurement
+    r0 = h.run_method(["python3", "-c", "import time; time.sleep(0.2)"], tmp, tmp / "o.npz", tmp / "l.log")
+    print("bare interpreter (evaluator holding 300 MB):", r0)
+    r1 = h.run_method(["python3", "-c", "import numpy, time; time.sleep(0.2)"], tmp, tmp / "o.npz", tmp / "l.log")
+    print("interpreter + numpy:", r1)
+    del ballast
+    assert r0["peak_rss_mb"] < 40 and r1["peak_rss_mb"] < 80 and r1["peak_rss_mb"] > r0["peak_rss_mb"]
 print("SMOKE OK")
 PY
 
 step "render visible train scenes"
 python3 data/nlos_scenes.py --write-train 2>&1 | tee "$H/logs/render_train.log"
+
+step "select s on the visible train scenes (writes method/qf_params.json)"
+bash scripts/method.sh --select-s 2>&1 | tee "$H/logs/select_s.log"
 
 step "reference-only scoring (first pass)"
 bash scripts/method.sh

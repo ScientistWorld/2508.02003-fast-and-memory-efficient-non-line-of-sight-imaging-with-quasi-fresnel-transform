@@ -11,7 +11,7 @@ Variants (all keep the paper's three steps unless stated):
                 of albedo and depth (the paper notes 2D image processing can be
                 applied to the recovered maps).
   lean_smooth   lean + smooth.
-  multi_s       average of reconstructions at s = 0.018, 0.020, 0.022 m.
+  multi_s       average of reconstructions at 0.9 s, s, 1.1 s (s = reference value).
   no_deconv     weaker ablation: skips the spatial deconvolution (Eq. 5) and
                 reads albedo/depth from phi directly.
 These live outside method/ on purpose: they are audit evidence, not part of
@@ -34,7 +34,7 @@ from quasi_fresnel import (  # noqa: E402
     quasi_fresnel_reconstruct_from_phi,
     quasi_fresnel_time_integral_stream,
 )
-from run_qf import DS, finalize, iter_time_bins, read_meta, reconstruct  # noqa: E402
+from run_qf import DEFAULT_S, DS, finalize, iter_time_bins, read_meta, reconstruct  # noqa: E402
 
 
 def _next_pow2(size: int) -> int:
@@ -84,7 +84,7 @@ def lean_deconv(phi: np.ndarray, s: float, wall: np.ndarray, chunk: int = 32) ->
     return out
 
 
-def lean_reconstruct(scene: Path, s: float = 0.02):
+def lean_reconstruct(scene: Path, s: float = DEFAULT_S):
     meta = read_meta(scene)
     n = meta["n"]
     acc_re, acc_im = lean_accumulate(scene / "transient.npy", (s - DS, s, s + DS), meta["dr"], meta["k"], n)
@@ -124,7 +124,9 @@ def smooth(albedo: np.ndarray, depth: np.ndarray, depth_max: float):
     return finalize(a_s, d_s, depth_max)
 
 
-def multi_s(scene: Path, s_list=(0.018, 0.02, 0.022)):
+def multi_s(scene: Path, s_list=None):
+    if s_list is None:
+        s_list = (0.9 * DEFAULT_S, DEFAULT_S, 1.1 * DEFAULT_S)
     meta = read_meta(scene)
     s_values = []
     for s in s_list:
@@ -146,7 +148,7 @@ def multi_s(scene: Path, s_list=(0.018, 0.02, 0.022)):
     return finalize(albedo_sum / len(s_list), depth, meta["depth_max"])
 
 
-def no_deconv(scene: Path, s: float = 0.02):
+def no_deconv(scene: Path, s: float = DEFAULT_S):
     meta = read_meta(scene)
     phi_prev, phi, phi_next = quasi_fresnel_time_integral_stream(
         iter_time_bins(scene / "transient.npy"), (s - DS, s, s + DS), meta["dr"], meta["k"])

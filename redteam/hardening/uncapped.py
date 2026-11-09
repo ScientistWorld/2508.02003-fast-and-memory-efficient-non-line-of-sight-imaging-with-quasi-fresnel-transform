@@ -24,6 +24,8 @@ from data import nlos_scenes  # noqa: E402
 
 METHODS = {
     "quasi_fresnel": ["python3", "method/run_qf.py"],
+    "qf_s0p020_paper": ["python3", "method/run_qf.py", "--s", "0.02"],
+    "qf_lean": ["python3", "redteam/hardening/variants.py", "--variant", "lean"],
     "qf_traditional": ["python3", "method/run_qf.py", "--mode", "traditional"],
     "lct_volumetric": ["python3", "baseline/lct.py"],
     "peak_energy_baseline": ["python3", "baseline/peak_energy.py"],
