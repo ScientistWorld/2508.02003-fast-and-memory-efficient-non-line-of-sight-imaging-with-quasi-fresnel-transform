@@ -1,0 +1,272 @@
+{
+  "start_commit": "2d50145ebf328c3723f17234e93220211db6be7d",
+  "snapshot_checks": {
+    "scripts/run.sh": {
+      "original_sha256": "8c860ba8b17260aaca5ea89f3150c2e36a1c1fd8010f1cc1c39afb7ffa18bc3b",
+      "restored_sha256": "8c860ba8b17260aaca5ea89f3150c2e36a1c1fd8010f1cc1c39afb7ffa18bc3b",
+      "matches": true
+    },
+    "action.yaml": {
+      "original_sha256": "070beaf904ced86d44de0ed2f0d482ab2a7655fbe1ca55bab4f5f7a2d50cc203",
+      "restored_sha256": "070beaf904ced86d44de0ed2f0d482ab2a7655fbe1ca55bab4f5f7a2d50cc203",
+      "matches": true
+    },
+    "method/quasi_fresnel.py": {
+      "original_sha256": "c8c98eea26ba0f75237776f41ed9a32a968c96527b55e6f0bb30cb8f7553065a",
+      "restored_sha256": "c8c98eea26ba0f75237776f41ed9a32a968c96527b55e6f0bb30cb8f7553065a",
+      "matches": true
+    },
+    "scoring/raw_results.json": {
+      "original_sha256": "72a1a2633d855460d4718a9824296624132de630349b6cf05ae277b80ce28fe2",
+      "restored_sha256": "72a1a2633d855460d4718a9824296624132de630349b6cf05ae277b80ce28fe2",
+      "matches": true
+    },
+    "scoring/diagnostics.json": {
+      "original_sha256": "64be6c550ee0534d8dd4b6e2348368c6137fd396aaad9dbfe7001c0f7c78557f",
+      "restored_sha256": "64be6c550ee0534d8dd4b6e2348368c6137fd396aaad9dbfe7001c0f7c78557f",
+      "matches": true
+    },
+    "scoring/scores.json": {
+      "original_sha256": "9fd33a6ac14401338335f20c52225584ff6457078064bae3d8f8a880294b4d38",
+      "restored_sha256": "9fd33a6ac14401338335f20c52225584ff6457078064bae3d8f8a880294b4d38",
+      "matches": true
+    },
+    "scoring/scores_train.json": {
+      "original_sha256": "9fd33a6ac14401338335f20c52225584ff6457078064bae3d8f8a880294b4d38",
+      "restored_sha256": "9fd33a6ac14401338335f20c52225584ff6457078064bae3d8f8a880294b4d38",
+      "matches": true
+    },
+    "scoring/scores_test.json": {
+      "original_sha256": "f31d8688e142dc871332b12ec63b9157cd90782dd57f0395a43b109854012d94",
+      "restored_sha256": "f31d8688e142dc871332b12ec63b9157cd90782dd57f0395a43b109854012d94",
+      "matches": true
+    },
+    "scoring/reference.json": {
+      "original_sha256": "387bcc09ef31b8bf556426120a89280d420d29a7fa2c0513500acc804ba333b7",
+      "restored_sha256": "387bcc09ef31b8bf556426120a89280d420d29a7fa2c0513500acc804ba333b7",
+      "matches": true
+    },
+    "outputs/quasi_fresnel_scaled_reproduction/efficiency_metrics.json": {
+      "original_sha256": "eaa99d8956670b6296a9ddbf00b04dffbd7ed523c0a93fff8467325bdd14ab6e",
+      "restored_sha256": "eaa99d8956670b6296a9ddbf00b04dffbd7ed523c0a93fff8467325bdd14ab6e",
+      "matches": true
+    },
+    "outputs/quasi_fresnel_scaled_reproduction/quality_bunny_prediction.npz": {
+      "original_sha256": "e13581cef56f0c2d4b62990d804e3482c9ed8659cad326435ab616f16d812452",
+      "restored_sha256": "e13581cef56f0c2d4b62990d804e3482c9ed8659cad326435ab616f16d812452",
+      "matches": true
+    },
+    "outputs/quasi_fresnel_scaled_reproduction/heldout_shapes_prediction.npz": {
+      "original_sha256": "5281ceb7d4ea969ff2d1c66217ac3daae1a9fbb91e1cdd4b24762de0a3c4302e",
+      "restored_sha256": "5281ceb7d4ea969ff2d1c66217ac3daae1a9fbb91e1cdd4b24762de0a3c4302e",
+      "matches": true
+    }
+  },
+  "tracked_source_checks": {
+    "eval/.gitkeep": {
+      "original_git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "restored_git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    "eval/metrics.py": {
+      "original_git_blob": "84a0995cee7f5dd3754126b691a7537928e14dc3",
+      "restored_git_blob": "84a0995cee7f5dd3754126b691a7537928e14dc3",
+      "matches": true
+    },
+    "eval/score_nlos.py": {
+      "original_git_blob": "8b333e80ee25db8c246f85c65ade384244dd8cb1",
+      "restored_git_blob": "8b333e80ee25db8c246f85c65ade384244dd8cb1",
+      "matches": true
+    },
+    "eval/test/score_nlos_test.py": {
+      "original_git_blob": "58e17fc076cb225a996fc0c31a6a00e2c1dcd2f0",
+      "restored_git_blob": "58e17fc076cb225a996fc0c31a6a00e2c1dcd2f0",
+      "matches": true
+    },
+    "eval/train/score_nlos_train.py": {
+      "original_git_blob": "2671f40e4d9bb7003d1848d1ca3c38cfa497b175",
+      "restored_git_blob": "2671f40e4d9bb7003d1848d1ca3c38cfa497b175",
+      "matches": true
+    },
+    "scripts/baseline.sh": {
+      "original_git_blob": "54d80a2b944fcc239fd7c44e0f05e5249ea81d3d",
+      "restored_git_blob": "54d80a2b944fcc239fd7c44e0f05e5249ea81d3d",
+      "matches": true
+    },
+    "scripts/download.sh": {
+      "original_git_blob": "51303dea70af48ca731768d415447dc538389128",
+      "restored_git_blob": "51303dea70af48ca731768d415447dc538389128",
+      "matches": true
+    },
+    "scripts/evaluate.sh": {
+      "original_git_blob": "57883d3b77f3d90a4c63fe1065684f6721861702",
+      "restored_git_blob": "57883d3b77f3d90a4c63fe1065684f6721861702",
+      "matches": true
+    },
+    "scripts/evaluate_nlos.py": {
+      "original_git_blob": "05497cdc613f6f6f999777ba1f38347ef88e67a0",
+      "restored_git_blob": "05497cdc613f6f6f999777ba1f38347ef88e67a0",
+      "matches": true
+    },
+    "scripts/evaluate_test.sh": {
+      "original_git_blob": "3df845fe0cc7bcb777853e60b5b1f2f4927cd563",
+      "restored_git_blob": "3df845fe0cc7bcb777853e60b5b1f2f4927cd563",
+      "matches": true
+    },
+    "scripts/evaluate_train.sh": {
+      "original_git_blob": "f59f44a7c8b0ab0d50e965805211b655132342ba",
+      "restored_git_blob": "f59f44a7c8b0ab0d50e965805211b655132342ba",
+      "matches": true
+    },
+    "scripts/method.sh": {
+      "original_git_blob": "f7d3c7ecd9ac1f5970d0d9eedf9465d55f895235",
+      "restored_git_blob": "f7d3c7ecd9ac1f5970d0d9eedf9465d55f895235",
+      "matches": true
+    },
+    "scripts/reproduce.sh": {
+      "original_git_blob": "bf40d12598dceeaf1b78244dadaa5fbdac99ef29",
+      "restored_git_blob": "bf40d12598dceeaf1b78244dadaa5fbdac99ef29",
+      "matches": true
+    },
+    "scripts/run.sh": {
+      "original_git_blob": "b77f450be4e65eebcb1661105c7857174cee215d",
+      "restored_git_blob": "b77f450be4e65eebcb1661105c7857174cee215d",
+      "matches": true
+    },
+    "method/.gitkeep": {
+      "original_git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "restored_git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    "method/quasi_fresnel.py": {
+      "original_git_blob": "dec869766dd6ce5d04ded5dd453d7cefab8aa81c",
+      "restored_git_blob": "dec869766dd6ce5d04ded5dd453d7cefab8aa81c",
+      "matches": true
+    },
+    "data/.gitkeep": {
+      "original_git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "restored_git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    "data/__init__.py": {
+      "original_git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "restored_git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "matches": true
+    },
+    "data/bunny/bunny_64x64.npz": {
+      "original_git_blob": "8daf657284d09bb5844ef2dad9f2b1e3bbe95a2c",
+      "restored_git_blob": "8daf657284d09bb5844ef2dad9f2b1e3bbe95a2c",
+      "matches": true
+    },
+    "data/downloads/.gitkeep": {
+      "original_git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "restored_git_blob": "8b137891791fe96927ad78e64b0aad7bded08bdc",
+      "matches": true
+    },
+    "data/generate_nlos_data.py": {
+      "original_git_blob": "f7c9ec4ec5323f80d4e9462f93ccb0d4b4b57bb4",
+      "restored_git_blob": "f7c9ec4ec5323f80d4e9462f93ccb0d4b4b57bb4",
+      "matches": true
+    },
+    "data/load_zaragoza.py": {
+      "original_git_blob": "856a9da4666cb68639a03cd5174788e18a10509a",
+      "restored_git_blob": "856a9da4666cb68639a03cd5174788e18a10509a",
+      "matches": true
+    },
+    "data/shapes/shapes_64x64.npz": {
+      "original_git_blob": "f724ab5ceaddcc51a0a7ecce52b3d0d2ca8f90c6",
+      "restored_git_blob": "f724ab5ceaddcc51a0a7ecce52b3d0d2ca8f90c6",
+      "matches": true
+    },
+    "data/zaragoza/bunny_conf64.hdf5": {
+      "original_git_blob": "6635f08443088bdf5e904615f8337ccee3caf27e",
+      "restored_git_blob": "6635f08443088bdf5e904615f8337ccee3caf27e",
+      "matches": true
+    },
+    "scoring/.gitkeep": {
+      "original_git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "restored_git_blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+      "matches": true
+    },
+    "scoring/CONSTRAINTS.md": {
+      "original_git_blob": "ac11575dd1196177c692e0831e3260b72a367023",
+      "restored_git_blob": "ac11575dd1196177c692e0831e3260b72a367023",
+      "matches": true
+    },
+    "scoring/DIRECTION.md": {
+      "original_git_blob": "29075a8b199eeaea2e012702342f9592084f0e53",
+      "restored_git_blob": "29075a8b199eeaea2e012702342f9592084f0e53",
+      "matches": true
+    },
+    "scoring/EXPERIMENTS.md": {
+      "original_git_blob": "53b7856bead7ca7883c38930b560e3c209abbe32",
+      "restored_git_blob": "53b7856bead7ca7883c38930b560e3c209abbe32",
+      "matches": true
+    },
+    "scoring/TARGETS.md": {
+      "original_git_blob": "da6a270b7d18006a933115121060fb87ad24f34b",
+      "restored_git_blob": "da6a270b7d18006a933115121060fb87ad24f34b",
+      "matches": true
+    },
+    "scoring/diagnostics.json": {
+      "original_git_blob": "1750ebb81fddec8f347fdbe8ba3906f90b32fe97",
+      "restored_git_blob": "1750ebb81fddec8f347fdbe8ba3906f90b32fe97",
+      "matches": true
+    },
+    "scoring/raw_results.json": {
+      "original_git_blob": "323032517f02920b8bdcb9d7ffef0b05511c8567",
+      "restored_git_blob": "323032517f02920b8bdcb9d7ffef0b05511c8567",
+      "matches": true
+    },
+    "scoring/reference.example.json": {
+      "original_git_blob": "fb8875200835fcc99d57e21256b57e83e2eca724",
+      "restored_git_blob": "fb8875200835fcc99d57e21256b57e83e2eca724",
+      "matches": true
+    },
+    "scoring/reference.json": {
+      "original_git_blob": "83abd30c0dd8d6d2a5419a1760d91610318cb259",
+      "restored_git_blob": "83abd30c0dd8d6d2a5419a1760d91610318cb259",
+      "matches": true
+    },
+    "scoring/scores.example.json": {
+      "original_git_blob": "6d09b6bf10deba93c31a92556dd493e435178401",
+      "restored_git_blob": "6d09b6bf10deba93c31a92556dd493e435178401",
+      "matches": true
+    },
+    "scoring/scores.json": {
+      "original_git_blob": "88bf25e83f0d019e83d41143f5e45dc8cb2ec0a5",
+      "restored_git_blob": "88bf25e83f0d019e83d41143f5e45dc8cb2ec0a5",
+      "matches": true
+    },
+    "scoring/scores_test.json": {
+      "original_git_blob": "fc89650c71048cf8bba5e463615077df42eb69e9",
+      "restored_git_blob": "fc89650c71048cf8bba5e463615077df42eb69e9",
+      "matches": true
+    },
+    "scoring/scores_train.json": {
+      "original_git_blob": "88bf25e83f0d019e83d41143f5e45dc8cb2ec0a5",
+      "restored_git_blob": "88bf25e83f0d019e83d41143f5e45dc8cb2ec0a5",
+      "matches": true
+    },
+    "scoring/validate.py": {
+      "original_git_blob": "b91d3099a354c6f5f7b9a32b675a4442ae66a758",
+      "restored_git_blob": "b91d3099a354c6f5f7b9a32b675a4442ae66a758",
+      "matches": true
+    }
+  },
+  "remaining_changes_outside_audit_excluding_original_dirty_files": [],
+  "preserved_preexisting_changes": "See original/start_status.txt; README.md, manifest.json, trajectory deletions and untracked .git-shims were not reset.",
+  "protocol_exception": "action.yaml was restored here and will intentionally be set to done at completion.",
+  "method_process_exits_before_test": true,
+  "tests_with_no_arguments": 22,
+  "cases": 22,
+  "shortcuts": 15,
+  "higher_in_all_finite_cohort": 11,
+  "tie_shortcuts": 1,
+  "rejected_shortcuts": 2,
+  "nonfinite_without_established_winning_rank": 1,
+  "all_checks_passed": true,
+  "staged_diff_from_start_outside_redteam_and_REDTEAM": [],
+  "staged_scope_verified": true,
+  "original_deleted_trajectory_preserved": true
+}

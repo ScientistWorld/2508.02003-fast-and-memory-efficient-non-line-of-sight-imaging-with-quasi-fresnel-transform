@@ -27,7 +27,8 @@ run that had retained the reference integration-only efficiency benchmark.
 The saved final scores contain the corrected measurements.
 
 `summary.json` records every metric and explicitly specified rank-normalization
-cohorts. A future ranking's normalization depends on other submitted attempts,
+cohorts, including the base cohort augmented by the candidate before its
+standard deviations are recomputed. A future ranking's normalization depends on other submitted attempts,
 so no universal scalar rank exists. Pareto improvements are independent of this
 unknown normalization. The coefficient sign is ignored and `higher_is_better`
 sets direction, as in the audit specification. Rejected and nonfinite outputs
@@ -35,3 +36,6 @@ are never treated as a finite winning rank.
 
 `original/` preserves the starting fixtures needed for restoring and comparing
 this audit. It is audit-only and is never read by shortcut methods.
+
+Refresh the standard-library summaries with `python3 redteam/summarize.py` and
+`python3 redteam/write_report.py`. Full job logs are under `job_logs/`.
