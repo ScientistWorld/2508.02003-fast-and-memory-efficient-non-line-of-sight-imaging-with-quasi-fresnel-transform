@@ -1,0 +1,87 @@
+{
+  "experiments": {
+    "surface_reconstruction": {
+      "results": {
+        "quasi_fresnel": {
+          "depth_mae_cm": 0.519431,
+          "albedo_ncc": 0.968861,
+          "albedo_psnr_db": 25.568653
+        }
+      }
+    },
+    "working_memory": {
+      "results": {
+        "quasi_fresnel": {
+          "peak_memory_mb": 117.258
+        }
+      }
+    }
+  },
+  "_status": {
+    "quasi_fresnel": {
+      "valid": true,
+      "failures": [],
+      "scenes_completed": 6
+    }
+  },
+  "_details": {
+    "quasi_fresnel": {
+      "train_384_a": {
+        "depth_mae_cm": 0.089025,
+        "albedo_ncc": 0.983146,
+        "albedo_psnr_db": 29.237567,
+        "peak_rss_mb": 117.257812
+      },
+      "train_256_a": {
+        "depth_mae_cm": 0.723714,
+        "albedo_ncc": 0.962874,
+        "albedo_psnr_db": 24.657367,
+        "peak_rss_mb": 60.925781
+      },
+      "train_256_b": {
+        "depth_mae_cm": 0.556567,
+        "albedo_ncc": 0.971572,
+        "albedo_psnr_db": 25.064372,
+        "peak_rss_mb": 60.875
+      },
+      "train_256_c": {
+        "depth_mae_cm": 0.821602,
+        "albedo_ncc": 0.966882,
+        "albedo_psnr_db": 23.556712,
+        "peak_rss_mb": 61.089844
+      },
+      "train_256_d": {
+        "depth_mae_cm": 0.1861,
+        "albedo_ncc": 0.979549,
+        "albedo_psnr_db": 25.622073,
+        "peak_rss_mb": 60.832031
+      },
+      "train_256_e": {
+        "depth_mae_cm": 0.73958,
+        "albedo_ncc": 0.949144,
+        "albedo_psnr_db": 25.27383,
+        "peak_rss_mb": 60.789062
+      }
+    }
+  },
+  "_protocol": {
+    "scenes": [
+      "train_384_a",
+      "train_256_a",
+      "train_256_b",
+      "train_256_c",
+      "train_256_d",
+      "train_256_e"
+    ],
+    "memory_budget_mb": 256.0,
+    "timeout_s_per_scene": 300.0,
+    "depth_gate": "mean depth_mae_cm <= 0.5 x mean oracle-constant depth MAE (1.3785 cm)",
+    "albedo_gate": "mean albedo_ncc >= 0.2",
+    "failed_run_values": {
+      "depth_mae_cm": 2.7570545939596816,
+      "albedo_ncc": 0.0,
+      "albedo_psnr_db": 16.121228706013266,
+      "peak_memory_mb": 256.0
+    }
+  }
+}

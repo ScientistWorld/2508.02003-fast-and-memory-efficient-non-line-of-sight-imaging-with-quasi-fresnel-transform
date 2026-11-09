@@ -1,40 +1,129 @@
 {
   "experiments": {
-    "zaragoza_bunny_depth_error": {
-      "results": {
-        "quasi_fresnel_scaled_reproduction": {
-          "depth_mae_cm": 14.625978,
-          "albedo_psnr_db": 12.912695,
-          "albedo_ssim": 0.144753,
-          "albedo_mae": 0.18078
-        }
-      }
-    },
-    "zaragoza_efficiency_public_bunny": {
-      "results": {
-        "quasi_fresnel_scaled_reproduction": {
-          "memory_mb": 1.1293,
-          "traditional_memory_order": 2.703954,
-          "loading_memory_order": 1.912427,
-          "loading_depth_consistency_cm": 0.0
-        }
-      }
-    },
     "surface_reconstruction": {
       "results": {
-        "sc_write_scores": {
-          "depth_mae_cm": 0.0,
-          "albedo_ncc": 1.0,
-          "albedo_psnr_db": 100.0
+        "quasi_fresnel": {
+          "depth_mae_cm": 0.77121,
+          "albedo_ncc": 0.955323,
+          "albedo_psnr_db": 25.110975
         }
       }
     },
     "working_memory": {
       "results": {
-        "sc_write_scores": {
-          "peak_memory_mb": 0.0
+        "quasi_fresnel": {
+          "peak_memory_mb": 147.977
         }
       }
+    }
+  },
+  "_status": {
+    "quasi_fresnel": {
+      "valid": true,
+      "failures": [],
+      "scenes_completed": 12
+    }
+  },
+  "_details": {
+    "quasi_fresnel": {
+      "hidden_512_0": {
+        "depth_mae_cm": 0.227389,
+        "albedo_ncc": 0.97357,
+        "albedo_psnr_db": 28.223371,
+        "peak_rss_mb": 147.960938
+      },
+      "hidden_512_1": {
+        "depth_mae_cm": 0.505276,
+        "albedo_ncc": 0.944125,
+        "albedo_psnr_db": 26.030689,
+        "peak_rss_mb": 147.976562
+      },
+      "hidden_256_0": {
+        "depth_mae_cm": 0.236139,
+        "albedo_ncc": 0.957369,
+        "albedo_psnr_db": 28.448973,
+        "peak_rss_mb": 60.785156
+      },
+      "hidden_256_1": {
+        "depth_mae_cm": 0.927611,
+        "albedo_ncc": 0.932107,
+        "albedo_psnr_db": 23.721005,
+        "peak_rss_mb": 60.328125
+      },
+      "hidden_256_2": {
+        "depth_mae_cm": 0.24771,
+        "albedo_ncc": 0.971068,
+        "albedo_psnr_db": 25.952806,
+        "peak_rss_mb": 60.613281
+      },
+      "hidden_256_3": {
+        "depth_mae_cm": 0.979796,
+        "albedo_ncc": 0.961231,
+        "albedo_psnr_db": 24.5867,
+        "peak_rss_mb": 60.898438
+      },
+      "hidden_256_4": {
+        "depth_mae_cm": 0.324457,
+        "albedo_ncc": 0.97025,
+        "albedo_psnr_db": 27.485199,
+        "peak_rss_mb": 60.277344
+      },
+      "hidden_256_5": {
+        "depth_mae_cm": 1.251568,
+        "albedo_ncc": 0.948922,
+        "albedo_psnr_db": 21.458025,
+        "peak_rss_mb": 60.320312
+      },
+      "hidden_256_6": {
+        "depth_mae_cm": 0.621911,
+        "albedo_ncc": 0.974532,
+        "albedo_psnr_db": 25.347297,
+        "peak_rss_mb": 60.9375
+      },
+      "hidden_256_7": {
+        "depth_mae_cm": 0.13154,
+        "albedo_ncc": 0.979107,
+        "albedo_psnr_db": 27.951101,
+        "peak_rss_mb": 61.269531
+      },
+      "hidden_256_8": {
+        "depth_mae_cm": 2.52199,
+        "albedo_ncc": 0.882617,
+        "albedo_psnr_db": 18.26128,
+        "peak_rss_mb": 60.984375
+      },
+      "hidden_256_9": {
+        "depth_mae_cm": 1.279128,
+        "albedo_ncc": 0.968983,
+        "albedo_psnr_db": 23.865253,
+        "peak_rss_mb": 60.371094
+      }
+    }
+  },
+  "_protocol": {
+    "scenes": [
+      "hidden_512_0",
+      "hidden_512_1",
+      "hidden_256_0",
+      "hidden_256_1",
+      "hidden_256_2",
+      "hidden_256_3",
+      "hidden_256_4",
+      "hidden_256_5",
+      "hidden_256_6",
+      "hidden_256_7",
+      "hidden_256_8",
+      "hidden_256_9"
+    ],
+    "memory_budget_mb": 256.0,
+    "timeout_s_per_scene": 300.0,
+    "depth_gate": "mean depth_mae_cm <= 0.5 x mean oracle-constant depth MAE (1.3619 cm)",
+    "albedo_gate": "mean albedo_ncc >= 0.2",
+    "failed_run_values": {
+      "depth_mae_cm": 2.723869950649974,
+      "albedo_ncc": 0.0,
+      "albedo_psnr_db": 16.40926359984256,
+      "peak_memory_mb": 256.0
     }
   }
 }

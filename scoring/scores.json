@@ -3,16 +3,16 @@
     "surface_reconstruction": {
       "results": {
         "quasi_fresnel": {
-          "depth_mae_cm": 1.251777,
-          "albedo_ncc": 0.912538,
-          "albedo_psnr_db": 20.930206
+          "depth_mae_cm": 0.519431,
+          "albedo_ncc": 0.968861,
+          "albedo_psnr_db": 25.568653
         }
       }
     },
     "working_memory": {
       "results": {
         "quasi_fresnel": {
-          "peak_memory_mb": 168.746
+          "peak_memory_mb": 117.223
         }
       }
     }
@@ -27,40 +27,40 @@
   "_details": {
     "quasi_fresnel": {
       "train_384_a": {
-        "depth_mae_cm": 0.211156,
-        "albedo_ncc": 0.976267,
-        "albedo_psnr_db": 25.056117,
-        "peak_rss_mb": 168.746094
+        "depth_mae_cm": 0.089025,
+        "albedo_ncc": 0.983146,
+        "albedo_psnr_db": 29.237567,
+        "peak_rss_mb": 117.222656
       },
       "train_256_a": {
-        "depth_mae_cm": 1.744484,
-        "albedo_ncc": 0.876528,
-        "albedo_psnr_db": 19.997894,
-        "peak_rss_mb": 168.746094
+        "depth_mae_cm": 0.723714,
+        "albedo_ncc": 0.962874,
+        "albedo_psnr_db": 24.657367,
+        "peak_rss_mb": 60.378906
       },
       "train_256_b": {
-        "depth_mae_cm": 1.385186,
-        "albedo_ncc": 0.914809,
-        "albedo_psnr_db": 20.139689,
-        "peak_rss_mb": 168.746094
+        "depth_mae_cm": 0.556567,
+        "albedo_ncc": 0.971572,
+        "albedo_psnr_db": 25.064372,
+        "peak_rss_mb": 60.796875
       },
       "train_256_c": {
-        "depth_mae_cm": 1.950786,
-        "albedo_ncc": 0.915153,
-        "albedo_psnr_db": 19.009495,
-        "peak_rss_mb": 168.746094
+        "depth_mae_cm": 0.821602,
+        "albedo_ncc": 0.966882,
+        "albedo_psnr_db": 23.556712,
+        "peak_rss_mb": 60.800781
       },
       "train_256_d": {
-        "depth_mae_cm": 0.437885,
-        "albedo_ncc": 0.929979,
-        "albedo_psnr_db": 20.173138,
-        "peak_rss_mb": 168.746094
+        "depth_mae_cm": 0.1861,
+        "albedo_ncc": 0.979549,
+        "albedo_psnr_db": 25.622073,
+        "peak_rss_mb": 60.867188
       },
       "train_256_e": {
-        "depth_mae_cm": 1.781163,
-        "albedo_ncc": 0.86249,
-        "albedo_psnr_db": 21.204901,
-        "peak_rss_mb": 168.746094
+        "depth_mae_cm": 0.73958,
+        "albedo_ncc": 0.949144,
+        "albedo_psnr_db": 25.27383,
+        "peak_rss_mb": 60.3125
       }
     }
   },

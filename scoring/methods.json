@@ -5,7 +5,7 @@
         "python3",
         "method/run_qf.py"
       ],
-      "description": "Reference reproduction (paper's sequential-loading variant, s = 0.02 m)."
+      "description": "Reference reproduction (paper's sequential-loading variant; s from method/qf_params.json)."
     }
   }
 }

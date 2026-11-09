@@ -12,7 +12,7 @@
     "working_memory": {
       "results": {
         "peak_energy_baseline": {
-          "peak_memory_mb": 168.699
+          "peak_memory_mb": 42.383
         }
       }
     }
@@ -30,37 +30,37 @@
         "depth_mae_cm": 0.840931,
         "albedo_ncc": 0.430394,
         "albedo_psnr_db": 17.085327,
-        "peak_rss_mb": 168.699219
+        "peak_rss_mb": 42.382812
       },
       "train_256_a": {
         "depth_mae_cm": 1.629281,
         "albedo_ncc": 0.416679,
         "albedo_psnr_db": 17.464222,
-        "peak_rss_mb": 168.699219
+        "peak_rss_mb": 39.3125
       },
       "train_256_b": {
         "depth_mae_cm": 0.443663,
         "albedo_ncc": 0.443216,
         "albedo_psnr_db": 16.877768,
-        "peak_rss_mb": 168.699219
+        "peak_rss_mb": 39.171875
       },
       "train_256_c": {
         "depth_mae_cm": 1.300856,
         "albedo_ncc": 0.399108,
         "albedo_psnr_db": 15.206749,
-        "peak_rss_mb": 168.699219
+        "peak_rss_mb": 39.539062
       },
       "train_256_d": {
         "depth_mae_cm": 0.654231,
         "albedo_ncc": 0.502197,
         "albedo_psnr_db": 16.611254,
-        "peak_rss_mb": 168.699219
+        "peak_rss_mb": 39.550781
       },
       "train_256_e": {
         "depth_mae_cm": 1.01541,
         "albedo_ncc": 0.341079,
         "albedo_psnr_db": 18.797961,
-        "peak_rss_mb": 168.699219
+        "peak_rss_mb": 39.113281
       }
     }
   },

@@ -5,4 +5,4 @@ action: submit
 gpus: 0
 test: false
 milestone: core_claim
-notes: "Hardening audit: smoke tests, render train scenes, reference-only scoring, cohort (variants, baselines, brute force, shortcuts) through no-arg train/test evaluators, uncapped memory diagnostics, final reference scoring, analysis, validate."
+notes: "Rerun hardening audit after fixes: VmHWM-based memory (no inherited ru_maxrss), workspace scratch (container /tmp too small), s selected on visible train scenes, then reference-only + cohort (variants, baselines, shortcuts) through no-arg train/test evaluators, uncapped diagnostics, analysis, validate."
