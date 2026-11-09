@@ -11,6 +11,8 @@ Variants (all keep the paper's three steps unless stated):
                 of albedo and depth (the paper notes 2D image processing can be
                 applied to the recovered maps).
   lean_smooth   lean + smooth.
+  smooth_depth  reference albedo unchanged; only depth gets the albedo-weighted
+                Gaussian smoothing.
   multi_s       average of reconstructions at 0.9 s, s, 1.1 s (s = reference value).
   no_deconv     weaker ablation: skips the spatial deconvolution (Eq. 5) and
                 reads albedo/depth from phi directly.
@@ -124,6 +126,11 @@ def smooth(albedo: np.ndarray, depth: np.ndarray, depth_max: float):
     return finalize(a_s, d_s, depth_max)
 
 
+def smooth_depth(albedo: np.ndarray, depth: np.ndarray, depth_max: float):
+    _, d_s = smooth(albedo, depth, depth_max)
+    return finalize(albedo, d_s, depth_max)
+
+
 def multi_s(scene: Path, s_list=None):
     if s_list is None:
         s_list = (0.9 * DEFAULT_S, DEFAULT_S, 1.1 * DEFAULT_S)
@@ -159,7 +166,7 @@ def no_deconv(scene: Path, s: float = DEFAULT_S):
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--variant", required=True,
-                        choices=("lean", "smooth", "lean_smooth", "multi_s", "no_deconv"))
+                        choices=("lean", "smooth", "lean_smooth", "smooth_depth", "multi_s", "no_deconv"))
     parser.add_argument("--scene", required=True)
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
@@ -170,6 +177,8 @@ def main() -> None:
         albedo, depth = smooth(*reconstruct(scene), read_meta(scene)["depth_max"])
     elif args.variant == "lean_smooth":
         albedo, depth = smooth(*lean_reconstruct(scene), read_meta(scene)["depth_max"])
+    elif args.variant == "smooth_depth":
+        albedo, depth = smooth_depth(*reconstruct(scene), read_meta(scene)["depth_max"])
     elif args.variant == "multi_s":
         albedo, depth = multi_s(scene)
     else:

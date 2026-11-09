@@ -56,7 +56,7 @@
         "peak_memory_mb": {
           "higher_is_better": false,
           "coefficient": 1.0,
-          "description": "Maximum over scenes of the peak resident set size (MB) of the method's process tree, measured by the evaluator (includes interpreter and library memory). Failure value: the 256 MB budget."
+          "description": "Maximum over scenes of the peak resident memory (MB) of the method's process tree, measured by the evaluator from /proc (per-process high-water mark and summed tree RSS; includes interpreter, libraries and touched memory-mapped pages), reported at 4 MB resolution because identical runs vary by about 1 MB. Failure value: the 256 MB budget."
         }
       },
       "results": {

@@ -113,6 +113,15 @@
       ],
       "role": "better candidate (quality)"
     },
+    "qf_smooth_depth": {
+      "command": [
+        "python3",
+        "redteam/hardening/variants.py",
+        "--variant",
+        "smooth_depth"
+      ],
+      "role": "better candidate (depth only)"
+    },
     "qf_traditional": {
       "command": [
         "python3",

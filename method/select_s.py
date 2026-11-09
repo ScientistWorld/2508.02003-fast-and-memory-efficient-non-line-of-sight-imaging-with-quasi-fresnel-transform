@@ -10,9 +10,12 @@ chosen once, on the visible train scenes only, from a fixed grid:
     python3 eval/train/evaluate_train.py --methods /tmp/grid.json --output /tmp/grid_scores.json
     python3 method/select_s.py --choose /tmp/grid_scores.json     # writes method/qf_params.json
 
-The choice maximises the benchmark's own aggregate (coefficient-weighted,
-direction-corrected improvement over the grid's first entry, each metric
-divided by its spread across the grid), ignoring entries that fail.
+The choice maximises the benchmark's own quality aggregate (coefficient-weighted,
+direction-corrected improvement over the grid's first valid entry, each metric
+divided by its spread across the grid), ignoring entries that fail.  Working
+memory is excluded: s does not change the computation's memory, so its
+differences across the grid are measurement jitter (~1 MB) that would be
+magnified by the tiny spread.
 (`bash scripts/method.sh --select-s` runs all three steps.)
 """
 
@@ -41,7 +44,9 @@ def choose(scores_path: Path) -> float:
     scores = json.loads(scores_path.read_text())
     reference = json.loads((ROOT / "scoring" / "reference.json").read_text())
     specs = [(exp, metric, float(p["weight"]), abs(float(m["coefficient"])), 1 if m["higher_is_better"] else -1)
-             for exp, p in reference["experiments"].items() for metric, m in p["metrics"].items()]
+             for exp, p in reference["experiments"].items() for metric, m in p["metrics"].items()
+             if exp == "surface_reconstruction"]
+    all_specs = [(exp, metric) for exp, p in reference["experiments"].items() for metric in p["metrics"]]
     names = [_name(s) for s in GRID]
     valid = [n for n in names if scores["_status"][n]["valid"]]
     if not valid:
@@ -64,9 +69,9 @@ def choose(scores_path: Path) -> float:
         "s": s_best,
         "selected_by": "method/select_s.py on the visible train scenes",
         "grid": list(GRID),
-        "train_aggregate_by_s": {str(GRID[names.index(n)]): round(t, 6) for n, t in totals.items()},
+        "train_quality_aggregate_by_s": {str(GRID[names.index(n)]): round(t, 6) for n, t in totals.items()},
         "train_metrics_by_s": {str(GRID[names.index(n)]): {
-            m: val(n, e, m) for e, m, *_ in specs} for n in names},
+            m: val(n, e, m) for e, m in all_specs} for n in names},
         "paper_zaragoza_s": 0.02,
     }
     (HERE / "qf_params.json").write_text(json.dumps(record, indent=2) + "\n")

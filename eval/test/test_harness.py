@@ -31,6 +31,7 @@ QUALITY_EXPERIMENT = "surface_reconstruction"
 MEMORY_EXPERIMENT = "working_memory"
 
 MEMORY_BUDGET_MB = 256.0
+MEMORY_RESOLUTION_MB = 4.0  # reported resolution; identical runs vary by ~1 MB
 TIMEOUT_S_PER_SCENE = 300.0
 DEPTH_GATE_FRACTION = 0.5
 NCC_GATE = 0.2
@@ -309,6 +310,7 @@ def summarize(names: list[str], invalid: dict[str, str], records: dict[str, dict
         "_protocol": {
             "scenes": scene_ids,
             "memory_budget_mb": MEMORY_BUDGET_MB,
+            "memory_resolution_mb": MEMORY_RESOLUTION_MB,
             "timeout_s_per_scene": TIMEOUT_S_PER_SCENE,
             "depth_gate": f"mean depth_mae_cm <= {DEPTH_GATE_FRACTION} x mean oracle-constant depth MAE ({DEPTH_GATE_FRACTION * mean_oracle:.4f} cm)",
             "albedo_gate": f"mean albedo_ncc >= {NCC_GATE}",
@@ -335,7 +337,7 @@ def summarize(names: list[str], invalid: dict[str, str], records: dict[str, dict
                     f"{DEPTH_GATE_FRACTION} x the best constant-depth error ({mean_oracle:.3f} cm)")
             if mean["albedo_ncc"] < NCC_GATE:
                 failures.append(f"task failed: albedo correlation {mean['albedo_ncc']:.3f} < {NCC_GATE}")
-            values = dict(mean, peak_memory_mb=memory)
+            values = dict(mean, peak_memory_mb=MEMORY_RESOLUTION_MB * round(memory / MEMORY_RESOLUTION_MB))
         if failures:
             values = dict(penalty)
         scores["experiments"][QUALITY_EXPERIMENT]["results"][name] = {
@@ -346,8 +348,10 @@ def summarize(names: list[str], invalid: dict[str, str], records: dict[str, dict
         scores["experiments"][MEMORY_EXPERIMENT]["results"][name] = {
             "peak_memory_mb": round(values["peak_memory_mb"], 3),
         }
+        raw_memory = max((m["peak_rss_mb"] for m in per_scene.values()), default=None)
         scores["_status"][name] = {"valid": not failures, "failures": failures,
-                                   "scenes_completed": len(per_scene)}
+                                   "scenes_completed": len(per_scene),
+                                   "peak_memory_raw_mb": None if raw_memory is None else round(raw_memory, 3)}
         scores["_details"][name] = {
             sid: {k: (round(v, 6) if isinstance(v, float) else v) for k, v in m.items()}
             for sid, m in per_scene.items()

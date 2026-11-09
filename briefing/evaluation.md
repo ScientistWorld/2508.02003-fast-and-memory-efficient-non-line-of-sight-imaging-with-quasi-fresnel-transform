@@ -35,7 +35,7 @@ Procedurally generated hidden scenes: one to three surface objects (disks, ellip
 - `albedo_psnr_db` (higher is better): PSNR after the least-squares global scale fit of the prediction to the true albedo normalised to peak 1.
 
 `working_memory` (weight 0.4)
-- `peak_memory_mb` (primary, lower is better): the evaluator samples the method's process tree from `/proc` (per-process high-water mark and summed resident memory, which includes memory-mapped file pages the process touches) and reports the maximum over the split's scenes. The largest scans set it. Wall-clock time is recorded for debugging only and never scored.
+- `peak_memory_mb` (primary, lower is better): the evaluator samples the method's process tree from `/proc` (per-process high-water mark and summed resident memory, which includes memory-mapped file pages the process touches) and reports the maximum over the split's scenes, rounded to 4 MB (identical runs vary by about 1 MB; raw values are in `_status` / `_details`). The largest scans set it. Wall-clock time is recorded for debugging only and never scored.
 
 ## Constraints (a violation fails the whole run)
 

@@ -90,7 +90,9 @@ def table(scores: dict, specs, populations: dict[str, list[str]]) -> list[dict]:
     for name in sorted(scores["experiments"]["surface_reconstruction"]["results"]):
         v = values(scores, name, specs)
         st = scores["_status"][name]
-        row = {"method": name, "valid": st["valid"], "failures": st["failures"]}
+        raw = st.get("peak_memory_raw_mb")
+        row = {"method": name, "valid": st["valid"], "failures": st["failures"],
+               "raw_memory": "—" if raw is None else f"{raw:.1f}"}
         row.update({m: v[(e, m)] for e, m, *_ in specs})
         for label, pop in populations.items():
             if name in pop:
@@ -131,12 +133,12 @@ def main() -> None:
         summary[split] = {"rows": rows, "paired_vs_reference": pairs, "populations": populations}
 
         md += [f"## {split} split", "",
-               "| method | valid | depth MAE cm ↓ | albedo NCC ↑ | albedo PSNR dB ↑ | peak memory MB ↓ | ΔR honest | ΔR all | ΔR valid |",
+               "| method | valid | depth MAE cm ↓ | albedo NCC ↑ | albedo PSNR dB ↑ | peak memory MB ↓ (raw) | ΔR honest | ΔR all | ΔR valid |",
                "|---|---|---:|---:|---:|---:|---:|---:|---:|"]
         for r in rows:
             md.append(
                 f"| {r['method']} | {'yes' if r['valid'] else 'no'} | {r['depth_mae_cm']:.4f} | {r['albedo_ncc']:.4f} | "
-                f"{r['albedo_psnr_db']:.3f} | {r['peak_memory_mb']:.2f} | {fmt(r.get('dR_honest', float('nan')))} | "
+                f"{r['albedo_psnr_db']:.3f} | {r['peak_memory_mb']:.0f} ({r['raw_memory']}) | {fmt(r.get('dR_honest', float('nan')))} | "
                 f"{fmt(r.get('dR_all', float('nan')))} | {fmt(r.get('dR_valid', float('nan'))) if 'dR_valid' in r else '—'} |")
         md += ["", "Failures:", ""]
         for r in rows:
