@@ -1,7 +1,9 @@
 # Overview
 
-- Paper: `2508.02003`
-- Title: `Fast and Memory-efficient Non-line-of-sight Imaging with Quasi-Fresnel Transform`
-- Area: computational imaging / NLOS reconstruction
+- Paper: `2508.02003` — Fast and Memory-efficient Non-line-of-sight Imaging with Quasi-Fresnel Transform
+- Area: computational imaging / confocal NLOS reconstruction
+- Milestone: `core_claim`
 
-This workspace contains a faithful implementation of the paper's Quasi-Fresnel algorithm and packages it as a runnable benchmark. The current milestone is `core_claim`: the three-step reconstruction pipeline runs end to end on both synthetic and real Zaragoza confocal data, producing depth MAE of 0.49 cm on the tracked 64x64 quality proxy. The efficiency target now scores the paper's FDH-style aggregated path on public Zaragoza bunny measurements, with full-histogram and sequential-loading runs kept as diagnostics.
+The benchmark asks for reconstructions of surface-like hidden objects (albedo + depth maps) from noisy confocal transients at the paper's Zaragoza acquisition scale (1 m wall, 256 x 256 scans, 3 mm of photon path per bin; plus 384 x 384 / 512 x 512 scans), scored on depth error, albedo fidelity and evaluator-measured peak working memory under a 256 MB budget. Methods are commands the evaluators run themselves on visible train scenes and on hidden test scenes rendered at test time (`briefing/evaluation.md`).
+
+The reference (`quasi_fresnel`) is the paper's three-step Quasi-Fresnel pipeline in its sequential-loading form. See `HARDENING.md` for its scores, the audit of variants, baselines and shortcuts, and known limitations.

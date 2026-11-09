@@ -1,29 +1,12 @@
 # Scientist Constraints
 
-## Data
-- Keep the scored quality benchmark fixed to the tracked metric proxy:
-  - [`data/bunny/bunny_64x64.npz`](/home/user/data/bunny/bunny_64x64.npz)
-- Keep the scored public-scene efficiency benchmark fixed to the packaged Zaragoza Stanford bunny confocal HDF5:
-  - [`data/zaragoza/bunny_conf64.hdf5`](/home/user/data/zaragoza/bunny_conf64.hdf5)
-- If the lightweight HDF5 fixture is unavailable, `scripts/download.sh` can fetch the larger public 256x256 bunny file as a fallback, but do not replace the scored scene with easier synthetic data.
-- Additional public Zaragoza scenes may be used for diagnostics, but they do not replace the scored bunny target.
-
-## Compute / comparison setup
-- Keep the scored experiment structure fixed to the packaged public-bunny benchmark contract:
-  - `zaragoza_bunny_depth_error`
-  - `zaragoza_efficiency_public_bunny`
-- Keep metric definitions fixed:
-  - `depth_mae_cm`
-  - `albedo_psnr_db`
-  - `albedo_ssim`
-  - `albedo_mae`
-  - `memory_mb`
-  - `traditional_memory_order`
-  - `loading_memory_order`
-  - `loading_depth_consistency_cm`
-- Keep the scoring entrypoint fixed to [`scripts/evaluate.sh`](/home/user/scripts/evaluate.sh), which expects a method-produced report matching the structure of [`scoring/raw_results.json`](/home/user/scoring/raw_results.json).
+## Fixed by the benchmark (do not change)
+- The evaluators (`eval/`), the scene generator (`data/nlos_scenes.py`), the acquisition geometry, noise model, scene lists and seeds.
+- Metric definitions, gates, the 256 MB memory budget, the 300 s per-scene limit, experiment names and `scoring/reference.json`.
+- The method contract: `<command> --scene <dir> --output <file.npz>` registered in `scoring/methods.json`; scored through `scripts/evaluate_train.sh` / `scripts/evaluate_test.sh` with no arguments.
 
 ## Fairness rules
-- Do not tune scene-specific parameters against hidden or held-out ground truth.
-- Do not change the scored scene, metric units, or evaluation interface to make the benchmark easier.
-- Do not substitute a generic learned predictor or add external supervision unavailable in this workspace.
+- A method may only use the measurement and metadata in the scene directory it is given. It must not read ground truth (`data/train_scenes/*/ground_truth.npz`, the scene generator's internals) or anything under `eval/` at run time, and must not cache answers across runs.
+- Parameters may be tuned on the visible train scenes only.
+- Memory is measured on the method's own process tree; do not hide work in processes outside that tree (daemons, servers started earlier, other sessions) or in precomputed artifacts that depend on the scenes.
+- No training on external labelled data; no learned black-box predictor substituted for reconstruction from the given measurement.

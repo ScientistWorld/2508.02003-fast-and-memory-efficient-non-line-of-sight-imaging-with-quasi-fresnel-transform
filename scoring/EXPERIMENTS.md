@@ -1,7 +1,7 @@
 # Experiment Overview
 
-## `zaragoza_bunny_depth_error`
-Measures whether a reconstruction method preserves useful scene geometry and image content for the Zaragoza Stanford bunny target. The primary score is depth mean absolute error in centimeters; auxiliary image metrics check that depth accuracy is not achieved by degrading the reconstructed intensity map. This environment scores that target on a tracked synthetic Zaragoza-style bunny proxy with metric ground truth; the public measurement HDF5 files available in this workspace do not include the 2D ground-truth maps needed for this metric.
+## `surface_reconstruction`
+Establishes whether a method actually recovers the hidden geometry and appearance of surface-like objects from noisy confocal measurements at a realistic scan size (256 x 256 points over a 1 m wall, with additional 384 x 384 / 512 x 512 scans). Depth error on object pixels is the headline quantity; albedo correlation and scale-aligned albedo PSNR check that the recovered image shows the right objects in the right places. Scores are averages over several scenes so that one easy or hard scene does not decide the ranking. Runs that do not recover the scene beyond what a constant-depth guess or an uninformative image would give are counted as failures.
 
-## `zaragoza_efficiency_public_bunny`
-Measures peak working memory on an available public Zaragoza bunny measurement, plus machine-independent scaling and consistency checks. This is intentionally separate from the quality proxy so public measured transient data remains part of the benchmark.
+## `working_memory`
+Establishes how much working memory a method needs to produce those reconstructions, measured by the evaluator from the operating system while the method runs, on the largest scans of the split. It captures the practical claim that hidden-scene reconstruction can be done on memory-limited devices; methods above a fixed budget fail. It is reported alongside, not instead of, reconstruction quality: memory savings only count for runs that still solve the reconstruction task.

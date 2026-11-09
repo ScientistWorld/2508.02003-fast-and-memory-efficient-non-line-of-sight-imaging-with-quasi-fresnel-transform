@@ -1,14 +1,13 @@
 # Research Direction
 
-Work on fast direct reconstruction for confocal non-line-of-sight surface recovery under the same public Zaragoza setup as this workspace.
+Fast, memory-lean confocal NLOS reconstruction of surface-like hidden scenes.
 
 Priority directions:
-- improve bunny depth accuracy while staying within the same direct surface-reconstruction problem setting
-- improve working memory on the same scored bunny scene
-- strengthen the lower-memory loading path and test it on additional public Zaragoza scenes
-- expand the same evaluation family to more public confocal scenes without changing the task definition
+- lower depth error and better albedo fidelity under shot noise, without volumetric working memory;
+- lower peak working memory at large scan sizes (the 512 x 512 hidden scans set the memory score) without losing reconstruction quality;
+- robustness across scene types (tilted and curved surfaces, textured albedo, several objects) and scan resolutions.
 
 Out of scope:
-- replacing the problem with an unrelated volumetric or learned black-box benchmark
-- switching to a generic supervised predictor trained on extra labels
-- redefining success around unscored diagnostics instead of the packaged quality-plus-efficiency targets
+- methods that exceed the memory budget (full 3D volumes at these sizes);
+- learned predictors trained on external labels, or anything that reads ground truth or evaluator internals;
+- changing the scenes, noise, metrics or constraints.
