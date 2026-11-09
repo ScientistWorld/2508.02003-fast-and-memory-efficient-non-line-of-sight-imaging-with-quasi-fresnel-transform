@@ -30,19 +30,10 @@ checkpoints/
 data/downloads/
 !data/downloads/
 !data/downloads/.gitkeep
-data/bunny/*
-!data/bunny/
-!data/bunny/bunny_64x64.npz
-data/dynamic/
-data/kylin/
-data/shapes/
-!data/shapes/
-data/shapes/*
-!data/shapes/shapes_64x64.npz
+# Visible train scenes are rendered deterministically by data/nlos_scenes.py
+data/train_scenes/
+# Optional public Zaragoza files (not scored), fetched by scripts/download.sh
 data/zaragoza/
-!data/zaragoza/
-data/zaragoza/*
-!data/zaragoza/bunny_conf64.hdf5
 data/zaragoza_public/
 
 # Container artifacts (multi-GB)

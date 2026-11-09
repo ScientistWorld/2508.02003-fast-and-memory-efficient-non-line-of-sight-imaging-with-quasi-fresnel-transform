@@ -70,23 +70,39 @@ def quasi_fresnel_time_integral_loading(tau, s_values, dt, k=4):
     Returns:
       complex array if one s is provided, otherwise tuple of complex arrays.
     """
+    return quasi_fresnel_time_integral_stream(
+        (tau[:, :, bin_idx] for bin_idx in range(tau.shape[2])), s_values, dt, k
+    )
+
+
+def quasi_fresnel_time_integral_stream(bins, s_values, dt, k=4):
+    """
+    Step 1 for a histogram that is read sequentially, one time bin at a time.
+
+    ``bins`` yields the 2D slices ``tau(:, :, t)`` for t = 0, 1, ...; only the
+    current slice and the 2D ``phi`` accumulators are ever held in memory, which
+    is the paper's sequential-loading strategy (memory O(N^2) instead of O(N^3)).
+    The arithmetic is identical to ``quasi_fresnel_time_integral``.
+    """
     s_arr = np.atleast_1d(np.asarray(s_values, dtype=np.float64))
     if s_arr.ndim != 1 or s_arr.size == 0:
         raise ValueError("s_values must be a scalar or a non-empty 1D sequence")
 
-    N_bins = tau.shape[2]
-    r_centers = (np.arange(N_bins, dtype=np.float64) + 0.5) * dt
-    radial_term = r_centers ** k
-    accumulators = [
-        np.zeros(tau.shape[:2], dtype=np.complex128) for _ in range(s_arr.size)
-    ]
-
-    for bin_idx, r in enumerate(r_centers):
-        tau_bin = tau[:, :, bin_idx].astype(np.float64, copy=False)
+    accumulators = None
+    for bin_idx, tau_bin in enumerate(bins):
+        tau_bin = np.asarray(tau_bin).astype(np.float64, copy=False)
+        if accumulators is None:
+            accumulators = [
+                np.zeros(tau_bin.shape, dtype=np.complex128) for _ in range(s_arr.size)
+            ]
+        r = (bin_idx + 0.5) * dt
+        radial_term = r ** k
         for acc, s in zip(accumulators, s_arr):
-            weight = radial_term[bin_idx] * np.exp(-1j * (r ** 2) / (4 * s ** 2)) * dt
+            weight = radial_term * np.exp(-1j * (r ** 2) / (4 * s ** 2)) * dt
             acc += weight * tau_bin
 
+    if accumulators is None:
+        raise ValueError("the histogram has no time bins")
     if len(accumulators) == 1:
         return accumulators[0]
     return tuple(accumulators)

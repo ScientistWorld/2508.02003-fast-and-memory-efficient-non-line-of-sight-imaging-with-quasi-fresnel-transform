@@ -1,20 +1,29 @@
 #!/bin/bash
-# Download helper for public NLOS resources.
+# Download helper.
 #
-# Estimated download size from this script as currently written: about 722 MB
-# Estimated extra disk usage: about 722 MB
+# The scored benchmark needs no downloads: visible train scenes are rendered
+# deterministically by `python3 data/nlos_scenes.py --write-train` (also done
+# automatically by scripts/evaluate_train.sh), and hidden test scenes are
+# rendered inside eval/test/ at test time.  Python packages come from
+# environment/setup.sh.
 #
-# Notes:
-# - The scored benchmark uses the public Zaragoza Stanford bunny confocal file.
-# - This script also fetches a public Zaragoza USAF confocal file for
-#   extra diagnostics and a lightweight T scene.
-# - Larger public files are available from https://graphics.unizar.es/nlos_dataset.html
+# Optional (not scored): public Zaragoza NLOS confocal measurements for
+# qualitative experiments (they carry no 2D albedo/depth ground truth).
+#   bash scripts/download.sh --public-zaragoza     # ~750 MB into data/zaragoza_public/
+# Loader: data/load_zaragoza.py.  Source: https://graphics.unizar.es/nlos_dataset.html
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 cd "${ROOT}"
-mkdir -p data/downloads/zaragoza/public
+
+if [ "${1:-}" != "--public-zaragoza" ]; then
+    echo "Nothing to download for the scored benchmark."
+    echo "Rendering the visible train scenes (deterministic, cached in data/train_scenes/) ..."
+    python3 data/nlos_scenes.py --write-train
+    echo "Optional public Zaragoza scenes: bash scripts/download.sh --public-zaragoza"
+    exit 0
+fi
 
 download_if_missing() {
     local output_path="$1"
@@ -28,16 +37,11 @@ download_if_missing() {
 }
 
 download_if_missing \
-    "data/downloads/zaragoza/bunny_simple_256_conf.hdf5" \
+    "data/zaragoza_public/bunny_simple_256_conf.hdf5" \
     "https://nas-graphics.unizar.es/public.php/dav/files/2019_Z_NLOS_Dataset_backup/simple/bunny_l%5b0.00%2c-0.50%2c0.00%5d_r%5b1.57%2c0.00%2c3.14%5d_v%5b0.80%2c0.53%2c0.81%5d_s%5b256%5d_l%5b256%5d_gs%5b1.00%5d_conf.hdf5"
 
 download_if_missing \
-    "data/downloads/zaragoza/usaf_simple_256_conf.hdf5" \
+    "data/zaragoza_public/usaf_simple_256_conf.hdf5" \
     "https://nas-graphics.unizar.es/public.php/dav/files/2019_Z_NLOS_Dataset_backup/simple/usaf_l%5b0.00%2c-0.50%2c0.00%5d_r%5b1.57%2c0.00%2c3.14%5d_v%5b0.57%2c0.01%2c0.60%5d_s%5b256%5d_l%5b256%5d_gs%5b1.00%5d_conf.hdf5"
 
-download_if_missing \
-    "data/downloads/zaragoza/public/T_conf64.hdf5" \
-    "https://nas-graphics.unizar.es/s/2019_Z_NLOS_Dataset_backup/download?path=%2Fsimple&files=T_l[0.00,-0.50,0.00]_r[1.57,0.00,3.14]_v[0.20]_s[64]_l[64]_gs[0.60]_conf.hdf5"
-
-echo "Additional public data present:"
-ls -1 data/downloads/zaragoza data/downloads/zaragoza/public || true
+ls -la data/zaragoza_public/

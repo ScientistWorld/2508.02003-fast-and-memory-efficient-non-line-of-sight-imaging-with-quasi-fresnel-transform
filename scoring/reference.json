@@ -1,96 +1,78 @@
 {
   "experiments": {
-    "zaragoza_bunny_depth_error": {
-      "description": "Depth MAE for the Zaragoza Stanford bunny Fig. 5 target. The paper reports that Quasi-Fresnel achieves the lowest bunny depth error among the compared direct methods. This gym scores the same target on a tracked synthetic Zaragoza-style bunny proxy because the public HDF5 measurements packaged here do not include 2D albedo/depth ground truth.",
+    "surface_reconstruction": {
+      "description": "Recover the albedo and depth maps of surface-like hidden objects from noisy confocal transients at the paper's Zaragoza acquisition scale (1 m x 1 m relay wall, 256 x 256 scan points, 3 mm of photon path per time bin), plus 384 x 384 (train) and 512 x 512 (hidden test) scans. Scores are means over the scenes of the split (6 visible train scenes, 12 hidden test scenes rendered at test time). The paper's headline quality claim is the lowest depth MAE on the Zaragoza bunny among direct methods (Fig. 5) while keeping image quality comparable to volumetric methods (Figs. 4, 6). A run that fails any constraint (missing/invalid output, non-finite or out-of-range values, wrong shape, memory budget, time limit, or the task-success gates) receives bounded failure values on every metric: the best-constant depth error, zero correlation, the empty-image PSNR and the full memory budget.",
       "weight": 0.6,
       "primary_metric": "depth_mae_cm",
       "metrics": {
         "depth_mae_cm": {
           "higher_is_better": false,
-          "coefficient": -1.0,
-          "description": "Centimeter-scale depth mean absolute error on the synthetic Zaragoza-style bunny proxy, the headline reconstruction-quality target."
+          "coefficient": 1.0,
+          "description": "Mean absolute depth error (cm) over wall pixels fully covered by an object, averaged over scenes. Task-success gate: must be at most half of the error of the best constant-depth answer."
+        },
+        "albedo_ncc": {
+          "higher_is_better": true,
+          "coefficient": 0.6,
+          "description": "Pearson correlation between the predicted and true albedo maps over all wall pixels (scale- and offset-invariant: albedo is only recoverable up to a global factor), averaged over scenes. Task-success gate: at least 0.2."
         },
         "albedo_psnr_db": {
           "higher_is_better": true,
           "coefficient": 0.3,
-          "description": "Albedo PSNR on the same synthetic bunny proxy, included to catch methods that preserve depth while degrading reconstructed appearance."
-        },
-        "albedo_ssim": {
-          "higher_is_better": true,
-          "coefficient": 0.2,
-          "description": "Albedo SSIM on the same synthetic bunny proxy, a structural image-quality check complementary to depth MAE."
-        },
-        "albedo_mae": {
-          "higher_is_better": false,
-          "coefficient": -0.15,
-          "description": "Albedo MAE on the same synthetic bunny proxy, measuring absolute intensity error that neither PSNR nor SSIM alone captures."
+          "description": "PSNR (dB) of the predicted albedo after the least-squares global scale fit against the true albedo normalised to peak 1, averaged over scenes. Never below the PSNR of an empty image, which is the failure value."
         }
       },
       "results": {
-        "fbp": {
-          "type": "baseline",
-          "depth_mae_cm": 4.69
+        "quasi_fresnel": {
+          "type": "baseline"
         },
-        "lct": {
-          "type": "baseline",
-          "depth_mae_cm": 0.16
-        },
-        "fk": {
-          "type": "baseline",
-          "depth_mae_cm": 0.31
-        },
-        "phasor": {
-          "type": "baseline",
-          "depth_mae_cm": 0.31
-        },
-        "quasi_fresnel_proposed": {
+        "_paper_quasi_fresnel_zaragoza_bunny": {
           "type": "proposed",
           "depth_mae_cm": 0.15
         },
-        "quasi_fresnel_scaled_reproduction": {
-          "type": "baseline"
+        "_paper_lct_zaragoza_bunny": {
+          "type": "baseline",
+          "depth_mae_cm": 0.16
+        },
+        "_paper_fk_zaragoza_bunny": {
+          "type": "baseline",
+          "depth_mae_cm": 0.31
+        },
+        "_paper_phasor_zaragoza_bunny": {
+          "type": "baseline",
+          "depth_mae_cm": 0.31
+        },
+        "_paper_fbp_zaragoza_bunny": {
+          "type": "baseline",
+          "depth_mae_cm": 4.69
         }
-      }
+      },
+      "_paper_note": "The _paper_* entries are the paper's Fig. 5 depth MAE on the simulated Zaragoza Stanford bunny (256 x 256 scan, 1 m x 1 m wall, s = 0.02). This gym uses the same acquisition scale but procedurally generated noisy scenes with ground truth (the public Zaragoza files have no 2D ground-truth maps), so those numbers are kept for context and are not targets."
     },
-    "zaragoza_efficiency_public_bunny": {
-      "description": "Public Zaragoza efficiency claim from the Results section. The current gym scores machine-independent memory and scaling proxies for the FDH-style aggregated Quasi-Fresnel path on the available public bunny HDF5 measurements, preferring the 64x64 public copy for repeatable CPU jobs.",
+    "working_memory": {
+      "description": "Peak resident memory (MB) of the method's process tree, measured by the evaluator from the operating system while the method reconstructs each scene; the score is the maximum over the split's scenes, so it is set by the largest scan (384 x 384 train, 512 x 512 hidden test). The paper's efficiency claim is that working memory stays far below volumetric methods (under 50 MB vs over 13 GB on Zaragoza). Runs whose memory exceeds the 256 MB budget on any scene are failed (the uint16 histogram of a 512 x 512 x 512 scan alone is 256 MB).",
       "weight": 0.4,
-      "primary_metric": "memory_mb",
+      "primary_metric": "peak_memory_mb",
       "metrics": {
-        "memory_mb": {
+        "peak_memory_mb": {
           "higher_is_better": false,
-          "coefficient": -1.0,
-          "description": "Algorithm peak working memory in megabytes for the low-memory public bunny reconstruction path."
-        },
-        "traditional_memory_order": {
-          "higher_is_better": false,
-          "coefficient": -0.2,
-          "description": "Empirical log-log memory scaling slope for the direct reconstruction path, checking that methods do not hide volumetric memory growth outside the primary low-memory path."
-        },
-        "loading_memory_order": {
-          "higher_is_better": false,
-          "coefficient": -0.2,
-          "description": "Empirical log-log memory scaling slope for the sequential-loading variant, checking the paper's low-memory complexity claim."
-        },
-        "loading_depth_consistency_cm": {
-          "higher_is_better": false,
-          "coefficient": -0.2,
-          "description": "Depth disagreement between the sequential-loading and direct reconstruction paths on the public bunny scene, catching methods whose memory-saving path changes the result."
+          "coefficient": 1.0,
+          "description": "Maximum over scenes of the peak resident set size (MB) of the method's process tree, measured by the evaluator (includes interpreter and library memory). Failure value: the 256 MB budget."
         }
       },
       "results": {
-        "prior_methods_lower_bound": {
-          "type": "baseline",
-          "memory_mb": 13105.0
-        },
-        "quasi_fresnel_proposed": {
-          "type": "proposed",
-          "memory_mb": 50.0
-        },
-        "quasi_fresnel_scaled_reproduction": {
+        "quasi_fresnel": {
           "type": "baseline"
+        },
+        "_paper_quasi_fresnel_zaragoza": {
+          "type": "proposed",
+          "peak_memory_mb": 50.0
+        },
+        "_paper_prior_methods_zaragoza": {
+          "type": "baseline",
+          "peak_memory_mb": 13105.0
         }
-      }
+      },
+      "_paper_note": "Paper values: the Quasi-Fresnel reconstruction needs 'less than 50 MB' (a loose MATLAB-profiling upper bound) on Zaragoza instances, previous volumetric methods 'over 13.105 GB'. Measured here as Python process peak RSS on 384-512 scans, so the numbers are context, not targets."
     }
   }
 }

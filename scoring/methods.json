@@ -1,0 +1,11 @@
+{
+  "methods": {
+    "quasi_fresnel": {
+      "command": [
+        "python3",
+        "method/run_qf.py"
+      ],
+      "description": "Reference reproduction (paper's sequential-loading variant, s = 0.02 m)."
+    }
+  }
+}
