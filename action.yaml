@@ -1,4 +1,4 @@
 action: submit
 gpus: 0
 test: false
-notes: "Correct simple peak baseline efficiency using its own full reconstruction, rerun unmodified no-argument hidden test, and refresh rank cohorts."
+notes: "Pending corrected baseline check: execute redteam/finalize_baseline.sh and require baseline_followup_completed.txt; previous completion notice was for the earlier job."

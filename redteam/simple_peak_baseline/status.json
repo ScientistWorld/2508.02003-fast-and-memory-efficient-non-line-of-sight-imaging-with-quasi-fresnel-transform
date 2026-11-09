@@ -1,6 +1,6 @@
 {
   "case": "simple_peak_baseline",
-  "started": 1794225125.1732163,
+  "started": 1794227231.3936584,
   "test_command": [
     "bash",
     "scripts/evaluate_test.sh"
@@ -10,5 +10,5 @@
   "method_exit_code": 0,
   "train_exit_code": 0,
   "test_exit_code": 0,
-  "seconds": 5.574322700500488
+  "seconds": 6.831145524978638
 }

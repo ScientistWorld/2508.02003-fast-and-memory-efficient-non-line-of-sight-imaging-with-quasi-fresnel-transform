@@ -14,8 +14,8 @@
       "results": {
         "quasi_fresnel_scaled_reproduction": {
           "memory_mb": 32.063019,
-          "traditional_memory_order": 2.701507,
-          "loading_memory_order": 1.912427,
+          "traditional_memory_order": 1.886288,
+          "loading_memory_order": 1.886288,
           "loading_depth_consistency_cm": 0.0
         }
       }
