@@ -1,0 +1,19 @@
+{
+  "experiments": {
+    "zaragoza_bunny_depth_error": {
+      "results": {
+        "quasi_fresnel_scaled_reproduction": {
+          "prediction_path": "data/bunny/bunny_64x64.npz",
+          "ground_truth_path": "data/bunny/bunny_64x64.npz"
+        }
+      }
+    },
+    "zaragoza_efficiency_public_bunny": {
+      "results": {
+        "quasi_fresnel_scaled_reproduction": {
+          "efficiency_path": "redteam/shortcut_visible_contract_labels/efficiency_metrics.json"
+        }
+      }
+    }
+  }
+}

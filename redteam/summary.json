@@ -76,6 +76,7 @@
         "shortcut_move_ground_truth",
         "shortcut_one_pixel",
         "shortcut_replace_fixed_truth",
+        "shortcut_visible_contract_labels",
         "shortcut_write_scores_only",
         "shortcut_zero_output",
         "simple_peak_baseline",
@@ -83,14 +84,14 @@
         "weaker_no_spatial"
       ],
       "std": [
-        9.182048086476556,
-        36.06637319342494,
-        0.357127351997766,
-        0.12051317513706843,
-        223297.87423828724,
-        223297.4080792964,
-        223297.29637956416,
-        223296.87826943604
+        9.281188088009477,
+        38.29188757190702,
+        0.3724861274371704,
+        0.1227318893018029,
+        217945.86813538545,
+        217945.43707280498,
+        217945.33378803162,
+        217944.94717703367
       ]
     },
     "base_checks": {
@@ -144,7 +145,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 1.0738379776804654,
+        "all_finite_audit_attempts": 1.05968906044887,
         "base_checks": -0.23431929901751936
       },
       "pareto_vs_stored_reference": "tradeoff",
@@ -276,7 +277,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 0.21444019920483298,
+        "all_finite_audit_attempts": 0.20843351291685058,
         "base_checks": 0.6178500259657252
       },
       "pareto_vs_stored_reference": "tradeoff",
@@ -309,7 +310,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 0.07578132824471095,
+        "all_finite_audit_attempts": 0.07497184556565033,
         "base_checks": 0.06341486786194397
       },
       "pareto_vs_stored_reference": "strictly_better",
@@ -342,7 +343,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 1.8127513491965415,
+        "all_finite_audit_attempts": 1.762991469404843,
         "base_checks": 7.044212986007631
       },
       "pareto_vs_stored_reference": "strictly_better",
@@ -375,7 +376,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 1.0844762801475607,
+        "all_finite_audit_attempts": 1.06811359342212,
         "base_checks": 1.5309728644274498
       },
       "pareto_vs_stored_reference": "strictly_better",
@@ -424,7 +425,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 3.6768434554560403e-06,
+        "all_finite_audit_attempts": 3.767133967567447e-06,
         "base_checks": 0.7530497461268058
       },
       "pareto_vs_stored_reference": "strictly_better",
@@ -457,7 +458,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 2.8661336525234287,
+        "all_finite_audit_attempts": 2.936515929052261,
         "base_checks": 354975.8702321913
       },
       "pareto_vs_stored_reference": "strictly_better",
@@ -490,7 +491,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 1.8127513491965415,
+        "all_finite_audit_attempts": 1.762991469404843,
         "base_checks": 7.044212986007631
       },
       "pareto_vs_stored_reference": "strictly_better",
@@ -566,7 +567,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 0.8528864784188901,
+        "all_finite_audit_attempts": 0.8133797045720257,
         "base_checks": 6.240984732352219
       },
       "pareto_vs_stored_reference": "tradeoff",
@@ -599,11 +600,44 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 1.8127513491965415,
+        "all_finite_audit_attempts": 1.762991469404843,
         "base_checks": 7.044212986007631
       },
       "pareto_vs_stored_reference": "strictly_better",
       "pairwise_rank_delta": 1.98
+    },
+    "shortcut_visible_contract_labels": {
+      "status": {
+        "case": "shortcut_visible_contract_labels",
+        "started": 1794227426.6241808,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 4.26963210105896
+      },
+      "metrics": [
+        0.0,
+        100.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 1.7629952365388106,
+        "base_checks": 7.7972627321344365
+      },
+      "pareto_vs_stored_reference": "strictly_better",
+      "pairwise_rank_delta": 3.1
     },
     "shortcut_write_scores_only": {
       "status": {
@@ -665,7 +699,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 0.013994879150089207,
+        "all_finite_audit_attempts": 0.010129250562392,
         "base_checks": 0.36926376743823985
       },
       "pareto_vs_stored_reference": "tradeoff",
@@ -698,7 +732,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 0.5925150731866592,
+        "all_finite_audit_attempts": 0.5910620329480045,
         "base_checks": 0.03399526747484953
       },
       "pareto_vs_stored_reference": "tradeoff",
@@ -731,7 +765,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": 1.1531595926101545e-06,
+        "all_finite_audit_attempts": 1.1814771748853528e-06,
         "base_checks": 0.21989585802008907
       },
       "pareto_vs_stored_reference": "tradeoff",
@@ -764,7 +798,7 @@
       ],
       "finite": true,
       "rank_delta": {
-        "all_finite_audit_attempts": -1.717803838228154,
+        "all_finite_audit_attempts": -1.696217048684675,
         "base_checks": -1.844583883098435
       },
       "pareto_vs_stored_reference": "tradeoff",

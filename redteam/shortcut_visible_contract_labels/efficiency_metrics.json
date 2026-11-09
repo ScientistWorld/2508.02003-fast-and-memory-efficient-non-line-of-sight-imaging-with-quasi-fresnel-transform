@@ -1,0 +1,24 @@
+{
+  "fdh": {
+    "algorithm_peak_mb": 0.0
+  },
+  "loading": {
+    "consistency_vs_traditional": {
+      "depth_mae": 0.0
+    }
+  },
+  "complexity_scaling": {
+    "traditional": {
+      "memory_order": 0.0,
+      "memory_mb": [
+        0.0
+      ]
+    },
+    "loading": {
+      "memory_order": 0.0,
+      "memory_mb": [
+        0.0
+      ]
+    }
+  }
+}

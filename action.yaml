@@ -1,4 +1,4 @@
 action: submit
 gpus: 0
 test: false
-notes: "Pending corrected baseline check: execute redteam/finalize_baseline.sh and require baseline_followup_completed.txt; previous completion notice was for the earlier job."
+notes: "Final standalone validity check: shortcut starts from visible train schema and visible data only, without reference outputs; run unmodified test and refresh audit summary."
