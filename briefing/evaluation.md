@@ -15,7 +15,7 @@ For every scene, the evaluator runs, as a fresh process with the workspace as wo
 ```
 
 `<scene_dir>` contains:
-- `transient.npy` — uint16 photon counts, layout `[time_bin, x_index, y_index]`, C order (so each time bin is a contiguous N x N slice and the file can be read one bin at a time);
+- `transient.npy` — uint16 photon counts, layout `[time_bin, x_index, y_index]`, C order (each time bin is a contiguous N x N slice);
 - `meta.json` — acquisition geometry: `wall_points_per_axis` N, `wall_size_m` (1.0; wall coordinates `x_i = y_i = -0.5 + i/(N-1)` m, wall plane z = 0, scene at z > 0), `time_bins` (512), `bin_width_m` (0.0015: bin t collects returns whose one-way wall-to-scene distance lies in `[t, t+1) * 1.5 mm`, i.e. 3 mm of photon path per bin), `falloff_exponent` (4), `max_observable_depth_m` (0.768).
 
 The method must write `<prediction.npz>` with two real arrays of shape exactly (N, N): `albedo` (finite, non-negative, not constant; any global scale) and `depth` (finite, metres, within `[0, max_observable_depth_m]`), indexed like the wall grid. Nothing else the method writes is read. Methods run single-threaded (thread environment variables are set to 1). `bash scripts/method.sh` registers the reference method.

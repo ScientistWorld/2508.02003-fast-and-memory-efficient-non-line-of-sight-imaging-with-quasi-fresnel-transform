@@ -1,3 +1,5 @@
+> Superseded: this report describes the pre-hardening gym (iteration 9). The current evaluation design, scores and audit are in `HARDENING.md`.
+
 # Verification Report
 
 ## Initial Assessment

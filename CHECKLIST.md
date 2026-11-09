@@ -17,19 +17,19 @@
 ## Code
 - [x] Evaluation code in `eval/`
 - [x] Method implementation in `method/`
-- [ ] Baseline implementation in `baseline/` (if applicable)
+- [x] Baseline implementation in `baseline/` (simple streaming baseline `peak_energy.py`; volumetric `lct.py`)
 
 ## Scripts
 - [x] `scripts/evaluate.sh`
 - [x] `scripts/reproduce.sh`
 - [x] `scripts/download.sh` (idempotent, size comment at top)
-- [x] `scripts/baseline.sh` (disabled until a faithful baseline is packaged)
+- [x] `scripts/baseline.sh` (scores the simple baseline on the visible scenes)
 
 ## Environment
 - [x] `environment/container.def` + `environment/setup.sh`
 
 ## Data
-- [x] Dataset acquired (shared dir or `data/`)
+- [x] Dataset: procedurally rendered (`data/nlos_scenes.py`; hidden test scenes inside `eval/test/`)
 - [x] Pretrained models downloaded if needed (none required)
 
 ## Milestones

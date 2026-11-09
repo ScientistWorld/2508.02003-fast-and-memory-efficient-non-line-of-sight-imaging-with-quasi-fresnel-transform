@@ -1,57 +1,103 @@
 # Overview
 
-- Paper: `2508.02003`
-- Title: `Fast and Memory-efficient Non-line-of-sight Imaging with Quasi-Fresnel Transform`
-- Area: computational imaging / NLOS reconstruction
+- Paper: `2508.02003` — Fast and Memory-efficient Non-line-of-sight Imaging with Quasi-Fresnel Transform
+- Area: computational imaging / confocal NLOS reconstruction
+- Milestone: `core_claim`
 
-This workspace contains a faithful implementation of the paper's Quasi-Fresnel algorithm and packages it as a runnable benchmark. The current milestone is `core_claim`: the three-step reconstruction pipeline runs end to end on both synthetic and real Zaragoza confocal data, producing depth MAE of 0.49 cm on the tracked 64x64 quality proxy. The efficiency target now scores the paper's FDH-style aggregated path on public Zaragoza bunny measurements, with full-histogram and sequential-loading runs kept as diagnostics.
+The benchmark asks for reconstructions of surface-like hidden objects (albedo + depth maps) from noisy confocal transients at the paper's Zaragoza acquisition scale (1 m wall, 256 x 256 scans, 3 mm of photon path per bin; plus 384 x 384 / 512 x 512 scans), scored on depth error, albedo fidelity and evaluator-measured peak working memory under a 256 MB budget. Methods are commands the evaluators run themselves on visible train scenes and on hidden test scenes rendered at test time (`briefing/evaluation.md`).
+
+The reference (`quasi_fresnel`) is the paper's three-step Quasi-Fresnel pipeline in its sequential-loading form. See `HARDENING.md` for its scores, the audit of variants, baselines and shortcuts, and known limitations.
 
 ---
 
 # Problem Definition
 
-Non-line-of-sight imaging reconstructs a hidden scene from transient measurements collected on a visible relay wall. In the confocal setting, each relay-wall point is both illuminated and observed, producing a 3D histogram over wall position and time.
+Non-line-of-sight (NLOS) imaging reconstructs a hidden scene from time-resolved light measurements on a visible relay wall. In the confocal setting each scanned wall point is both illuminated and observed, so a measurement is a 3D photon-count histogram over wall position (x, y) and time of flight.
 
-The practical problem is not only reconstruction quality but scalability. Hidden scenes in this benchmark are surface-like objects described by albedo and depth maps, and the goal is to recover those maps with useful fidelity while keeping working memory low.
+Hidden objects in this benchmark are surface-like: each wall position (x, y) sees at most one surface point, described by an albedo a(x, y) and a depth d(x, y) (distance from the wall plane). The task is to recover both maps, at the wall's sampling resolution, from noisy confocal histograms.
+
+The practical difficulty is scale. A histogram for an N x N scan with M time bins has N²M entries (256 x 256 x 512 counts is 64 MB as uint16; 512 x 512 x 512 is 256 MB), and reconstruction methods that operate on full 3D volumes need several times that in working memory. The benchmark therefore asks for reconstructions that are accurate **and** fit in a small, fixed memory budget, measured on the largest scans.
 
 Success is measured by:
-- whether a reconstruction algorithm runs end-to-end on transient confocal measurements
-- whether working memory stays low on the fixed public-scene benchmark
-- whether the recovered hidden object remains geometrically and visually meaningful
+- depth accuracy on object pixels,
+- albedo fidelity (correlation and scale-aligned PSNR against the true albedo),
+- peak working memory of the reconstruction process, measured by the evaluator,
+- subject to hard constraints: valid outputs on every scene, a 256 MB memory budget, a per-scene time limit, and a minimum reconstruction quality (a run that does not recover the scene is failed).
 
 ---
 
-# Paper's Method
+# Paper's Method (Quasi-Fresnel transform, Wei et al. 2025)
 
-The paper models the hidden scene as a 2D albedo map and a 2D depth map rather than a full 3D voxel volume. Its reconstruction pipeline has three analytical steps:
+The hidden scene is modelled as a 2D albedo map a(x) and a 2D depth map d(x) instead of a 3D voxel volume. Reconstruction (Alg. 1) has three analytical steps, for a fixed parameter s:
 
-1. Aggregate the transient histogram over time with a complex quadratic-phase weighting to produce a 2D field `phi(x; s)`.
-2. Recover a second complex 2D field `psi(x; s)` by spatial deconvolution in the relay-wall plane.
-3. Extract albedo from `|psi|` and depth from the derivative of `psi` with respect to `s`.
+1. **Integration over time (Eq. 3).** phi(x; s) = sum_t r_t^k exp(-i r_t^2 / (4 s^2)) tau(x, t) dr, with r_t the one-way distance of bin t. This collapses the N x N x M histogram to a complex N x N field.
+2. **Deconvolution in space (Eq. 5).** psi(x; s) = (1 / (16 pi^2 s^4)) * integral exp(i |x~ - x|^2 / (4 s^2)) phi(x~; s) dx~, a separable chirp convolution evaluated with 1D FFTs along each wall axis.
+3. **Result extraction (Eq. 4).** albedo = |psi|, depth = (-2 i s^3 psi^-1 dpsi/ds)^(1/2), with dpsi/ds from two very close s values (s +/- 1e-7 m here) and the real part of the radicand.
 
-This workspace already implements that three-step Quasi-Fresnel pipeline directly from the paper equations.
+Memory variants (Table 1): "Traditional" loads the full histogram (O(N^3) memory); "Loading" folds each time bin into phi as it is read (O(N^2) memory); "FDH" receives phi from hardware (O(N^2 log N) time).
 
-What is not yet fully reproduced:
-- the FDH acquisition path
-- a faithful published volumetric baseline for direct comparison
-- the full public Zaragoza and Stanford benchmark suite at paper scale
+## This workspace
+- `method/quasi_fresnel.py`: the three steps (`quasi_fresnel_time_integral[_stream|_loading]`, `quasi_fresnel_spatial_deconv`, `extract_albedo_depth`, `quasi_fresnel_reconstruct[_from_phi]`).
+- `method/run_qf.py`: benchmark command (default: the paper's Loading variant reading `transient.npy` one time bin at a time; `--mode traditional` loads the full histogram).
+- `method/select_s.py` + `method/qf_params.json`: the paper sets s per dataset (0.02 m for its noise-free Zaragoza simulations, 0.025 m USAF, 0.05–0.10 m Stanford) and ties its admissible range to sampling density and SNR. Here s is chosen once from the grid {0.02, 0.025, 0.03, 0.035, 0.04, 0.05} m on the visible train scenes only (`bash scripts/method.sh --select-s`).
 
 ---
 
 # Evaluation
 
-The packaged benchmark has two complementary targets:
+## Method contract
 
-- `zaragoza_bunny_depth_error`: depth reconstruction quality on a tracked Zaragoza-style bunny proxy with metric ground truth.
-- `zaragoza_efficiency_public_bunny`: working-memory behavior on the packaged public Zaragoza bunny confocal measurement.
+A method is a command registered in `scoring/methods.json`:
 
-`scripts/method.sh` writes prediction artifacts under `outputs/` and records their paths in `scoring/raw_results.json`. `scripts/evaluate.sh` then recomputes quality metrics from those artifacts against fixed data in `data/`; it does not trust method-reported quality scores.
+```json
+{"methods": {"my_method": {"command": ["python3", "path/to/my_method.py"]}}}
+```
 
-`depth_mae_cm` is the primary quality metric. Lower values mean the recovered surface geometry is closer to the reference depth map.
+For every scene, the evaluator runs, as a fresh process with the workspace as working directory,
 
-`memory_mb` is the primary efficiency metric. Lower values mean the reconstruction can run with less peak working memory on the fixed public-scene input. Wall-clock runtime is kept only in raw diagnostics because it depends on hardware and is not part of the scored objective.
+```
+<command> --scene <scene_dir> --output <prediction.npz>
+```
 
-Additional public Zaragoza scenes are treated as diagnostics unless they also expose trustworthy ground truth through the HDF5 metadata.
+`<scene_dir>` contains:
+- `transient.npy` — uint16 photon counts, layout `[time_bin, x_index, y_index]`, C order (each time bin is a contiguous N x N slice);
+- `meta.json` — acquisition geometry: `wall_points_per_axis` N, `wall_size_m` (1.0; wall coordinates `x_i = y_i = -0.5 + i/(N-1)` m, wall plane z = 0, scene at z > 0), `time_bins` (512), `bin_width_m` (0.0015: bin t collects returns whose one-way wall-to-scene distance lies in `[t, t+1) * 1.5 mm`, i.e. 3 mm of photon path per bin), `falloff_exponent` (4), `max_observable_depth_m` (0.768).
+
+The method must write `<prediction.npz>` with two real arrays of shape exactly (N, N): `albedo` (finite, non-negative, not constant; any global scale) and `depth` (finite, metres, within `[0, max_observable_depth_m]`), indexed like the wall grid. Nothing else the method writes is read. Methods run single-threaded (thread environment variables are set to 1). `bash scripts/method.sh` registers the reference method.
+
+## Scenes
+
+Procedurally generated hidden scenes: one to three surface objects (disks, ellipses, rectangles, annuli, triangles, crosses, L-shapes; plain or striped albedo; tilted planes or curved patches at 0.2–0.62 m depth), rendered with a confocal three-bounce model (Lambertian wall and object, inverse-square falloff on each leg, no occlusion between objects) and Poisson photon noise with a small background.
+
+- **Train (visible):** 6 scenes — five 256 x 256 scans and one 384 x 384 scan — rendered deterministically into `data/train_scenes/` (`python3 data/nlos_scenes.py --write-train`), with ground truth in `ground_truth.npz` for inspection.
+- **Test (hidden):** 12 scenes from the same family with private seeds — ten 256 x 256 and two 512 x 512 scans — rendered inside the hidden evaluator at test time into a temporary directory and deleted after use.
+
+## Metrics (per split, means over its scenes unless noted)
+
+`surface_reconstruction` (weight 0.6)
+- `depth_mae_cm` (primary, lower is better): mean absolute depth error in cm over wall pixels fully covered by an object.
+- `albedo_ncc` (higher is better): Pearson correlation between predicted and true albedo over all wall pixels.
+- `albedo_psnr_db` (higher is better): PSNR after the least-squares global scale fit of the prediction to the true albedo normalised to peak 1.
+
+`working_memory` (weight 0.4)
+- `peak_memory_mb` (primary, lower is better): the evaluator samples the method's process tree from `/proc` (per-process high-water mark and summed resident memory, which includes memory-mapped file pages the process touches) and reports the maximum over the split's scenes, rounded to 4 MB (identical runs vary by about 1 MB; raw values are in `_status` / `_details`). The largest scans set it. Wall-clock time is recorded for debugging only and never scored.
+
+## Constraints (a violation fails the whole run)
+
+- a valid prediction on every scene (shape, dtype, finiteness, ranges as above), exit status 0;
+- peak memory ≤ 256 MB on every scene (runs are killed when they exceed it);
+- ≤ 300 s per scene;
+- task success: mean `depth_mae_cm` ≤ 0.5 x the error of the best constant-depth answer, and mean `albedo_ncc` ≥ 0.2.
+
+A failed run receives the same bounded values on every metric — the best-constant depth error, correlation 0, the PSNR of an empty image, and the full 256 MB — so it can never rank above a run that solves the task.
+
+## Entry points
+
+- `bash scripts/evaluate_train.sh` → `scoring/scores_train.json` (visible scenes; predictions kept in `outputs/<method>/train_predictions/`).
+- `bash scripts/evaluate.sh` → `scoring/scores.json` (same visible evaluation).
+- `bash scripts/evaluate_test.sh` → `scoring/scores_test.json` (hidden scenes).
+
+All score every registered method with no arguments. Score files also carry `_status` (validity and failure reasons) and `_details` (per-scene values).
 
 ---
 

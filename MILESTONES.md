@@ -26,5 +26,10 @@
 - The validated score contract now includes depth and albedo quality metrics plus memory, direct-path scaling, low-memory scaling, and low-memory consistency constraints.
 - `python validate.py --compare` passed, including import separation, artifact-based evaluation checks, and train/test split checks.
 
+### [2026-11-09] - core_claim (hardening, iteration 11)
+- Rebuilt the evaluation so the evaluator runs every registered method itself: hidden scenes rendered inside eval/test/ at test time (ten 256 x 256 and two 512 x 512 scans, shot noise), ground truth computed in-process, peak memory measured from /proc, constraint and task gates with bounded failure values.
+- Reference (paper's sequential-loading Quasi-Fresnel, s = 0.03 selected on visible train scenes): hidden depth MAE 0.399 cm, albedo NCC 0.956, PSNR 26.29 dB, 148 MB; volumetric paths (full-histogram variant 804 MB, LCT 3.27 GB at 256 x 256) exceed the 256 MB budget.
+- Audit (jobs 0afbe2f3-634, 5ef43463-5be): better variants score higher beyond paired noise, weaker ones lower, all red-team shortcuts fail or tie; LCT's better depth (0.07 cm) means the paper's lowest-depth-error claim is not reproduced on these scenes. See HARDENING.md.
+
 ## Stop Justification
 - Completed at milestone `core_claim`.

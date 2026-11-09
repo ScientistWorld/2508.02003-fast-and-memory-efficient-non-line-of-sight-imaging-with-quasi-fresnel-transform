@@ -1,3 +1,5 @@
+> Superseded for the current state by `HARDENING.md` (iteration 11): the scored benchmark is now evaluator-run on rendered scenes; the items below describe the earlier gym.
+
 # Progress
 
 ## What Works
