@@ -1,3 +1,8 @@
-action: done
+# Once you set action to 'submit' or 'done', STOP immediately.
+# Do NOT sleep, poll, or wait for jobs. The system reads this file
+# only after your turn ends.
+action: pending
+gpus: 0
+test: false
 milestone: core_claim
-notes: "Final verification passed after job 5241c7d8-6d9; artifact-based scoring, train/test checks, and validate.py --compare all pass."
+notes: ""
