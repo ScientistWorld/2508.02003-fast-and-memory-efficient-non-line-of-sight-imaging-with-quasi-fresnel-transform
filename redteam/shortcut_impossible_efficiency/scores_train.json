@@ -1,0 +1,24 @@
+{
+  "experiments": {
+    "zaragoza_bunny_depth_error": {
+      "results": {
+        "quasi_fresnel_scaled_reproduction": {
+          "depth_mae_cm": 0.4936,
+          "albedo_psnr_db": 14.764197,
+          "albedo_ssim": 0.558319,
+          "albedo_mae": 0.16365
+        }
+      }
+    },
+    "zaragoza_efficiency_public_bunny": {
+      "results": {
+        "quasi_fresnel_scaled_reproduction": {
+          "memory_mb": -1000000.0,
+          "traditional_memory_order": -1000000.0,
+          "loading_memory_order": -1000000.0,
+          "loading_depth_consistency_cm": -1000000.0
+        }
+      }
+    }
+  }
+}

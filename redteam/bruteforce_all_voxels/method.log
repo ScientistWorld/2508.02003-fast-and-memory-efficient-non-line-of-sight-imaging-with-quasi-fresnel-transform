@@ -1,0 +1,39 @@
+=== Synthetic Quality Proxy Scene ===
+scene=synthetic_bunny_proxy_64 s=0.025 runtime=17.460160s +/- 0.000000s peak_memory=32.00MB
+quality PSNR=15.74dB SSIM=0.3318 albedo_MAE=0.1228 depth_MAE=0.0972cm
+
+=== Held-Out Synthetic Quality Proxy Scene ===
+scene=synthetic_shapes_heldout_64 s=0.020 runtime=17.587958s +/- 0.000000s peak_memory=32.00MB
+heldout_quality PSNR=15.94dB SSIM=0.2931 albedo_MAE=0.1018 depth_MAE=0.0867cm
+
+=== Public Zaragoza Efficiency Scene ===
+  HDF5 datasets: ['cameraGridNormals', 'cameraGridPoints', 'cameraGridPositions', 'cameraGridSize', 'cameraPosition', 'data', 'deltaT', 'hiddenVolumePosition', 'hiddenVolumeRotation', 'hiddenVolumeSize', 'isConfocal', 'laserGridNormals']
+  Warning: no albedo GT found in HDF5; using placeholder
+  Warning: no depth GT found in HDF5; using placeholder
+  measurement path: data
+  tau normalized shape: (64, 64, 1024)
+  tau range: [0.000000, 0.007050]
+  gt status: albedo=no, depth=no, metric_depth_scale=no
+scene=bunny s=0.020 runtime=67.530913s +/- 0.000000s peak_memory=128.03MB ground_truth=False
+
+=== Public Scene: Sequential Loading Variant ===
+scene=bunny s=0.020 mode=loading runtime=66.686649s +/- 0.000000s peak_memory=128.00MB
+consistency_vs_traditional PSNR=100.00dB SSIM=1.000000 albedo_MAE=0.00000000 depth_MAE=0.00000000
+
+=== Public Scene: FDH-Style Aggregated Variant ===
+scene=bunny s=0.020 mode=fdh runtime=68.124880s +/- 0.000000s peak_memory=128.00MB
+consistency_vs_traditional PSNR=100.00dB SSIM=1.000000 albedo_MAE=0.00000000 depth_MAE=0.00000000
+
+=== Complexity Scaling ===
+exhaustive scaling 32 0.19170308811590075 1.0010395050048828
+exhaustive scaling 64 3.914279691176489 8.000993728637695
+exhaustive scaling 96 36.69656275608577 27.00101661682129
+exhaustive scaling 128 163.00952416379005 64.00101661682129
+traditional runtime_order=4.874 memory_order=2.999 sizes=[32, 64, 96, 128] algorithm_peak_mb=[1.0010395050048828, 8.000993728637695, 27.00101661682129, 64.00101661682129]
+loading runtime_order=4.874 memory_order=2.999 sizes=[32, 64, 96, 128] algorithm_peak_mb=[1.0010395050048828, 8.000993728637695, 27.00101661682129, 64.00101661682129]
+Wrote /home/user/outputs/quasi_fresnel_scaled_reproduction/quality_bunny_prediction.npz
+Wrote /home/user/outputs/quasi_fresnel_scaled_reproduction/heldout_shapes_prediction.npz
+Wrote /home/user/outputs/quasi_fresnel_scaled_reproduction/efficiency_metrics.json
+
+Wrote /home/user/scoring/raw_results.json
+Wrote /home/user/scoring/diagnostics.json

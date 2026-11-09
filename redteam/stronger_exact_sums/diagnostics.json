@@ -1,0 +1,137 @@
+{
+  "quality_scene": {
+    "scene_name": "synthetic_bunny_proxy_64",
+    "source_path": "/home/user/data/bunny/bunny_64x64.npz",
+    "dt": 0.003,
+    "area_m": 0.3,
+    "note": "Tracked synthetic proxy with metric albedo/depth ground truth. The public Zaragoza HDF5 files packaged here contain measurements but no 2D albedo/depth targets.",
+    "traditional": {
+      "runtime_mean_s": 0.078547,
+      "runtime_std_s": 0.037176,
+      "runtime_min_s": 0.037129,
+      "runtime_max_s": 0.127299,
+      "maxrss_mb": 58.72,
+      "algorithm_peak_mb": 1.83,
+      "quality": {
+        "psnr": 14.7642,
+        "ssim": 0.5583,
+        "albedo_mae": 0.16365,
+        "depth_mae_m": 0.004936,
+        "depth_mae_cm": 0.4936
+      }
+    }
+  },
+  "heldout_quality_scene": {
+    "scene_name": "synthetic_shapes_heldout_64",
+    "source_path": "/home/user/data/shapes/shapes_64x64.npz",
+    "dt": 0.003,
+    "area_m": 0.3,
+    "note": "Held-out synthetic proxy with metric albedo/depth ground truth, used only by eval/test so the primary depth metric is not reused from the visible train slice.",
+    "traditional": {
+      "runtime_mean_s": 0.019617,
+      "runtime_std_s": 0.008019,
+      "runtime_min_s": 0.013858,
+      "runtime_max_s": 0.030957,
+      "maxrss_mb": 86.73,
+      "algorithm_peak_mb": 1.7,
+      "quality": {
+        "psnr": 12.9127,
+        "ssim": 0.1448,
+        "albedo_mae": 0.18078,
+        "depth_mae_m": 0.14626,
+        "depth_mae_cm": 14.626
+      }
+    }
+  },
+  "primary_public_scene": {
+    "scene_name": "bunny",
+    "source_path": "/home/user/data/zaragoza/bunny_conf64.hdf5",
+    "dt": 0.0025,
+    "area_m": 0.3,
+    "has_ground_truth": false,
+    "depth_metric_scale": false,
+    "traditional": {
+      "runtime_mean_s": 0.068748,
+      "runtime_std_s": 0.011891,
+      "runtime_min_s": 0.05581,
+      "runtime_max_s": 0.08452,
+      "maxrss_mb": 391.37,
+      "algorithm_peak_mb": 1.7
+    },
+    "loading": {
+      "runtime_mean_s": 0.444432,
+      "runtime_std_s": 0.080416,
+      "runtime_min_s": 0.349083,
+      "runtime_max_s": 0.545787,
+      "maxrss_mb": 391.37,
+      "algorithm_peak_mb": 1.7,
+      "consistency_vs_traditional": {
+        "psnr": 100.0,
+        "ssim": 1.0,
+        "albedo_mae": 0.0,
+        "depth_mae": 0.0
+      }
+    },
+    "fdh": {
+      "runtime_mean_s": 0.491362,
+      "runtime_std_s": 0.166104,
+      "runtime_min_s": 0.319901,
+      "runtime_max_s": 0.71615,
+      "maxrss_mb": 391.37,
+      "algorithm_peak_mb": 1.7,
+      "consistency_vs_traditional": {
+        "psnr": 100.0,
+        "ssim": 1.0,
+        "albedo_mae": 0.0,
+        "depth_mae": 0.0
+      }
+    }
+  },
+  "complexity_scaling": {
+    "traditional": {
+      "sizes": [
+        32,
+        64,
+        96,
+        128
+      ],
+      "runtime_s": [
+        0.000567,
+        0.007579,
+        0.030373,
+        0.021972
+      ],
+      "memory_mb": [
+        0.1429,
+        0.1905,
+        0.2689,
+        0.3795
+      ],
+      "runtime_order": 2.8705214443670726,
+      "memory_order": 0.6834511607386096
+    },
+    "loading": {
+      "sizes": [
+        32,
+        64,
+        96,
+        128
+      ],
+      "runtime_s": [
+        0.020279,
+        0.080854,
+        0.08044,
+        0.12047
+      ],
+      "memory_mb": [
+        0.0572,
+        0.2215,
+        0.4952,
+        0.8783
+      ],
+      "runtime_order": 1.229713216744588,
+      "memory_order": 1.9692076405935344
+    }
+  },
+  "additional_public_scenes": []
+}

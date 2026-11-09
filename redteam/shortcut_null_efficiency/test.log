@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/home/user/eval/test/score_nlos_test.py", line 261, in <module>
+    main()
+  File "/home/user/eval/test/score_nlos_test.py", line 253, in main
+    scores = build_scores(report, diagnostics, train_scores_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/eval/test/score_nlos_test.py", line 198, in build_scores
+    _heldout_memory_mb(efficiency, efficiency_payload),
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/eval/test/score_nlos_test.py", line 143, in _heldout_memory_mb
+    return _number(loading_memory[-1], "memory_mb")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/eval/test/score_nlos_test.py", line 41, in _number
+    raise TypeError(f"Metric {name!r} must be numeric, got {type(value).__name__}")
+TypeError: Metric 'memory_mb' must be numeric, got NoneType

@@ -1,0 +1,784 @@
+{
+  "columns": [
+    {
+      "experiment": "zaragoza_bunny_depth_error",
+      "metric": "depth_mae_cm",
+      "weight": 0.6,
+      "direction": -1
+    },
+    {
+      "experiment": "zaragoza_bunny_depth_error",
+      "metric": "albedo_psnr_db",
+      "weight": 0.18,
+      "direction": 1
+    },
+    {
+      "experiment": "zaragoza_bunny_depth_error",
+      "metric": "albedo_ssim",
+      "weight": 0.12,
+      "direction": 1
+    },
+    {
+      "experiment": "zaragoza_bunny_depth_error",
+      "metric": "albedo_mae",
+      "weight": 0.09,
+      "direction": -1
+    },
+    {
+      "experiment": "zaragoza_efficiency_public_bunny",
+      "metric": "memory_mb",
+      "weight": 0.4,
+      "direction": -1
+    },
+    {
+      "experiment": "zaragoza_efficiency_public_bunny",
+      "metric": "traditional_memory_order",
+      "weight": 0.08000000000000002,
+      "direction": -1
+    },
+    {
+      "experiment": "zaragoza_efficiency_public_bunny",
+      "metric": "loading_memory_order",
+      "weight": 0.08000000000000002,
+      "direction": -1
+    },
+    {
+      "experiment": "zaragoza_efficiency_public_bunny",
+      "metric": "loading_depth_consistency_cm",
+      "weight": 0.08000000000000002,
+      "direction": -1
+    }
+  ],
+  "stored_reference": [
+    14.625978,
+    12.912695,
+    0.144753,
+    0.18078,
+    1.1293,
+    2.703954,
+    1.912427,
+    0.0
+  ],
+  "cohorts": {
+    "all_finite_audit_attempts": {
+      "attempts": [
+        "stored_reference",
+        "bruteforce_all_voxels",
+        "reference_seed_0",
+        "reference_seed_1",
+        "reference_seed_2",
+        "shortcut_blank_scene",
+        "shortcut_constant_depth",
+        "shortcut_copy_visible_answers",
+        "shortcut_drop_heldout",
+        "shortcut_forge_efficiency",
+        "shortcut_impossible_efficiency",
+        "shortcut_move_ground_truth",
+        "shortcut_one_pixel",
+        "shortcut_replace_fixed_truth",
+        "shortcut_write_scores_only",
+        "shortcut_zero_output",
+        "simple_peak_baseline",
+        "stronger_exact_sums",
+        "weaker_no_spatial"
+      ],
+      "std": [
+        9.182048086476556,
+        36.06637319342494,
+        0.357127351997766,
+        0.12051317513706843,
+        223297.882800613,
+        223297.4181923801,
+        223297.29670382856,
+        223296.87826943604
+      ]
+    },
+    "base_checks": {
+      "attempts": [
+        "stored_reference",
+        "bruteforce_all_voxels",
+        "reference_seed_0",
+        "reference_seed_1",
+        "reference_seed_2",
+        "simple_peak_baseline",
+        "stronger_exact_sums",
+        "weaker_no_spatial"
+      ],
+      "std": [
+        10.972628714055473,
+        3.2769729902455618,
+        0.07702293794048871,
+        0.12672407206283856,
+        20.804886820254602,
+        0.6888875975931119,
+        0.3572327673803874,
+        0.0
+      ]
+    }
+  },
+  "cases": {
+    "bruteforce_all_voxels": {
+      "status": {
+        "case": "bruteforce_all_voxels",
+        "started": 1794225181.4128127,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 458.4868047237396
+      },
+      "metrics": [
+        0.086747,
+        15.935723,
+        0.293072,
+        0.101828,
+        64.001017,
+        2.999246,
+        2.999246,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 1.0738379776847893,
+        "base_checks": -0.23823763792069652
+      },
+      "pareto_vs_stored_reference": "tradeoff",
+      "pairwise_rank_delta": 0.8599999999999999
+    },
+    "reference_seed_0": {
+      "status": {
+        "case": "reference_seed_0",
+        "started": 1794225078.6036491,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 9.729756355285645
+      },
+      "metrics": [
+        14.625978,
+        12.912695,
+        0.144753,
+        0.18078,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 0.0,
+        "base_checks": 0.0
+      },
+      "pareto_vs_stored_reference": "tie",
+      "pairwise_rank_delta": 0.0
+    },
+    "reference_seed_1": {
+      "status": {
+        "case": "reference_seed_1",
+        "started": 1794225088.5802236,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 6.63536524772644
+      },
+      "metrics": [
+        14.625978,
+        12.912695,
+        0.144753,
+        0.18078,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 0.0,
+        "base_checks": 0.0
+      },
+      "pareto_vs_stored_reference": "tie",
+      "pairwise_rank_delta": 0.0
+    },
+    "reference_seed_2": {
+      "status": {
+        "case": "reference_seed_2",
+        "started": 1794225095.5289874,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 9.847466707229614
+      },
+      "metrics": [
+        14.625978,
+        12.912695,
+        0.144753,
+        0.18078,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 0.0,
+        "base_checks": 0.0
+      },
+      "pareto_vs_stored_reference": "tie",
+      "pairwise_rank_delta": 0.0
+    },
+    "shortcut_blank_scene": {
+      "status": {
+        "case": "shortcut_blank_scene",
+        "started": 1794225157.349337,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 3.237825632095337
+      },
+      "metrics": [
+        13.466265,
+        8.202278,
+        0.611555,
+        0.173665,
+        0.250282,
+        1.987591,
+        1.987591,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 0.214440199204761,
+        "base_checks": 0.620256106131904
+      },
+      "pareto_vs_stored_reference": "tradeoff",
+      "pairwise_rank_delta": 2.06
+    },
+    "shortcut_constant_depth": {
+      "status": {
+        "case": "shortcut_constant_depth",
+        "started": 1794225149.7586899,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 3.4839844703674316
+      },
+      "metrics": [
+        13.466265,
+        12.912695,
+        0.144753,
+        0.18078,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 0.07578132824471095,
+        "base_checks": 0.06341486786194397
+      },
+      "pareto_vs_stored_reference": "strictly_better",
+      "pairwise_rank_delta": 1.2
+    },
+    "shortcut_copy_visible_answers": {
+      "status": {
+        "case": "shortcut_copy_visible_answers",
+        "started": 1794225130.9789279,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 3.3540892601013184
+      },
+      "metrics": [
+        0.0,
+        100.0,
+        1.0,
+        0.0,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 1.8127513491965415,
+        "base_checks": 7.044212986007631
+      },
+      "pareto_vs_stored_reference": "strictly_better",
+      "pairwise_rank_delta": 1.98
+    },
+    "shortcut_drop_heldout": {
+      "status": {
+        "case": "shortcut_drop_heldout",
+        "started": 1794225170.4070332,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 3.340789556503296
+      },
+      "metrics": [
+        0.4936,
+        14.764197,
+        0.558319,
+        0.16365,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 1.0844762801475607,
+        "base_checks": 1.5309728644274498
+      },
+      "pareto_vs_stored_reference": "strictly_better",
+      "pairwise_rank_delta": 1.98
+    },
+    "shortcut_empty_output": {
+      "status": {
+        "case": "shortcut_empty_output",
+        "started": 1794225164.6589053,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 1,
+        "test_exit_code": 1,
+        "seconds": 1.8755273818969727
+      }
+    },
+    "shortcut_forge_efficiency": {
+      "status": {
+        "case": "shortcut_forge_efficiency",
+        "started": 1794225142.590317,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 3.244093179702759
+      },
+      "metrics": [
+        14.625978,
+        12.912695,
+        0.144753,
+        0.18078,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 3.676843333017594e-06,
+        "base_checks": 0.7639961865732734
+      },
+      "pareto_vs_stored_reference": "strictly_better",
+      "pairwise_rank_delta": 1.12
+    },
+    "shortcut_impossible_efficiency": {
+      "status": {
+        "case": "shortcut_impossible_efficiency",
+        "started": 1794225146.0840192,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 3.454651117324829
+      },
+      "metrics": [
+        14.625978,
+        12.912695,
+        0.144753,
+        0.18078,
+        -1000000.0,
+        -1000000.0,
+        -1000000.0,
+        -1000000.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 2.8661335670889763,
+        "base_checks": 359299.8885780538
+      },
+      "pareto_vs_stored_reference": "strictly_better",
+      "pairwise_rank_delta": 1.2800000000000002
+    },
+    "shortcut_move_ground_truth": {
+      "status": {
+        "case": "shortcut_move_ground_truth",
+        "started": 1794225134.5324492,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 3.4053797721862793
+      },
+      "metrics": [
+        0.0,
+        100.0,
+        1.0,
+        0.0,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 1.8127513491965415,
+        "base_checks": 7.044212986007631
+      },
+      "pareto_vs_stored_reference": "strictly_better",
+      "pairwise_rank_delta": 1.98
+    },
+    "shortcut_nan_output": {
+      "status": {
+        "case": "shortcut_nan_output",
+        "started": 1794225166.7328427,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 3.462278366088867
+      },
+      "metrics": [
+        NaN,
+        NaN,
+        NaN,
+        NaN,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": false
+    },
+    "shortcut_null_efficiency": {
+      "status": {
+        "case": "shortcut_null_efficiency",
+        "started": 1794225177.6261687,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 1,
+        "test_exit_code": 1,
+        "seconds": 3.565762519836426
+      }
+    },
+    "shortcut_one_pixel": {
+      "status": {
+        "case": "shortcut_one_pixel",
+        "started": 1794225153.4842813,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 3.653961420059204
+      },
+      "metrics": [
+        14.689209,
+        100.0,
+        1.0,
+        0.0,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 0.8528864784188901,
+        "base_checks": 6.240984732352219
+      },
+      "pareto_vs_stored_reference": "tradeoff",
+      "pairwise_rank_delta": -0.42
+    },
+    "shortcut_replace_fixed_truth": {
+      "status": {
+        "case": "shortcut_replace_fixed_truth",
+        "started": 1794225138.1526723,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 4.207693576812744
+      },
+      "metrics": [
+        0.0,
+        100.0,
+        1.0,
+        0.0,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 1.8127513491965415,
+        "base_checks": 7.044212986007631
+      },
+      "pareto_vs_stored_reference": "strictly_better",
+      "pairwise_rank_delta": 1.98
+    },
+    "shortcut_write_scores_only": {
+      "status": {
+        "case": "shortcut_write_scores_only",
+        "started": 1794225174.0690298,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 3.3517417907714844
+      },
+      "metrics": [
+        14.625978,
+        12.912695,
+        0.144753,
+        0.18078,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 0.0,
+        "base_checks": 0.0
+      },
+      "pareto_vs_stored_reference": "tie",
+      "pairwise_rank_delta": 0.0
+    },
+    "shortcut_zero_output": {
+      "status": {
+        "case": "shortcut_zero_output",
+        "started": 1794225160.7898674,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 3.6476805210113525
+      },
+      "metrics": [
+        16.533735,
+        8.202278,
+        0.611555,
+        0.173665,
+        1.1293,
+        2.703954,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 0.013994879150089207,
+        "base_checks": 0.36926376743823985
+      },
+      "pareto_vs_stored_reference": "tradeoff",
+      "pairwise_rank_delta": -1.1400000000000001
+    },
+    "simple_peak_baseline": {
+      "status": {
+        "case": "simple_peak_baseline",
+        "started": 1794225125.1732163,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 5.574322700500488
+      },
+      "metrics": [
+        0.447952,
+        4.642743,
+        0.047907,
+        0.529107,
+        1.1293,
+        2.701507,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 0.5925135352751016,
+        "base_checks": -0.07696515989382433
+      },
+      "pareto_vs_stored_reference": "tradeoff",
+      "pairwise_rank_delta": 0.5800000000000001
+    },
+    "stronger_exact_sums": {
+      "status": {
+        "case": "stronger_exact_sums",
+        "started": 1794225106.0001633,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 12.103595495223999
+      },
+      "metrics": [
+        14.625978,
+        12.912695,
+        0.144753,
+        0.18078,
+        0.8783,
+        0.683451,
+        1.969208,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": 1.153159542614657e-06,
+        "base_checks": 0.2267495443486818
+      },
+      "pareto_vs_stored_reference": "tradeoff",
+      "pairwise_rank_delta": 0.8
+    },
+    "weaker_no_spatial": {
+      "status": {
+        "case": "weaker_no_spatial",
+        "started": 1794225118.642102,
+        "test_command": [
+          "bash",
+          "scripts/evaluate_test.sh"
+        ],
+        "fresh_process": true,
+        "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+        "method_exit_code": 0,
+        "train_exit_code": 0,
+        "test_exit_code": 0,
+        "seconds": 6.306064128875732
+      },
+      "metrics": [
+        38.166017,
+        8.412249,
+        0.014947,
+        0.332767,
+        1.1293,
+        2.703939,
+        1.912427,
+        0.0
+      ],
+      "finite": true,
+      "rank_delta": {
+        "all_finite_audit_attempts": -1.717803838228154,
+        "base_checks": -1.8445838319043646
+      },
+      "pareto_vs_stored_reference": "tradeoff",
+      "pairwise_rank_delta": -1.8199999999999998
+    }
+  },
+  "seed_range": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ]
+}

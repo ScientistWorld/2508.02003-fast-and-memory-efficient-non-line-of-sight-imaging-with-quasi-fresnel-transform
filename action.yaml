@@ -1,8 +1,4 @@
-# Once you set action to 'submit' or 'done', STOP immediately.
-# Do NOT sleep, poll, or wait for jobs. The system reads this file
-# only after your turn ends.
-action: pending
+action: submit
 gpus: 0
 test: false
-milestone: core_claim
-notes: ""
+notes: "Run bundled scoring audit: three reference seeds, genuine variants, exhaustive baseline, and artifact/degenerate shortcuts; all test commands unmodified and no-argument."

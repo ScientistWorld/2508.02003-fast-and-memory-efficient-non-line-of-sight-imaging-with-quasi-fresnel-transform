@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/home/user/eval/test/score_nlos_test.py", line 261, in <module>
+    main()
+  File "/home/user/eval/test/score_nlos_test.py", line 253, in main
+    scores = build_scores(report, diagnostics, train_scores_path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/eval/test/score_nlos_test.py", line 175, in build_scores
+    quality = _score_prediction(
+              ^^^^^^^^^^^^^^^^^^
+  File "/home/user/eval/score_nlos.py", line 105, in _score_prediction
+    albedo_gt = _downsample_mean(albedo_gt, albedo_pred.shape)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/user/eval/score_nlos.py", line 95, in _downsample_mean
+    if in_h % out_h != 0 or in_w % out_w != 0:
+       ~~~~~^~~~~~~
+ZeroDivisionError: integer modulo by zero

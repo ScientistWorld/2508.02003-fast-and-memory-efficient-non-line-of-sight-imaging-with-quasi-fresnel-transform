@@ -1,0 +1,14 @@
+{
+  "case": "shortcut_null_efficiency",
+  "started": 1794225177.6261687,
+  "test_command": [
+    "bash",
+    "scripts/evaluate_test.sh"
+  ],
+  "fresh_process": true,
+  "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+  "method_exit_code": 0,
+  "train_exit_code": 1,
+  "test_exit_code": 1,
+  "seconds": 3.565762519836426
+}

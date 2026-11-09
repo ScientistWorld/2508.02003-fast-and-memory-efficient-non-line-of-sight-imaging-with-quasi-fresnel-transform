@@ -1,0 +1,14 @@
+{
+  "case": "shortcut_write_scores_only",
+  "started": 1794225174.0690298,
+  "test_command": [
+    "bash",
+    "scripts/evaluate_test.sh"
+  ],
+  "fresh_process": true,
+  "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+  "method_exit_code": 0,
+  "train_exit_code": 0,
+  "test_exit_code": 0,
+  "seconds": 3.3517417907714844
+}

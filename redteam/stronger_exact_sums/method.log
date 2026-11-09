@@ -1,0 +1,35 @@
+=== Synthetic Quality Proxy Scene ===
+scene=synthetic_bunny_proxy_64 s=0.025 runtime=0.078547s +/- 0.037176s peak_memory=1.83MB
+quality PSNR=14.76dB SSIM=0.5583 albedo_MAE=0.1636 depth_MAE=0.4936cm
+
+=== Held-Out Synthetic Quality Proxy Scene ===
+scene=synthetic_shapes_heldout_64 s=0.020 runtime=0.019617s +/- 0.008019s peak_memory=1.70MB
+heldout_quality PSNR=12.91dB SSIM=0.1448 albedo_MAE=0.1808 depth_MAE=14.6260cm
+
+=== Public Zaragoza Efficiency Scene ===
+  HDF5 datasets: ['cameraGridNormals', 'cameraGridPoints', 'cameraGridPositions', 'cameraGridSize', 'cameraPosition', 'data', 'deltaT', 'hiddenVolumePosition', 'hiddenVolumeRotation', 'hiddenVolumeSize', 'isConfocal', 'laserGridNormals']
+  Warning: no albedo GT found in HDF5; using placeholder
+  Warning: no depth GT found in HDF5; using placeholder
+  measurement path: data
+  tau normalized shape: (64, 64, 1024)
+  tau range: [0.000000, 0.007050]
+  gt status: albedo=no, depth=no, metric_depth_scale=no
+scene=bunny s=0.020 runtime=0.068748s +/- 0.011891s peak_memory=1.70MB ground_truth=False
+
+=== Public Scene: Sequential Loading Variant ===
+scene=bunny s=0.020 mode=loading runtime=0.444432s +/- 0.080416s peak_memory=1.70MB
+consistency_vs_traditional PSNR=100.00dB SSIM=1.000000 albedo_MAE=0.00000000 depth_MAE=0.00000000
+
+=== Public Scene: FDH-Style Aggregated Variant ===
+scene=bunny s=0.020 mode=fdh runtime=0.491362s +/- 0.166104s peak_memory=1.70MB
+consistency_vs_traditional PSNR=100.00dB SSIM=1.000000 albedo_MAE=0.00000000 depth_MAE=0.00000000
+
+=== Complexity Scaling ===
+traditional runtime_order=2.871 memory_order=0.683 sizes=[32, 64, 96, 128] algorithm_peak_mb=[0.1429, 0.1905, 0.2689, 0.3795]
+loading runtime_order=1.230 memory_order=1.969 sizes=[32, 64, 96, 128] algorithm_peak_mb=[0.0572, 0.2215, 0.4952, 0.8783]
+Wrote /home/user/outputs/quasi_fresnel_scaled_reproduction/quality_bunny_prediction.npz
+Wrote /home/user/outputs/quasi_fresnel_scaled_reproduction/heldout_shapes_prediction.npz
+Wrote /home/user/outputs/quasi_fresnel_scaled_reproduction/efficiency_metrics.json
+
+Wrote /home/user/scoring/raw_results.json
+Wrote /home/user/scoring/diagnostics.json

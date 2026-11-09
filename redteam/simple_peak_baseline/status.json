@@ -1,0 +1,14 @@
+{
+  "case": "simple_peak_baseline",
+  "started": 1794225125.1732163,
+  "test_command": [
+    "bash",
+    "scripts/evaluate_test.sh"
+  ],
+  "fresh_process": true,
+  "evaluator_sha256": "25d6ca59291276e06026c09c514db48249a8b06e0850d7a53405b37d4861fd4c",
+  "method_exit_code": 0,
+  "train_exit_code": 0,
+  "test_exit_code": 0,
+  "seconds": 5.574322700500488
+}
